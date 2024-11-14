@@ -12,14 +12,14 @@ import VChart from 'vue-echarts';
 
 //全局组件
 import Header from './components/header/header.vue'
-import Search from './components/search/search.vue'
+
 import Pagenation from './components/pagenation/pagenation.vue'
 const app = createApp(App)
 const pinia =createPinia()
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
-app.component('Search',Search)
+
 app.component('Header',Header)
 app.component('Pagenation',Pagenation)
 app.config.globalProperties.$echarts = echarts
