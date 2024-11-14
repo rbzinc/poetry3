@@ -12,7 +12,7 @@ defineExpose({
   <Header v-show="($route.path!='/login' && $route.path!='/register') && $route.path!='/email'"> </Header>
   <router-view></router-view>
  </div>
- 
+
 </template>
 
 <style scoped>

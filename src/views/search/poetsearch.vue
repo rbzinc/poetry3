@@ -1,6 +1,5 @@
 <script setup>
-import { userSearchStore } from '../../stores/modules/search'
-import { getPoetSearch } from '../../api/modules/search.js'
+import { userSearchStore } from '@/stores/index.js'
 import { defineExpose } from "vue"
 import Poetryitem from "../../components/poetryitem/poetryitem.vue"
 const userSearch = userSearchStore()
@@ -10,12 +9,7 @@ let poetsearch = userSearch.userinput
 defineExpose({
   Poetryitem,
 })
-const getPoet = async (poetsearch,pagenum) =>{
-  usePoetName.value = poetsearch
-  const res = await getPoetSearch(poetsearch,pagenum)
-  randomList.value=res.data.records
-  pagetotal = res.data.total
-}
+
 
 const currentChange = (pagenum) =>{
   getPoet(usePoetName.value,pagenum);

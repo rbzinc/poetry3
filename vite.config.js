@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import path from 'path'
-import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
@@ -14,7 +13,7 @@ const pathSrc = path.resolve(__dirname, 'src')
 export default defineConfig({
   plugins: [vue(),
     AutoImport({
-      imports: ['vue'],    
+      imports: ['vue'],
       resolvers: [
         ElementPlusResolver(),
         IconsResolver({
@@ -43,15 +42,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src')
-    }
-  },
-  server: {
-    proxy: {
-      '^/api': {
-        target: "http://192.168.43.174:8080", //目标源，目标服务器，真实请求地址
-        changeOrigin: true, //支持跨域
-      
-      }
     }
   },
 

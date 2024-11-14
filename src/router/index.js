@@ -4,16 +4,16 @@ import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes:[
-      { 
+      {
         path:'/login',
-        component: () =>import('../views/login/LoginPage.vue') 
+        component: () =>import('../views/login/LoginPage.vue')
       },
       {
         path:'/email',
         component: () =>import('../views/login/EmailLogin.vue')
       },
       //首页
-      { 
+      {
         path:'/',
         component:() =>import('../Layout/index.vue'),
         redirect:'/layout/home',
@@ -60,30 +60,37 @@ const router = createRouter({
           }
         ]
       },
+
       {
         path:'/poetryAi',
         component:() =>import('../views/poetryAi/poetryAi.vue')
       },
+
       {
         path:'/aiChat',
         component:() =>import('../views/aiChat/aichat.vue')
       },
+
       {
         path: '/register',
         component: () => import('../views/register/register.vue')
       },
+
       {
         path:'/writer',
         component:() =>import('../views/writer/writer.vue')
       },
+
       {
         path:'/poedetails',
         component:() =>import('../views/poedetails/poedetails.vue')
       },
+
       {
         path:'/user',
         component:() =>import('../views/user/index.vue'),
       },
+
       {
         path:'/talksquare',
         component:() =>import('../views/talksquare/index.vue'),
@@ -91,18 +98,21 @@ const router = createRouter({
         children:[
           {
             path:'/talkaquare/wallmessage',
-            component:() =>import('../views/talksquare/WallMessage.vue'),
+            component:() =>import('../views/talksquare/WallMessage/index.vue'),
           },
         ]
       },
+
       {
         path:'/user/upset',
         component:() =>import('../views/user/upsetmessage.vue'),
       },
+
       {
         path:'/study',
         component:() =>import('../views/study/index.vue'),
       },
+
       {
         path:'/search',
         component:() =>import('../views/search/index.vue'),
