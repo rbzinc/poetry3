@@ -1,15 +1,15 @@
 import axios from 'axios'
-import { useUserInfoStore } from '../stores/modules/user.js'
+import { useUserInfoStore } from '@/stores/index.js'
 const userStore = useUserInfoStore()
 
 const instance = axios.create({
   // TODO 1. 基础地址，超时时间
-  baseURL:" http://fuze1.nat300.top", 
+  baseURL:" http://fuze1.nat300.top",
   headers: {
     'Content-Type': 'application/json',
     'token': userStore.userInfo?.token
 },
-  timeout:2000
+  timeout:5000
 })
 
 //请求拦截器

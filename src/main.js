@@ -10,6 +10,8 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import VChart from 'vue-echarts';
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+import "./assets/scss/highLight.scss"
+import 'highlight.js/scss/atom-one-dark.scss'
 
 //全局组件
 import Header from './components/header/header.vue'

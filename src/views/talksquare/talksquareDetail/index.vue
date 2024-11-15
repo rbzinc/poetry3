@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
-import common from './comment/index.vue'
+import common from './comment/index.vue';
+
 const momentId = ref(1); // 评论区的 momentId
 const postAddCommentForm = ref(null); // 评论区的表单
 
@@ -19,8 +20,8 @@ const judgeContent = ref(true);
 // 点赞功能的方法
 const AddLike = () => {
   try {
-    data.value.isLiked ? data.value.like-- : data.value.like++;
-    data.value.isLiked = !data.value.isLiked; // 切换状态
+    data.value.isLiked = !data.value.isLiked;
+    data.value.like += data.value.isLiked ? 1 : -1; // 切换状态时更新点赞数
   } catch (error) {
     console.error("点赞操作失败:", error);
     alert("点赞操作失败，请重试。");
@@ -30,7 +31,7 @@ const AddLike = () => {
 // 更新目录内容的方法
 const updateContent = () => {
   try {
-    judgeContent.value ? contents.value = [] : contents.value = [...contents.value];
+    contents.value = judgeContent.value ? [] : [...contents.value];
     judgeContent.value = !judgeContent.value; // 切换状态
   } catch (error) {
     console.error("更新目录内容失败:", error);
@@ -44,17 +45,21 @@ const updateContent = () => {
   <div class="layout-container">
     <div style="width: 74%;">
       <el-card class="article-card">
-        <h1 class="article-title">{{ data.title }}</h1>
-        <p class="article-meta">作者: {{ data.author }} · {{ data.date }}</p>
+        <div class="article-info">
+          <h1 class="article-title">{{ data.title }}</h1>
+          <p class="article-meta">作者: {{ data.author }} · {{ data.date }}</p>
+          <p class="article-quote">我是一首很好听的古诗，唱的很动听，大家一定要欣赏哦！</p>
+        </div>
+        <div class="article-content">
+
+        </div>
       </el-card>
 
       <common :momentId="momentId" :postAddCommentForm="postAddCommentForm"/>
-
-
-
     </div>
+
     <div class="author-container" style="width: 24%;">
-      <el-card class="author-card" >
+      <el-card class="author-card">
         <div class="author-info">
           <img src="https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/tx.png" alt="Avatar" class="author-avatar"/>
           <div>
@@ -76,7 +81,17 @@ const updateContent = () => {
         </div>
       </el-card>
 
-      <el-card class="contents-card" >
+      <el-card class="contents-card">
+        <template #header>
+          <span>文章前五名点赞列表</span>
+        </template>
+        <div style="display: flex; align-items: center; margin-bottom: 15px" v-for="index in 5" :key="index">
+          <img src="https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/tx.png" style="width: 40px; height: 40px; border-radius: 50%;">
+          <p style="margin-left: 12px; font-size: 17px;">人的名字</p>
+        </div>
+      </el-card>
+
+      <el-card class="contents-card">
         <div>
           <h2>相关文章</h2>
         </div>
@@ -98,7 +113,6 @@ const updateContent = () => {
         <p>我是一个大帅哥</p>
         <p>我是一个大帅哥</p>
         <p>我是一个大帅哥</p>
-
       </el-card>
     </div>
   </div>
@@ -121,8 +135,12 @@ const updateContent = () => {
     .article-meta {
       justify-content: center;
       display: flex;
-      margin-top: 10px;
-      margin-bottom: 10px;
+      margin-top: 16px;
+      margin-bottom: 16px;
+    }
+    .article-quote{
+      display: flex;
+      justify-content: center;
     }
   }
 
@@ -159,7 +177,6 @@ const updateContent = () => {
         }
         .buttons {
           margin-top: 10px;
-
           display: flex;
           justify-content: space-between;
         }
