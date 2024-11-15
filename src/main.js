@@ -15,7 +15,6 @@ import 'highlight.js/scss/atom-one-dark.scss'
 
 //全局组件
 import Header from './components/header/header.vue'
-
 import Pagenation from './components/pagenation/pagenation.vue'
 const app = createApp(App)
 const pinia =createPinia()

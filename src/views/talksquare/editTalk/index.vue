@@ -5,6 +5,7 @@ import {ElForm, ElFormItem, ElInput, ElButton, ElMessage} from 'element-plus';
 import {Delete, Download, Plus, Search, ZoomIn} from '@element-plus/icons-vue';
 import router from "@/router/index.js";
 import {useUserInfoStore} from "@/stores/index.js";
+import {userLuntanFabutieziPostApi} from "@/api/modules/talkSquare.js";
 
 // 初始化变量
 const length = ref(0);
@@ -13,21 +14,28 @@ const disabled = ref(false);
 const drawer = ref(false);
 const inputValue = ref('');
 const shakeButton = ref(false);
+const checked = ref(false)
 
 // 表单数据
 const EditForm = ref({
   title: '',
   content: '',
   type: '',
-  poemid: '',
-  images: ''
+  poemid: '1',
+  images: '',
+  poemword: ''
 });
 
 // 提交表单
 const submitForm = async () => {
   if (!EditForm.value.title) {
     showMessage('请认真填写发文设置！');
+    return
   }
+  // 发送请求
+  console.log(EditForm.value)
+  const res = await userLuntanFabutieziPostApi(EditForm.value)
+  console.log(res)
 };
 
 // 保存草稿
@@ -82,7 +90,56 @@ const handleSuccess = (res) => {
   EditForm.value.images = res.data
 }
 
+const tagData = ref([
+  {
+    id: 1,
+    name: '诗词创作',
+    checked: false
+  },
+  {
+    id: 2,
+    name: '诗词赏析',
+    checked: false
+  },
+  {
+    id: 3,
+    name: '诗词学习',
+    checked: false
+  },
+  {
+    id: 4,
+    name: '诗词活动',
+    checked: false
+  },
+  {
+    id: 5,
+    name: '诗词资源',
+    checked: false
+  },
+  {
+    id: 6,
+    name: '诗词杂谈',
+    checked: false
+  }
+]);
+const selectedTagId = ref(null);
 
+const selectedTagName = computed(() => {
+  if (selectedTagId.value === null) {
+    return '分类选择';
+  } else {
+    const selectedTag = tagData.value.find(tag => tag.id === selectedTagId.value);
+    return selectedTag ? selectedTag.name : '分类选择';
+  }
+});
+const toggleTag = (item) => {
+  EditForm.value.type = item.name;
+  if (selectedTagId.value !== item.id) {
+    selectedTagId.value = item.id;
+  } else {
+    selectedTagId.value = null; // 如果再次点击同一个标签，则取消选中
+  }
+};
 
 </script>
 
@@ -110,17 +167,37 @@ const handleSuccess = (res) => {
         <el-input v-model="EditForm.title"/>
       </el-form-item>
       <el-form-item label="添加封面">
-        <el-upload action="http://fuze1.nat300.top/user/luntan/updateImage" list-type="picture-card" :headers="headers" :on-success="handleSuccess">
+        <el-upload action="http://fuze1.nat300.top/user/luntan/updateImage" list-type="picture-card" :headers="headers"
+                   :on-success="handleSuccess">
           <el-icon>
             <Plus/>
           </el-icon>
         </el-upload>
       </el-form-item>
-      <el-form-item label="选择故事">
+      <el-form-item label="分类选择">
+        <el-popover placement="right" :width="400" trigger="click">
+          <template #reference>
+            <el-button :style="{ backgroundColor: selectedTagName === '分类选择' ? '' : 'skyblue' }" style="margin-right: 16px">
+              {{ selectedTagName }}
+            </el-button>
+          </template>
+
+          <el-check-tag
+              v-for="item in tagData"
+              :key="item.id"
+              style="margin: 5px"
+              :checked="item.id === selectedTagId"
+              @click="toggleTag(item)">
+            {{ item.name }}
+          </el-check-tag>
+        </el-popover>
+
+      </el-form-item>
+      <el-form-item label="选择古诗">
         <el-button @click="drawer = true">点此选择</el-button>
       </el-form-item>
       <el-form-item label="古诗节选">
-        <el-input v-model="EditForm.type" type="textarea"/>
+        <el-input v-model="EditForm.poemword" type="textarea"/>
       </el-form-item>
     </el-form>
     <el-button type="primary" @click="saveEdit">保存</el-button>

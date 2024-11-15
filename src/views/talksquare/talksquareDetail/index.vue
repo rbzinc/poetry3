@@ -1,10 +1,13 @@
 <script setup>
 import { ref } from "vue";
 import common from './comment/index.vue';
-
+import Markdown from './markdown/index.vue'
 const momentId = ref(1); // 评论区的 momentId
 const postAddCommentForm = ref(null); // 评论区的表单
-
+import { useRoute } from 'vue-router';
+import {userLuntanDianzanGetApi, userLuntanSelectxiangxiGetApi} from "@/api/modules/talkSquare.js";
+const route = useRoute();
+const blogid = ref(route.params.id);
 // 定义反应式数据，用于存储文章信息以及目录内容
 const data = ref({
   title: '陶瓷艺术的创新之路',
@@ -38,6 +41,16 @@ const updateContent = () => {
     alert("更新目录内容失败，请重试。");
   }
 };
+const userLuntanSelectxiangxi = async () => {
+  const res = await userLuntanSelectxiangxiGetApi(blogid.value)
+  console.log(res)
+}
+// userLuntanSelectxiangxi()
+
+const updateLike = async() => {
+  const res = await userLuntanDianzanGetApi(blogid.value)
+  console.log(res)
+}
 
 </script>
 
@@ -50,10 +63,11 @@ const updateContent = () => {
           <p class="article-meta">作者: {{ data.author }} · {{ data.date }}</p>
           <p class="article-quote">我是一首很好听的古诗，唱的很动听，大家一定要欣赏哦！</p>
         </div>
-        <div class="article-content">
-
+        <div style="margin-top: 20px;">
+          <Markdown />
         </div>
       </el-card>
+
 
       <common :momentId="momentId" :postAddCommentForm="postAddCommentForm"/>
     </div>
@@ -76,7 +90,7 @@ const updateContent = () => {
             <el-button type="primary" @click="AddLike" style="height: 40px; width: 120px;">
               {{ data.isLiked ? '取消关注' : '关注' }}
             </el-button>
-            <el-button size="large" style="height: 40px; width: 120px;">私信</el-button>
+            <el-button size="large" style="height: 40px; width: 120px;" @click="updateLike">文章点赞</el-button>
           </div>
         </div>
       </el-card>

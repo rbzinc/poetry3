@@ -18,11 +18,16 @@ export const userLuntanUpdateImagePostApi = (file) => instance({
  * @param data
  * @returns {*}
  */
-export const userLuntanFabutieziPostApi = (data) => instance({
+export const userLuntanFabutieziPostApi = ({content,images,poemid,title,type,poemword}) => instance({
   url:'/user/luntan/fabutiezi',
   method:'post',
   data: {
-    data
+    content,
+    images,
+    poemid,
+    title,
+    type,
+    poemword
   }
 })
 
@@ -34,11 +39,12 @@ export const userLuntanFabutieziPostApi = (data) => instance({
  * @returns {*}
  */
 export const userLuntanSelecttiezTypesGetApi = (pageNum,  pageSize, type) => instance({
-  url:`/user/luntan/selecttiez/${type}`,
+  url:`/user/luntan/selecttiez`,
   method:'get',
   params: {
     pageNum,
-    pageSize
+    pageSize,
+    type
   }
 })
 
@@ -60,7 +66,7 @@ export const userLuntanSelectxiangxiGetApi = (blogid) => instance({
  * @param blogid
  * @returns {*}
  */
-export const userLuntanDianzanGetApi = (blogid) => instance({
+export const  userLuntanDianzanGetApi = (blogid) => instance({
   url:'/user/luntan/dianzan',
   method:'get',
   params: {

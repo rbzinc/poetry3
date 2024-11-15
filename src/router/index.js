@@ -9,6 +9,11 @@ const router = createRouter({
       component: () => import('../views/login/LoginPage.vue')
     },
     {
+      path: '/register',
+      component: () => import('../views/register/register.vue')
+    },
+
+    {
       path: '/email',
       component: () => import('../views/login/EmailLogin.vue')
     },
@@ -71,10 +76,6 @@ const router = createRouter({
       component: () => import('../views/aiChat/aichat.vue')
     },
 
-    {
-      path: '/register',
-      component: () => import('../views/register/register.vue')
-    },
 
     {
       path: '/writer',

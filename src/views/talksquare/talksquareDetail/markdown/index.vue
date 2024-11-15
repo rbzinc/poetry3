@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import MarkdownRenderer from "@/components/MarkdownRenderer.vue"
+import MarkdownRenderer from "./markdownRenderer/index.vue"
 const markdown = `
 # 一. WebSocket 基本概念
 

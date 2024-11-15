@@ -35,7 +35,7 @@ const compiledMarkdown = ref('');
 watchEffect(() => {
   try {
     compiledMarkdown.value = markdown.render(props.source);
-    console.log(compiledMarkdown.value); // 检查渲染后的 HTML
+    // console.log(compiledMarkdown.value); // 检查渲染后的 HTML
   } catch (error) {
     console.error('Markdown rendering error:', error);
     compiledMarkdown.value = '<p>渲染出错，请检查输入的 Markdown 内容。</p>';

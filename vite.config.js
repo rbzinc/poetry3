@@ -11,7 +11,9 @@ import Inspect from 'vite-plugin-inspect'
 const pathSrc = path.resolve(__dirname, 'src')
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(),
+  plugins: [
+    vue(),
+
     AutoImport({
       imports: ['vue'],
       resolvers: [
@@ -20,7 +22,6 @@ export default defineConfig({
           prefix: 'Icon',
         }),
       ],
-
     }),
 
     Components({
@@ -36,12 +37,26 @@ export default defineConfig({
     }),
     Inspect(),
   ],
+  // 添加 Sass 支持
+  css: {
+    sass: {
+      implementation: () => import('sass')
+    }
+  },
   base: '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src')
     }
   },
-
+  server: {
+    proxy: {
+      '/user': {
+        target: 'http://fuze1.nat300.top',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/user/, ''),
+      },
+    },
+  },
 })
 console.log(path.resolve(__dirname, 'src'))

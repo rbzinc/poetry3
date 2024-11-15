@@ -1,30 +1,71 @@
 <script setup>
 import {ref} from 'vue'
 import router from "@/router/index.js";
+import {userLuntanSelecttiezTypesGetApi} from "@/api/modules/talkSquare.js";
 
 const activeName = ref('new')
 const activeIndex = ref('1')
 const pageSize = ref(6)
 const currentPage = ref(1)
-
+const nowMenuData = ref('')
+// TODO 无法解决icon图标问题
+const menuData = ref([
+  {
+    id: '1',
+    name: '诗词创作',
+    icon: 'CirclePlus'
+  },
+  {
+    id: '2',
+    name: '诗词赏析',
+    icon: 'Minus'
+  },
+  {
+    id: '3',
+    name: '诗词学习',
+    icon: 'CirclePlus'
+  },
+  {
+    id: '4',
+    name: '诗词活动',
+    icon: 'activity'
+  },
+  {
+    id: '5',
+    name: '诗词资源',
+    icon: 'connection'
+  },
+  {
+    id: '6',
+    name: '诗词杂谈',
+    icon: 'chat-round'
+  }
+]);
 const handleClick = (tab, event) => {
   console.log(tab, event)
 }
-const handlePageChange = () => {
-  console.log(currentPage.value)
+const handlePageChange = (page) => {
+  currentPage.value = page
+  userLuntanSelecttiezTypes()
 }
 const handleMenuClick = (item) => {
-  console.log(item)
+  nowMenuData.value = item.name
+  userLuntanSelecttiezTypes()
 }
 const goToDetail = (id) => {
-  console.log(id);
   router.push(`/talksquareDetail/${id}`);
 }
 const EditPublic = () => {
   router.push('/editTalk');
 }
+const userLuntanSelecttiezTypes = async() => {
+  const res = await userLuntanSelecttiezTypesGetApi(pageSize.value, currentPage.value, nowMenuData.value)
+  console.log(res)
+}
 
-
+onMounted(()=>{
+  // userLuntanSelecttiezTypes()
+})
 </script>
 <template>
 
@@ -34,48 +75,16 @@ const EditPublic = () => {
           mode="vertical"
           :default-active="activeIndex"
       >
-        <el-menu-item index="1" @click="handleMenuClick('1')">
-          <el-icon>
-            <Star/>
-          </el-icon>
-          <span>诗词创作</span>
-        </el-menu-item>
-        <el-menu-item index="2" @click="handleMenuClick('2')">
-          <el-icon>
-            <Service/>
-          </el-icon>
-          <span>诗词赏析</span>
-        </el-menu-item>
-        <el-menu-item index="3" @click="handleMenuClick('3')">
-          <el-icon>
-            <Setting/>
-          </el-icon>
-          <span>诗词学习</span>
-        </el-menu-item>
-        <el-menu-item index="4" @click="handleMenuClick('4')">
-          <el-icon>
-            <Odometer/>
-          </el-icon>
-          <span>诗词活动</span>
-        </el-menu-item>
-        <el-menu-item index="5" @click="handleMenuClick('5')">
-          <el-icon>
-            <Connection/>
-          </el-icon>
-          <span>诗词资源</span>
-        </el-menu-item>
-        <el-menu-item index="6" @click="handleMenuClick('6')">
-          <el-icon>
-            <Service/>
-          </el-icon>
-          <span>诗词杂谈</span>
+        <el-menu-item v-for="item in menuData" :key="item.id" :index="item.id" @click="handleMenuClick(item)">
+          <el-icon :name="item.icon"></el-icon>
+          <span>{{ item.name }}</span>
         </el-menu-item>
       </el-menu>
     </div>
     <div class="article-middle">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="最新" name="new">
-          <div class="article"  v-for="(item, index) in 6" @click="goToDetail(item)" :key="index">
+          <div class="article" v-for="(item, index) in 6"  @click="goToDetail(item)" :key="index">
             <div class="article-list">
               <div class="list-left">
                 <h3 class="list-title">这是标题</h3>
@@ -109,6 +118,7 @@ const EditPublic = () => {
       </div>
 
     </div>
+
     <div class="article-right">
       <el-card style="margin-bottom: 30px;">
         <template #header>
