@@ -16,6 +16,7 @@
     "gasp": "^0.0.2",
     "gsap": "^3.12.5",
     "lodash-es": "^4.17.21",
+    "mavon-editor": "^3.0.1",
     "pinia": "^2.2.4",
     "pinia-plugin-persistedstate": "^4.1.2",
     "sass": "^1.79.4",

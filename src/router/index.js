@@ -92,10 +92,9 @@ const router = createRouter({
 
     },
     {
-      path: '/edit',
+      path: '/editUserInfo',
       component: () => import('../views/user/editUserInfo/index.vue'),
     },
-
     {
       path: '/talksquare',
       component: () => import('../views/talksquare/index.vue'),
@@ -104,6 +103,10 @@ const router = createRouter({
       path:'/talksquareDetail/:id',
       component: ()=>import('../views/talksquare/talksquareDetail/index.vue')
 
+    },
+    {
+      path:'/editTalk',
+      component :() => import('../views/talksquare/editTalk/index.vue')
     },
 
     {

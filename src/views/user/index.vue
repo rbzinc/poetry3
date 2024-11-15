@@ -43,7 +43,7 @@ if (!userStore.userInfo) {
   router.push({name: 'login'})
 }
 const goToUserInfo = () => {
-  router.push('/edit')
+  router.push('/editUserInfo')
 }
 
 

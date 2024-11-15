@@ -21,7 +21,7 @@ const goToDetail = (id) => {
   router.push(`/talksquareDetail/${id}`);
 }
 const EditPublic = () => {
-  console.log('EditPublic')
+  router.push('/editTalk');
 }
 
 

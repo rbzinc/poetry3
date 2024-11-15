@@ -8,7 +8,8 @@ import router from './router/index'
 import * as echarts from 'echarts'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import VChart from 'vue-echarts';
-
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
 
 //全局组件
 import Header from './components/header/header.vue'
@@ -19,7 +20,7 @@ const pinia =createPinia()
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
-
+app.use(mavonEditor)
 app.component('Header',Header)
 app.component('Pagenation',Pagenation)
 app.config.globalProperties.$echarts = echarts

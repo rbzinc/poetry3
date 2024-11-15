@@ -20,7 +20,7 @@ export default defineConfig({
           prefix: 'Icon',
         }),
       ],
-      dts: path.resolve(pathSrc, 'auto-imports.d.ts'),
+
     }),
 
     Components({
@@ -30,8 +30,6 @@ export default defineConfig({
         }),
         ElementPlusResolver(),
       ],
-
-      dts: path.resolve(pathSrc, 'components.d.ts'),
     }),
     Icons({
       autoInstall: true,
