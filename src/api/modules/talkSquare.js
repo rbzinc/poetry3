@@ -15,7 +15,7 @@ export const userLuntanUpdateImagePostApi = (file) => instance({
 
 /**
  * 发布帖子接口
- * @param data
+ * @param data 更改测试
  * @returns {*}
  */
 export const userLuntanFabutieziPostApi = ({content,images,poemid,title,type,poemword}) => instance({
