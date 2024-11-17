@@ -22,6 +22,10 @@ const ResetForm = ref({
   newPassword: '',
   confirmPassword: ''
 });
+const userStore = useUserInfoStore()
+const headers = ref({
+  'token': userStore.userInfo.token
+})
 // 修改密码表单验证规则定义
 const ResetRules = ref({
   oldPassword: [
@@ -40,7 +44,7 @@ const ResetRules = ref({
     }]
 })
 // 表单数据模型定义
-const ruleForm = reactive({
+const ruleForm = ref({
   name: userInfo.userInfo.username,
   careerPath: '',
   position: '',
@@ -48,6 +52,7 @@ const ruleForm = reactive({
   address: '',
   desc: '',
   date: '',
+  url:''
 });
 
 // 表单验证规则定义
@@ -114,24 +119,12 @@ const resetPassword = (e) => {
 }
 // 确认重置密码的处理函数
 const confirmResetPassword = async() => {
-  const res = await userUpdatePasswordPostApi(ResetForm.value.oldPassword, ResetForm.value.newPassword)
-
-  if(res.data.data === true){
-    ElMessage.success('密码修改成功，请重新登录！')
-    userInfo.clearUserInfo()
-    removeLocalStorage('token')
-    router.push('/login')
-
-  }else{
-    ElMessage.error('密码修改失败，请稍后重试！')
-    ResetForm.value.oldPassword = ''
-    ResetForm.value.newPassword = ''
-    ResetForm.value.confirmPassword = ''
-    dialogTableVisibleReset.value = false
-  }
 
 }
 
+const handleSuccess = (res) => {
+  ruleForm.value.images = res.data
+}
 </script>
 
 <template>
@@ -187,15 +180,9 @@ const confirmResetPassword = async() => {
               </el-form-item>
             </el-form>
             <div class="avatar-uploader">
-              <el-upload
-                  class="avatar-uploader"
-                  action="http://localhost:8080/upload"
-                  :show-file-list="false"
-                  :on-success="handleAvatarSuccess"
-                  :before-upload="beforeAvatarUpload"
-              >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar" alt=""/>
-                <el-icon v-else class="avatar-uploader-icon">
+              <el-upload action="http://fuze1.nat300.top/user/luntan/updateImage" list-type="picture-card" :headers="headers"
+                         :on-success="handleSuccess">
+                <el-icon>
                   <Plus/>
                 </el-icon>
               </el-upload>

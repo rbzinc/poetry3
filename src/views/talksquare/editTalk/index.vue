@@ -6,6 +6,7 @@ import {Delete, Download, Plus, Search, ZoomIn} from '@element-plus/icons-vue';
 import router from "@/router/index.js";
 import {useUserInfoStore} from "@/stores/index.js";
 import {userLuntanFabutieziPostApi} from "@/api/modules/talkSquare.js";
+import {getpoemRandomData} from "@/api/modules/index.js";
 
 // 初始化变量
 const length = ref(0);
@@ -15,7 +16,7 @@ const drawer = ref(false);
 const inputValue = ref('');
 const shakeButton = ref(false);
 const checked = ref(false)
-
+const poemData = ref([]);
 // 表单数据
 const EditForm = ref({
   title: '',
@@ -28,7 +29,7 @@ const EditForm = ref({
 
 // 提交表单
 const submitForm = async () => {
-  if (!EditForm.value.title) {
+  if (!EditForm.value.title || !EditForm.value.content || !EditForm.value.type || !EditForm.value.poemid || !EditForm.value.images || !EditForm.value.poemword) {
     showMessage('请认真填写发文设置！');
     return
   }
@@ -141,6 +142,18 @@ const toggleTag = (item) => {
   }
 };
 
+const choosePoem = async () => {
+  drawer.value = true;
+  const res = await getpoemRandomData()
+  console.log(res)
+  poemData.value = res.data
+  console.log(poemData.value)
+}
+
+const getPoemContent = (e) => {
+  EditForm.value.poemword = e.content;
+  drawer.value = false;
+}
 </script>
 
 <template>
@@ -177,7 +190,8 @@ const toggleTag = (item) => {
       <el-form-item label="分类选择">
         <el-popover placement="right" :width="400" trigger="click">
           <template #reference>
-            <el-button :style="{ backgroundColor: selectedTagName === '分类选择' ? '' : 'skyblue' }" style="margin-right: 16px">
+            <el-button :style="{ backgroundColor: selectedTagName === '分类选择' ? '' : 'skyblue' }"
+                       style="margin-right: 16px">
               {{ selectedTagName }}
             </el-button>
           </template>
@@ -194,7 +208,7 @@ const toggleTag = (item) => {
 
       </el-form-item>
       <el-form-item label="选择古诗">
-        <el-button @click="drawer = true">点此选择</el-button>
+        <el-button @click="choosePoem">点此选择</el-button>
       </el-form-item>
       <el-form-item label="古诗节选">
         <el-input v-model="EditForm.poemword" type="textarea"/>
@@ -219,9 +233,9 @@ const toggleTag = (item) => {
     </el-input>
 
     <div v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
-      <div v-for="i in count" :key="i" class="infinite-list-item">
-        <h3 class="title">这里是标题</h3>
-        <p class="content">这里是内容</p>
+      <div v-for="item in poemData" :key="item.id" @click="getPoemContent(item)" class="infinite-list-item">
+        <h3 class="title">{{ item.title }}</h3>
+        <p class="content" v-html="item.content"></p>
       </div>
     </div>
   </el-drawer>
@@ -267,6 +281,7 @@ const toggleTag = (item) => {
   background: var(--el-color-primary-light-9);
   margin: 10px;
   color: var(1y);
+  cursor: pointer;
 
   .title {
     display: flex;
@@ -279,6 +294,7 @@ const toggleTag = (item) => {
     display: flex;
     justify-content: center;
     font-size: 14px;
+    line-height: 1.6;
   }
 }
 

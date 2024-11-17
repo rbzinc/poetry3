@@ -4,10 +4,11 @@ import instance from '../index'
 export const  getpoemRandomData = (data) => {
   return instance.get('/user/poetry/GetPoemDateRondom',data)
 }
+
 //点击朝代搜索古诗，分页搜索
 export const getDynastyData = (data,pagenum) => {
   return instance.get('/user/poetry/GetPoemBydynasty',
-    { params:{ 
+    { params:{
       dynasty:data,
       pageNum:pagenum,
     }})
@@ -16,7 +17,7 @@ export const getDynastyData = (data,pagenum) => {
 ///点击分类搜索古诗，分页搜索
 export const getClassData = (data,pagenum) => {
   return instance.get('/user/poetry/GetPoemByType',
-    { params:{ 
+    { params:{
       Type:data,
       pageNum:pagenum
     }})
@@ -25,7 +26,7 @@ export const getClassData = (data,pagenum) => {
 //点击诗人查询古诗
 export const getWriterPoemData = (data,pagenum) => {
   return instance.get('/user/poetry/GetwriterBywriter',
-    { params:{ 
+    { params:{
       writer:data,
       pageNum:pagenum
     }})
@@ -33,8 +34,8 @@ export const getWriterPoemData = (data,pagenum) => {
 
 //点击跳转诗的详情页面
 export const getPoemDetatils = (data) => {
-  return instance.get ('/user/poetry/GetPoemContbyid', 
-    { params:{ 
+  return instance.get ('/user/poetry/GetPoemContbyid',
+    { params:{
       id:data
     }}
   )
@@ -48,7 +49,7 @@ export const getPoetRandomData = () => {
 //点击朝代返回相应朝代的诗人信息
 export const getWriterData = (data,pagenum) =>{
   return instance.get('/user/poetry/GetwriterBydynasty',
-    { params:{ 
+    { params:{
       dynsaty:data,
       pageNum:pagenum,
     }}
@@ -58,12 +59,12 @@ export const getWriterData = (data,pagenum) =>{
 //随机返回十句名句
 export const getsenRandomData = (data) =>{
   return instance.get('/user/rhesis/GetRhesisDateRondom',data)
-} 
+}
 
 //根据诗人查询名句
 export const getSentenceData = (data,pagenum) =>{
   return instance.get('/user/poetry/GetwriterByThesisDataVo',
-    { params:{ 
+    { params:{
       writer:data,
       pageNum:pagenum,
     }}

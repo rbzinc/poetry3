@@ -1,14 +1,17 @@
 <script setup>
 import {ref} from 'vue'
 import router from "@/router/index.js";
-import {userLuntanSelecttiezTypesGetApi} from "@/api/modules/talkSquare.js";
+import {userLuntanSelecttiezTypesGetApi, userPoetryGetVeryGoodPoemGetApi} from "@/api/modules/talkSquare.js";
 
-const activeName = ref('new')
-const activeIndex = ref('1')
-const pageSize = ref(6)
-const currentPage = ref(1)
-const nowMenuData = ref('')
+const activeName = ref('new') // 当前激活的tab
+const activeIndex = ref('1') // 当前激活的tab
+const pageSize = ref(6) // 每页显示的条数
+const currentPage = ref(1) // 当前页
+const nowMenuData = ref(1) // 当前选择的分类
+const todayPoemData = ref({}) // 今日古诗推荐
+const userLuntanSelecttiezTypesData = ref([]) // 根据分类选择的列表
 // TODO 无法解决icon图标问题
+// 自定义数据
 const menuData = ref([
   {
     id: '1',
@@ -42,29 +45,38 @@ const menuData = ref([
   }
 ]);
 const handleClick = (tab, event) => {
-  console.log(tab, event)
+  // console.log(tab, event)
 }
 const handlePageChange = (page) => {
   currentPage.value = page
   userLuntanSelecttiezTypes()
 }
 const handleMenuClick = (item) => {
-  nowMenuData.value = item.name
+  nowMenuData.value = item.id
+  console.log(nowMenuData.value)
   userLuntanSelecttiezTypes()
 }
-const goToDetail = (id) => {
-  router.push(`/talksquareDetail/${id}`);
+const goToDetail = (item) => {
+  console.log(item.id)
+  router.push(`/talksquareDetail/${item.id}`);
 }
 const EditPublic = () => {
   router.push('/editTalk');
 }
 const userLuntanSelecttiezTypes = async() => {
-  const res = await userLuntanSelecttiezTypesGetApi(pageSize.value, currentPage.value, nowMenuData.value)
-  console.log(res)
+  const res = await userLuntanSelecttiezTypesGetApi( currentPage.value, pageSize.value,nowMenuData.value)
+  userLuntanSelecttiezTypesData.value = res.data.records
+}
+const userPoetryGetVeryGoodPoem = async ()=>{
+  const res = await userPoetryGetVeryGoodPoemGetApi()
+  todayPoemData.value = res.data
+  console.log(todayPoemData.value)
 }
 
+
 onMounted(()=>{
-  // userLuntanSelecttiezTypes()
+  userLuntanSelecttiezTypes()
+  userPoetryGetVeryGoodPoem()
 })
 </script>
 <template>
@@ -84,20 +96,20 @@ onMounted(()=>{
     <div class="article-middle">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="最新" name="new">
-          <div class="article" v-for="(item, index) in 6"  @click="goToDetail(item)" :key="index">
+          <div class="article" v-for="(item, index) in userLuntanSelecttiezTypesData"  @click="goToDetail(item)" :key="index">
             <div class="article-list">
               <div class="list-left">
-                <h3 class="list-title">这是标题</h3>
-                <p class="list-content" style="margin: 5px 0; text-indent: 2em;">这是内容</p>
+                <h3 class="list-title">{{item.title}}</h3>
+                <p class="list-content" style="margin: 5px 0; text-indent: 2em;">{{item.content}}</p>
                 <div class="list-footer" style="margin-top: 25px;">
-                  <p style="margin-right: 12px;">张三</p>
-                  <p style="margin-right: 12px;">赞 120</p>
-                  <p style="margin-right: 12px;">评 120</p>
-                  <p>春风十里不如你, 吹尽狂沙始到金</p>
+                  <p style="margin-right: 12px;">{{item.username}}</p>
+                  <p style="margin-right: 12px;">赞 {{item.liked}}</p>
+                  <p style="margin-right: 12px;">评 {{item.conmments}}</p>
+                  <p>{{item.poemword}}</p>
                 </div>
               </div>
               <div class="list-right" style="background-color: skyblue; height: 100px; width: 150px;">
-                <img alt="" src="#">
+                <img alt="" :src=item.images style="width: 100%; height: 100%;">
               </div>
             </div>
           </div >
@@ -130,21 +142,14 @@ onMounted(()=>{
 
       </el-card>
 
-      <el-card style="margin-bottom: 30px;">
-        <template #header>
-          <span>今日作者推荐</span>
-        </template>
-        老子是李白！
-      </el-card>
 
       <el-card>
         <template #header>
           <span>今日古诗推荐</span>
         </template>
-        <p>我是一个大帅哥</p>
-        <p>我是一个大帅哥</p>
-        <p>我是一个大帅哥</p>
-        <p>我是一个大帅哥</p>
+        <p style="text-align: center;">{{todayPoemData.title}}</p>
+        <p style="text-align: center;">{{todayPoemData.writer}}</p>
+        <p v-html="todayPoemData.content"></p>
 
       </el-card>
     </div>

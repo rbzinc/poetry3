@@ -5,6 +5,14 @@ import { ref, onMounted, reactive } from "vue";
 import ChildComment from "./ChildComment/index.vue";
 // import { useUserStore } from "@/stores/useUserStore";
 import SecondComment from "./SecondComment/index.vue";
+import {useUserInfoStore} from "@/stores/index.js";
+import {userLuntanFabacommentPostApi} from "@/api/modules/talkSquare.js";
+import {useRoute} from "vue-router";
+const username = ref('')
+const route = useRoute();
+const userInfo = useUserInfoStore()
+username.value = userInfo.userInfo.username
+
 
 // const { userInfo } = useUserStore();
 // 收集 “编辑区” 的输入内容
@@ -36,7 +44,10 @@ const props = defineProps({
     required: true,
   },
 });
-
+// TODO 传来的commentsList 没有create_time!!
+commentsList.value = props.postAddCommentForm
+console.log(commentsList.value)
+// console.log(123)
 // 请求当前主体的评论列表
 const getCommentForm = reactive({
   pageNum: 1,
@@ -67,7 +78,6 @@ const handleReply = (rootCommentId, parentId) => {
   showReplyIndex.value = rootCommentId;
   // 控制显示隐藏
   showReply.value = !showReply.value;
-
   const replyBox = document.querySelector(".reply-box-container");
   // 更新回复编辑框的属性，作为参数传给父组件
   // 这里使用到一个知识点：自定义属性
@@ -123,6 +133,17 @@ const handlePublish = async (comment) => {
 //   getCommentForm.pageNum = pageNumVal.pageNum;
 //   getCommentList();
 // };
+
+// 发布评论接口
+const userLuntanFabacomment = () => {
+  // "parentId": -1,
+  //     "context": "呼呼呼",
+  //     "blogId": 1
+  const res = userLuntanFabacommentPostApi(-1,comment.value,route.params.id)
+  console.log(res)
+}
+
+
 </script>
 
 
@@ -151,7 +172,7 @@ const handlePublish = async (comment) => {
           ></el-input>
         </div>
         <div class="editbox-right">
-          <el-button @click="handlePublish(comment)">发布</el-button>
+          <el-button @click="userLuntanFabacomment()">发布</el-button>
         </div>
       </div>
 
@@ -167,17 +188,18 @@ const handlePublish = async (comment) => {
         <div class="top-level">
           <div class="listbox-top-user">
 <!--            <el-avatar :size="45" :src="item.userImg" />-->
-            <el-avatar :size="45" src="#" />
+            <el-avatar :size="45" :src="item.touxiang" />
             <p>
-              <span>{{ item.createdBy }}</span>
-              <span>{{ item.roleName }}</span>
+              <span>{{ item.name }}</span>
+              <span>{{ item.context }}</span>
             </p>
           </div>
-          <div class="listbox-middle-root">{{ item.comment }}</div>
+          <div class="listbox-middle-root">{{ item.context }}</div>
           <div class="listbox-bottom">
 <!--            <span>发布时间：{{ item.createdAt }}</span>-->
-                <span>发布时间：12345</span>
-            <span @click="handleReply(item.id, item.id)">回复</span>
+
+                <span>发布时间：{{item.create_time}}</span>
+            <span v-show="item.name !== username" @click="handleReply(item.id, item.id)">回复</span>
           </div>
         </div>
 
@@ -194,9 +216,9 @@ const handlePublish = async (comment) => {
         <div v-if="item.children && item.children.length">
           <SecondComment
               :secondComments="item.children"
+              :parentName="item.name"
               @handle-reply="handleReply"
-              style="margin-left: 0"
-              parent-name="123"/>
+              style="margin-left: 60px"/>
 
           <!-- 子留言：三级
           		1. 因为使用的同级结构，所以需要先遍历每一个二级留言，判断其下是否存在子留言，是则引入 ChildComment 子组件。
@@ -315,7 +337,6 @@ $second-text: #666;
         margin-left: 20px;
         width: 100%;
         position: relative;
-
         span:first-child {
           color: $second-text;
         }

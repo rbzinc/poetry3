@@ -38,15 +38,23 @@ export const userLuntanFabutieziPostApi = ({content,images,poemid,title,type,poe
  * @param type
  * @returns {*}
  */
-export const userLuntanSelecttiezTypesGetApi = (pageNum,  pageSize, type) => instance({
+export const userLuntanSelecttiezTypesGetApi = (pageNum,  pageSize, type1) => instance({
   url:`/user/luntan/selecttiez`,
   method:'get',
   params: {
     pageNum,
     pageSize,
-    type
+    type1
   }
 })
+
+export const userPoetryGetVeryGoodPoemGetApi = () => instance({
+  url:'/user/poetry/GetVeryGoodPoem',
+  method:'get'
+
+})
+
+
 
 /**
  * 查询帖子详情接口
@@ -89,7 +97,7 @@ export const userLuntanDianzanrankGetApi = (blogid) => instance({
 })
 
 /**
- * 好友关注，先判断用户有没有关注
+ * 好友关注 -- 初次渲染
  * @param followUserid
  * @returns {*}
  */
@@ -102,7 +110,7 @@ export const userLuntanIsguanzhuGetApi = (followUserid) => instance({
 })
 
 /**
- * 好友关注
+ * 好友关注 -- 修改状态
  * @param followUserid
  * @param isFollow
  * @returns {*}
@@ -139,5 +147,36 @@ export const userLuntanSelectBlogFollowid = (pageNum,pageSize,followid ) => inst
   params:{
     pageNum,
     pageSize
+  }
+})
+
+/**
+ * 发布评论接口
+ * @param parentId
+ * @param context
+ * @param blogId
+ * @returns {*}
+ */
+export const userLuntanFabacommentPostApi = (parentId,context,blogId) => instance({
+  url:'/user/luntan/fabacomment',
+  method:'post',
+  data: {
+    parentId,
+    context,
+    blogId
+  }
+})
+
+
+/**
+ * 查询评论接口
+ * @param blogid
+ * @returns {*}
+ */
+export const userLuntanSelectConmmetsGetApi = (blogid) =>instance({
+  url:'/user/luntan/selectConmmets',
+  method:'get',
+  params:{
+    blogid
   }
 })

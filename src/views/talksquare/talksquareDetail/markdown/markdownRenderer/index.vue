@@ -26,7 +26,8 @@ const markdown = new MarkdownIt({
     }
     return '<pre class="hljs"><code>' + markdown.utils.escapeHtml(str) + '</code></pre>';
   }
-}).use(MarkdownItAnchor)
+})
+    .use(MarkdownItAnchor)
     .use(MarkdownItToc)
     .use(MarkdownItHighLightJs);
 

@@ -1,9 +1,13 @@
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import {defineProps, defineEmits, ref} from "vue";
 import ChildComment from "../ChildComment/index.vue";
+import {useUserInfoStore} from "@/stores/index.js";
 // 接收父组件传过来的值
+const username = ref('')
+const userInfo = useUserInfoStore()
+username.value = userInfo.userInfo.username
 const props = defineProps({
-  childComments: {
+  secondComments: {
     type: Array,
     default: [],
   },
@@ -12,9 +16,9 @@ const props = defineProps({
     required: true,
   }
 });
-const childComments = props.childComments;
+const secondComments = props.secondComments;
 const parentName = props.parentName;
-
+console.log(props)
 // console.log("🚀 ~ parentName:", parentName);
 // console.log("🚀 ~ childComments:", childComments);
 
@@ -30,24 +34,24 @@ const handleReply = (rootCommentId, parentId) => {
 
 <!-- 三级及以上评论 -->
 <template>
-  <div class="sub-reply-container" v-if="childComments && childComments.length">
-    <div class="sub-reply" v-for="(child, index) in childComments" :key="index">
+  <div class="sub-reply-container" v-if="secondComments && secondComments.length">
+    <div class="sub-reply" v-for="(child, index) in secondComments" :key="index">
       <!-- 渲染内容 -->
       <div class="listbox-top-user">
 <!--        <el-avatar :size="30" :src="child.userImg" />-->
-        <el-avatar :size="30" src="#" />
+        <el-avatar :size="30" :src="child.touxiang" />
         <p>
-<!--          <span>{{ child.createdBy }}</span>-->
-<!--          <span>{{ child.roleName }}</span>-->
+          <span>{{ child.name }}</span>
+          <span>{{ child.context }}</span>
           回复
           <span>@{{ parentName }}</span>
         </p>
       </div>
-      <div class="listbox-middle-root">{{ child.comment }}</div>
+      <div class="listbox-middle-root">{{ child.context }}</div>
       <div class="listbox-bottom">
 <!--        <span>发布时间：{{ child.createdAt }}</span>-->
-        <span>发布时间：123</span>
-        <span @click="handleReply(child.rootCommentId, child.id)">回复</span>
+        <span>发布时间：{{child.create_time }}</span>
+        <span v-show="child.name !== username" @click="handleReply(child.rootCommentId, child.id)">回复</span>
       </div>
 
       <!-- 递归地渲染子评论的子评论：调用自己 -->

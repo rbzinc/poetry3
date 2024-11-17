@@ -8,6 +8,7 @@ const router = createRouter({
       path: '/login',
       component: () => import('../views/login/LoginPage.vue')
     },
+
     {
       path: '/register',
       component: () => import('../views/register/register.vue')
@@ -17,6 +18,7 @@ const router = createRouter({
       path: '/email',
       component: () => import('../views/login/EmailLogin.vue')
     },
+
     //首页
     {
       path: '/',
@@ -26,18 +28,6 @@ const router = createRouter({
         {
           path: '/layout/home',
           component: () => import('../Layout/home/home.vue')
-        },
-        {
-          path: '/components/header',
-          component: () => import('../components/header/header.vue')
-        },
-        {
-          path: '/layout/banner',
-          component: () => import('../Layout/banner/banner.vue'),
-        },
-        {
-          path: '/components/search',
-          component: () => import('../components/search/search.vue'),
         }
       ]
     },
@@ -76,7 +66,6 @@ const router = createRouter({
       component: () => import('../views/aiChat/aichat.vue')
     },
 
-
     {
       path: '/writer',
       component: () => import('../views/writer/writer.vue')
@@ -92,22 +81,26 @@ const router = createRouter({
       component: () => import('../views/user/index.vue'),
 
     },
+
     {
       path: '/editUserInfo',
       component: () => import('../views/user/editUserInfo/index.vue'),
     },
+
     {
       path: '/talksquare',
       component: () => import('../views/talksquare/index.vue'),
     },
+
     {
-      path:'/talksquareDetail/:id',
-      component: ()=>import('../views/talksquare/talksquareDetail/index.vue')
+      path: '/talksquareDetail/:id',
+      component: () => import('../views/talksquare/talksquareDetail/index.vue')
 
     },
+
     {
-      path:'/editTalk',
-      component :() => import('../views/talksquare/editTalk/index.vue')
+      path: '/editTalk',
+      component: () => import('../views/talksquare/editTalk/index.vue')
     },
 
     {
@@ -136,5 +129,9 @@ const router = createRouter({
     },
   ]
 })
-
+// 添加全局错误处理
+router.onError((error) => {
+  console.error('路由错误:', error);
+  // 这里可以添加更多的错误处理逻辑，例如通知用户
+});
 export default router
