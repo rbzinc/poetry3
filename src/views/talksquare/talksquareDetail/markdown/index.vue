@@ -1,6 +1,6 @@
 <script setup>
-import { ref, watch } from 'vue'
-import MarkdownRenderer from "./markdownRenderer/index.vue"
+import { ref } from 'vue'
+import MarkdownRenderer from "@/components/talksquare/markdownRenderer/index.vue"
 
 const props = defineProps({
   content: {
@@ -8,9 +8,7 @@ const props = defineProps({
     required: true
   }
 })
-
 const markdown = ref(props.content)
-
 </script>
 
 <template>

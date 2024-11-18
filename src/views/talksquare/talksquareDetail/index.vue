@@ -3,85 +3,108 @@ import {ref} from "vue";
 import common from './comment/index.vue';
 import Markdown from './markdown/index.vue'
 import {useRoute} from 'vue-router';
+import DayRecommend from '@/components/talksquare/DayRecommend/index.vue'
 import {
   userLuntanDianzanGetApi,
-  userLuntanDianzanrankGetApi, userLuntanGuanzhuGetApi,
-  userLuntanIsguanzhuGetApi, userLuntanSelectConmmetsGetApi,
+  userLuntanDianzanrankGetApi,
+  userLuntanGuanzhuGetApi,
+  userLuntanIsguanzhuGetApi,
+  userLuntanSelectConmmetsGetApi,
   userLuntanSelectxiangxiGetApi
 } from "@/api/modules/talkSquare.js";
-
-const momentId = ref(1); // 评论区的 momentId
+const pageContentMarkShow = ref(false); // 评论和内容展示状态
+// const momentId = ref(1); // 评论区的 momentId
 const postAddCommentForm = ref([]); // 评论区的表单
 const route = useRoute();
 const blogid = ref(route.params.id);
-const userId = ref(1)
+const userId = ref('') // 论坛详情页面的用户id
 const userLuntanXiangxi = ref({}) // 论坛详情页面的用户信息
 const userLuntanDianzanrankData = ref([]) // 论坛详情页面的点赞排行榜
 const isFollowed = ref(false) // 关注状态
 const content = ref('') // 文章内容
-// 定义反应式数据，用于存储文章信息以及目录内容
-const data = ref({
-  title: '陶瓷艺术的创新之路',
-  author: 'CulturalHeritage',
-  date: '2024-10-14',
-  like: 66,
-  isLiked: false,
-});
-
-// 关注功能的方法
-// TODO 关注功能后台有BUG 无论传的是true还是false 都是关注成功
-const updateFollow = async() => {
+/**
+ * 更新关注状态
+ * @returns {Promise<void>}
+ */
+const updateFollow = async () => {
+  isFollowed.value =!isFollowed.value
   const res = await userLuntanGuanzhuGetApi(userId.value, isFollowed.value)
-  isFollowed.value = res.data === '关注成功';
+  console.log(res)
+  if (res.data === '关注成功') {
+    isFollowed.value = true
+  } else if (res.data === '取消成功') {
+    isFollowed.value = false
+  }
 }
 
-// TODO 拿到的userId是空字符串  并且有follow功能但是没有数量
+/**
+ * 获取论坛详情页面的用户信息
+ * @returns {Promise<void>}
+ */
 const userLuntanSelectxiangxi = async () => {
   const res = await userLuntanSelectxiangxiGetApi(blogid.value)
-  console.log(res)
+  userId.value = res.data.userId
   userLuntanXiangxi.value = res.data
   content.value = res.data.content
-  userId.value = res.data.userId
+  pageContentMarkShow.value = true
+  // 等页面渲染之后再调用这个函数
+  await userLuntanIsguanzhu();
 }
 
-// TODO 点赞功能后台有BUG
+/**
+ *  更新点赞状态
+ * @returns {Promise<void>}
+ */
 const updateLike = async () => {
   const res = await userLuntanDianzanGetApi(blogid.value)
-  if(res.data === '点赞成功') {
+  if (res.data === '点赞成功') {
     userLuntanXiangxi.value.blogLike = !userLuntanXiangxi.value.blogLike
     userLuntanXiangxi.value.liked += 1
-  }else if(res.data === '点过了'){
+  } else if (res.data === '点赞取消') {
     userLuntanXiangxi.value.liked -= 1
     userLuntanXiangxi.value.blogLike = !userLuntanXiangxi.value.blogLike
   }
 }
 
+/**
+ * 获取论坛详情页面的点赞排行榜
+ * @returns {Promise<void>}
+ */
 const userLuntanDianzanrank = async () => {
   const res = await userLuntanDianzanrankGetApi(blogid.value)
   userLuntanDianzanrankData.value = res.data
 }
 
+/**
+ * 获取关注状态
+ * @returns {Promise<void>}
+ */
 const userLuntanIsguanzhu = async () => {
   const res = await userLuntanIsguanzhuGetApi(userId.value)
   console.log(res)
-  isFollowed.value = res.msg !== '未关注'
+  if (res.data === '已关注') {
+    isFollowed.value = true
+  } else if (res.data === '未关注') {
+    isFollowed.value = false
+  }
 }
 
+/**
+ * 获取评论区数据
+ * @returns {Promise<void>}
+ */
 const userLuntanSelectConmmets = async () => {
   const res = await userLuntanSelectConmmetsGetApi(blogid.value)
   postAddCommentForm.value = res.data
-
 }
-onMounted(()=>{
+
+onMounted(() => {
   userLuntanSelectxiangxi()
-  userLuntanDianzanrank()
-  // userLuntanIsguanzhu()
+  userLuntanSelectConmmets();
+  userLuntanDianzanrank();
+});
 
-})
 
-nextTick(async() => {
-  await userLuntanSelectConmmets()
-})
 </script>
 
 <template>
@@ -90,29 +113,30 @@ nextTick(async() => {
       <el-card class="article-card">
         <div class="article-info">
           <h1 class="article-title">{{ userLuntanXiangxi.title }}</h1>
-          <p class="article-meta">作者: {{ userLuntanXiangxi.username }} · {{ userLuntanXiangxi.createTime }} · 点赞量 {{ userLuntanXiangxi.liked }}</p>
+          <p class="article-meta">作者: {{ userLuntanXiangxi.username }} · {{ userLuntanXiangxi.createTime }} · 点赞量
+            {{ userLuntanXiangxi.liked }}</p>
           <p class="article-quote">{{ userLuntanXiangxi.poemWord }}</p>
         </div>
         <div style="margin-top: 20px; padding: 0 20px;">
-          <Markdown :content='content' />
+          <Markdown v-if="pageContentMarkShow" :content='content'/>
         </div>
       </el-card>
-      <common :momentId="momentId" :postAddCommentForm="postAddCommentForm"/>
+      <common v-if="pageContentMarkShow" />
     </div>
 
     <div class="author-container" style="width: 24%;">
       <el-card class="author-card">
         <div class="author-info">
-          <img src="https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/tx.png" alt="Avatar" class="author-avatar"/>
+          <img :src="userLuntanXiangxi.touxiang" alt="Avatar" class="author-avatar"/>
           <div>
-            <h3 style="margin-bottom: 5px;">{{ data.author }}</h3>
-            <p>年度资深创作者</p>
+            <h3 style="margin-bottom: 5px;">{{ userLuntanXiangxi.username }}</h3>
+            <p>{{ userLuntanXiangxi.nameTager }}</p>
           </div>
         </div>
         <div class="author-stats">
           <div class="author-content">
-            <p>8 文章</p>
-            <p>{{ data.like }} 粉丝</p>
+            <p>{{ userLuntanXiangxi.liked }} 点赞量</p>
+            <p>{{ userLuntanXiangxi.fans }} 粉丝</p>
           </div>
           <div class="buttons">
             <el-button type="primary" @click="updateFollow" style="height: 40px; width: 120px;">
@@ -131,7 +155,8 @@ nextTick(async() => {
         </template>
         <div>
           <div v-if="userLuntanDianzanrankData.length > 0">
-            <div v-for="item in userLuntanDianzanrankData" :key="item.id" style="display: flex; align-items: center; margin-bottom: 10px">
+            <div v-for="item in userLuntanDianzanrankData" :key="item.id"
+                 style="display: flex; align-items: center; margin-bottom: 10px">
               <img :src="item.touxiang" style="width: 40px; height: 40px; border-radius: 50%;">
               <p style="margin-left: 12px; font-size: 17px;">{{ item.name }}</p>
             </div>
@@ -156,15 +181,7 @@ nextTick(async() => {
         </div>
       </el-card>
 
-      <el-card class="contents-card">
-        <template #header>
-          <span>今日古诗推荐</span>
-        </template>
-        <p>我是一个大帅哥</p>
-        <p>我是一个大帅哥</p>
-        <p>我是一个大帅哥</p>
-        <p>我是一个大帅哥</p>
-      </el-card>
+     <DayRecommend style="margin-top: 30px;"/>
     </div>
   </div>
 </template>

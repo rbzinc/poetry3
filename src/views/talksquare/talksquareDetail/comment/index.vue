@@ -1,13 +1,15 @@
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import {ref, onMounted, reactive} from "vue";
 // import { getCommentListApi, postAddCommentApi } from "@/api/common";
 // import PageQuery from "@/components/common/PageQuery.vue";
 import ChildComment from "./ChildComment/index.vue";
 // import { useUserStore } from "@/stores/useUserStore";
 import SecondComment from "./SecondComment/index.vue";
 import {useUserInfoStore} from "@/stores/index.js";
-import {userLuntanFabacommentPostApi} from "@/api/modules/talkSquare.js";
+import {userLuntanFabacommentPostApi, userLuntanSelectConmmetsGetApi} from "@/api/modules/talkSquare.js";
 import {useRoute} from "vue-router";
+import {ElMessage} from "element-plus";
+
 const username = ref('')
 const route = useRoute();
 const userInfo = useUserInfoStore()
@@ -24,66 +26,18 @@ const total = ref(0);
 // 存储请求回来的留言列表
 const commentsList = ref();
 // 控制回复框的索引
-const showReplyIndex = ref(0);
+const showReplyIndex = ref(false);
 // 控制回复框的显示隐藏
 const showReply = ref(false);
-
-onMounted(() => {
-  getCommentList();
-});
-
-// 接收父组件传过来的值——在别的文件中使用留言组件，则改文件为留言组件的父组件
-const props = defineProps({
-// 关联主体ID  用户id
-  momentId: {
-    type: Number,
-    required: true,
-  },
-  postAddCommentForm: {
-    type: Object,
-    required: true,
-  },
-});
-// TODO 传来的commentsList 没有create_time!!
-commentsList.value = props.postAddCommentForm
-console.log(commentsList.value)
-// console.log(123)
-// 请求当前主体的评论列表
-const getCommentForm = reactive({
-  pageNum: 1,
-  pageSize: 10,
-  // ChildPageNum: 1,
-  // ChildPageSize: 2,
-  momentId: props.momentId,
-});
-
-/**
- * 获取留言列表
- */
-const getCommentList = async () => {
-  // try {
-  //   // 封装参数
-  //   const res = await getCommentListApi(getCommentForm);
-  //   total.value = res.data.total;
-  //   commentsList.value = res.data.items;
-  // } catch (error) {}
-};
 
 /**
  * 显示 回复编辑框
  */
 // 根评论的id, 评论者的id
-const handleReply = (rootCommentId, parentId) => {
-  // 解决只在 当前点击项下 显示回复框
-  showReplyIndex.value = rootCommentId;
-  // 控制显示隐藏
-  showReply.value = !showReply.value;
-  const replyBox = document.querySelector(".reply-box-container");
-  // 更新回复编辑框的属性，作为参数传给父组件
-  // 这里使用到一个知识点：自定义属性
-  // 因为需要实现绑定某回复框并使其含有rootCommentId和parentId，发送新增子留言请求时需要这两个参数
-  replyBox.setAttribute("data-parent-comment-id", parentId);
-  replyBox.setAttribute("data-root-comment-id", rootCommentId);
+const handleReply = (item) => {
+  console.log(item)
+  parentId.value = item.id
+  showReplyIndex.value = true;
 };
 
 /**
@@ -113,36 +67,49 @@ const handlePublish = async (comment) => {
   }
 }
 
-//   // 发送请求
-//   try {
-//     const res = await postAddCommentApi(params);
-//     ElMessage.success(res.msg);
-//     getCommentList();
-//     // 【问题】发布评论后，输入框中的值没有消失
-//   } catch (error) {
-//     console.log("🚀 ~ handlePublish ~ error:", error);
-//   }
-// };
-//
-// const handlePageSize = (pageSizeVal) => {
-//   getCommentForm.pageSize = pageSizeVal.pageSize;
-//   getCommentList();
-// };
-//
-// const handlePageNum = (pageNumVal) => {
-//   getCommentForm.pageNum = pageNumVal.pageNum;
-//   getCommentList();
-// };
-
 // 发布评论接口
-const userLuntanFabacomment = () => {
-  // "parentId": -1,
-  //     "context": "呼呼呼",
-  //     "blogId": 1
-  const res = userLuntanFabacommentPostApi(-1,comment.value,route.params.id)
-  console.log(res)
+const userLuntanFabacomment = async () => {
+  const res = await userLuntanFabacommentPostApi(-1, parentName.value, comment.value, route.params.id)
+  if (res.data === '发布成功') {
+    ElMessage.success('发布成功')
+    comment.value = ''
+    await userLuntanSelectConmmets()
+  }
+}
+/**
+ * 回复父评论接口
+ * @type {Ref<UnwrapRef<string>, UnwrapRef<string> | string>}
+ */
+const parentId = ref('')
+const parentName = ref('')
+const replayParent = async () => {
+  const res = await userLuntanFabacommentPostApi(parentId.value, parentName.value, replyComment.value, route.params.id)
+  if (res.data === '发布成功') {
+    ElMessage.success('发布成功')
+    replyComment.value = ''
+    showReplyIndex.value = false;
+    await userLuntanSelectConmmets()
+  }
 }
 
+/**
+ * 获取评论区数据
+ * @returns {Promise<void>}
+ */
+const blogid = ref('')
+const postAddCommentForm = ref([])
+const router = useRoute()
+console.log(router.params.id)
+blogid.value = router.params.id
+const userLuntanSelectConmmets = async () => {
+  const res = await userLuntanSelectConmmetsGetApi(blogid.value)
+
+  postAddCommentForm.value = res.data
+  console.log(postAddCommentForm.value)
+}
+onMounted(() => {
+  userLuntanSelectConmmets()
+})
 
 </script>
 
@@ -155,15 +122,9 @@ const userLuntanFabacomment = () => {
           <h3>评论 number</h3>
         </div>
       </template>
-      <!-- 编辑区
-      		1. 左侧：显示当前登录用户头像
-      		2. 中间：输入框，使用 v-model 收集用户输入的内容 comment
-      		3. 右侧：在 handlePublish 方法中请求新增留言接口
-       -->
       <div class="editbox">
         <div class="editbox-left">
-<!--          <el-avatar :size="45" :src="userInfo.avatar" />-->
-          <el-avatar :size="45" src="#" />
+          <el-avatar :size="45" src="#"/>
         </div>
         <div class="editbox-middle">
           <el-input
@@ -176,19 +137,11 @@ const userLuntanFabacomment = () => {
         </div>
       </div>
 
-      <!-- 列表区
-      		1. 遍历分页获取的留言列表，并设置唯一的 key 值
-      		2. 顶级留言包括：头像、昵称、角色名标签、留言内容、发布时间
-      		3. 点击 “回复” 会触发事件 handleReply，同时传入两个参数：当前被回复留言的根ID、当前被回复留言的直接父级ID
-      			a. 这两个参数用于给【即将发布的留言】设置根ID与直接父级ID，做到 “回复框的定位”
-      			b. 对于二级留言，这两个值传入顶级留言本身的ID就行
-       -->
-      <div class="listbox" v-for="(item, index) in commentsList" :key="index">
-        <!-- 顶级留言：这没什么好说的，就直接展示遍历的结果 -->
+
+      <div class="listbox" v-for="(item, index) in postAddCommentForm" :key="index">
         <div class="top-level">
           <div class="listbox-top-user">
-<!--            <el-avatar :size="45" :src="item.userImg" />-->
-            <el-avatar :size="45" :src="item.touxiang" />
+            <el-avatar :size="45" :src="item.touxiang"/>
             <p>
               <span>{{ item.name }}</span>
               <span>{{ item.context }}</span>
@@ -196,74 +149,33 @@ const userLuntanFabacomment = () => {
           </div>
           <div class="listbox-middle-root">{{ item.context }}</div>
           <div class="listbox-bottom">
-<!--            <span>发布时间：{{ item.createdAt }}</span>-->
-
-                <span>发布时间：{{item.create_time}}</span>
-            <span v-show="item.name !== username" @click="handleReply(item.id, item.id)">回复</span>
+            <span>发布时间：{{ item.create_time }}</span>
+            <span v-show="item.name !== username" @click="handleReply(item)">回复</span>
           </div>
         </div>
 
-        <!-- 子留言区
-           1. 这里没有使用在二级组件中引入三级以上组件的方式，因为当时开发的时候感觉传值有点麻烦
-           2. 使用两个子组件同级的形式
-
-          子留言：二级
-               1. 判断顶层留言是否存在二级子留言，是则引入 SecondComment 子组件
-               2. 父组件传递参数：二级评论 item.children
-               3. 处理 “回复” 功能，使用同一个方法实现（handleReply），这里的根ID和直接父ID是子组件传过来的
-               4. handle-reply 是子组件中声明需要抛出的事件，@handle-reply 代表监听子组件的自定义事件
-        -->
         <div v-if="item.children && item.children.length">
           <SecondComment
               :secondComments="item.children"
               :parentName="item.name"
               @handle-reply="handleReply"
-              style="margin-left: 60px"/>
-
-          <!-- 子留言：三级
-          		1. 因为使用的同级结构，所以需要先遍历每一个二级留言，判断其下是否存在子留言，是则引入 ChildComment 子组件。
-          		2. 必须要遍历二级留言并设置唯一的 key ！！无法直接获取 item.children.children ！！！（原因有点忘了...）
-          		3. 同样要给子组件传递参数：三级评论 child.children
-          		4. 同时将二级留言的发表人昵称传递给子组件，用于非二级留言的子留言显示 “ @nickname ”
-          		5. 同样拥有 “回复” 功能，使用同一个方法实现（handleReply），这里的根ID和直接父ID是子组件传过来的
-          		6. 子组件中声明的抛出事件（to-reply）不能与其他组件重复
-           -->
-          <template
-              v-for="(child, childIndex) in item.children"
-              :key="childIndex"
-          >
-            <template v-if="child.children && child.children.length">
-              <!-- :parentName="child.createdBy"-->
-              <ChildComment
-                  :childComments="child.children"
-                  :parentName="1234"
-                  @to-reply="handleReply"
-                  style="margin-left: 65px"
-              />
-            </template>
-          </template>
+              style="margin-left: 60px"
+          />
         </div>
 
-        <!-- 回复框
-        		1. 使用一个变量 showReply 来控制显示隐藏
-        		2. 同时使用变量 showReplyIndex 用来确定是在哪条留言下显示回复框，否则点击 “回复” 会在所有留言下都出现回复框
-        		3. 当 handleReply 方法被触发时，改变 showReply 和 showReplyIndex 的值
-        		4. 使用 replyComment 收集回复框输入的内容，当触发 handlePublish 方法时作为参数传进去
-         -->
         <div
             class="reply-box-container"
-            v-show="showReplyIndex === item.id && showReply"
+            v-show="showReplyIndex === true"
         >
           <div class="replybox" id="reply-box">
             <div class="replybox-left">
-<!--              <el-avatar :size="30" :src="userInfo.avatar" />-->
-              <el-avatar :size="30" src="#" />
+              <el-avatar :size="30" src="#"/>
             </div>
             <div class="replybox-middle">
               <el-input placeholder="回复" v-model="replyComment"></el-input>
             </div>
             <div class="replybox-right">
-              <el-button @click="handlePublish(replyComment)">提交</el-button>
+              <el-button @click="replayParent()">提交</el-button>
             </div>
           </div>
         </div>
@@ -276,7 +188,6 @@ const userLuntanFabacomment = () => {
 <style lang="scss" scoped>
 $title-color: #333;
 $second-text: #666;
-
 
 
 // 留言区
@@ -299,6 +210,7 @@ $second-text: #666;
   .editbox {
     justify-content: space-between;
     align-items: center;
+
     .editbox-middle {
       width: 85%;
     }
@@ -337,9 +249,11 @@ $second-text: #666;
         margin-left: 20px;
         width: 100%;
         position: relative;
+
         span:first-child {
           color: $second-text;
         }
+
         // 身份标签
         span:last-child {
           margin-left: 5px;

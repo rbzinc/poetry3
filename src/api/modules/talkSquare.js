@@ -54,8 +54,6 @@ export const userPoetryGetVeryGoodPoemGetApi = () => instance({
 
 })
 
-
-
 /**
  * 查询帖子详情接口
  * @param blogid
@@ -157,11 +155,12 @@ export const userLuntanSelectBlogFollowid = (pageNum,pageSize,followid ) => inst
  * @param blogId
  * @returns {*}
  */
-export const userLuntanFabacommentPostApi = (parentId,context,blogId) => instance({
+export const userLuntanFabacommentPostApi = (parentId,tagerrName,context,blogId) => instance({
   url:'/user/luntan/fabacomment',
   method:'post',
   data: {
     parentId,
+    tagerrName,
     context,
     blogId
   }

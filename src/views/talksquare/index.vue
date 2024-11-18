@@ -1,14 +1,15 @@
 <script setup>
 import {ref} from 'vue'
 import router from "@/router/index.js";
-import {userLuntanSelecttiezTypesGetApi, userPoetryGetVeryGoodPoemGetApi} from "@/api/modules/talkSquare.js";
+import { userLuntanSelecttiezTypesGetApi } from "@/api/modules/talkSquare.js";
+import DayRecommend from "@/components/talksquare/DayRecommend/index.vue";
 
 const activeName = ref('new') // 当前激活的tab
 const activeIndex = ref('1') // 当前激活的tab
 const pageSize = ref(6) // 每页显示的条数
 const currentPage = ref(1) // 当前页
 const nowMenuData = ref(1) // 当前选择的分类
-const todayPoemData = ref({}) // 今日古诗推荐
+
 const userLuntanSelecttiezTypesData = ref([]) // 根据分类选择的列表
 // TODO 无法解决icon图标问题
 // 自定义数据
@@ -64,19 +65,12 @@ const EditPublic = () => {
   router.push('/editTalk');
 }
 const userLuntanSelecttiezTypes = async() => {
-  const res = await userLuntanSelecttiezTypesGetApi( currentPage.value, pageSize.value,nowMenuData.value)
+  const res = await userLuntanSelecttiezTypesGetApi(currentPage.value, pageSize.value, nowMenuData.value)
   userLuntanSelecttiezTypesData.value = res.data.records
 }
-const userPoetryGetVeryGoodPoem = async ()=>{
-  const res = await userPoetryGetVeryGoodPoemGetApi()
-  todayPoemData.value = res.data
-  console.log(todayPoemData.value)
-}
-
 
 onMounted(()=>{
   userLuntanSelecttiezTypes()
-  userPoetryGetVeryGoodPoem()
 })
 </script>
 <template>
@@ -141,17 +135,7 @@ onMounted(()=>{
         </div>
 
       </el-card>
-
-
-      <el-card>
-        <template #header>
-          <span>今日古诗推荐</span>
-        </template>
-        <p style="text-align: center;">{{todayPoemData.title}}</p>
-        <p style="text-align: center;">{{todayPoemData.writer}}</p>
-        <p v-html="todayPoemData.content"></p>
-
-      </el-card>
+      <DayRecommend />
     </div>
 
     <div class="add" >

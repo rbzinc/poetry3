@@ -18,8 +18,8 @@ const markdown = new MarkdownIt({
     if (lang && hljs.getLanguage(lang)) {
       try {
         return '<pre class="hljs"><code>' +
-            hljs.highlight(lang, str, true).value +
-            '</code></pre>';
+               hljs.highlight(lang, str, true).value +
+               '</code></pre>';
       } catch (error) {
         console.error('Highlighting error:', error);
       }
@@ -27,23 +27,26 @@ const markdown = new MarkdownIt({
     return '<pre class="hljs"><code>' + markdown.utils.escapeHtml(str) + '</code></pre>';
   }
 })
-    .use(MarkdownItAnchor)
-    .use(MarkdownItToc)
-    .use(MarkdownItHighLightJs);
+.use(MarkdownItAnchor)
+.use(MarkdownItToc)
+.use(MarkdownItHighLightJs);
 
 const compiledMarkdown = ref('');
 
 watchEffect(() => {
-  try {
-    compiledMarkdown.value = markdown.render(props.source);
-    // console.log(compiledMarkdown.value); // 检查渲染后的 HTML
-  } catch (error) {
-    console.error('Markdown rendering error:', error);
-    compiledMarkdown.value = '<p>渲染出错，请检查输入的 Markdown 内容。</p>';
+  if (props.source) {
+    try {
+      compiledMarkdown.value = markdown.render(props.source);
+    } catch (error) {
+      console.error('Markdown rendering error:', error);
+      compiledMarkdown.value = '<p>渲染出错，请检查输入的 Markdown 内容。</p>';
+    }
+  } else {
+    compiledMarkdown.value = '<p>请输入 Markdown 内容。</p>';
   }
 });
-</script>
 
+</script>
 <template>
   <div class="markdown-container">
     <div class="content" v-html="compiledMarkdown"></div>
@@ -94,3 +97,4 @@ watchEffect(() => {
   }
 }
 </style>
+

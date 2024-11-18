@@ -18,7 +18,8 @@ const props = defineProps({
 });
 const secondComments = props.secondComments;
 const parentName = props.parentName;
-console.log(props)
+console.log(props.secondComments)
+console.log(props.parentName)
 // console.log("🚀 ~ parentName:", parentName);
 // console.log("🚀 ~ childComments:", childComments);
 
@@ -56,11 +57,7 @@ const handleReply = (rootCommentId, parentId) => {
 
       <!-- 递归地渲染子评论的子评论：调用自己 -->
 <!--      :parentName="child.createdBy"-->
-      <ChildComment
-          :childComments="child.children"
-          :parentName="123"
-          @to-reply="handleReply"
-      />
+
     </div>
   </div>
 </template>
