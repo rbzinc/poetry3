@@ -22,6 +22,7 @@ const userLuntanXiangxi = ref({}) // 论坛详情页面的用户信息
 const userLuntanDianzanrankData = ref([]) // 论坛详情页面的点赞排行榜
 const isFollowed = ref(false) // 关注状态
 const content = ref('') // 文章内容
+const comments = ref('') // 文章评论数量
 /**
  * 更新关注状态
  * @returns {Promise<void>}
@@ -29,7 +30,6 @@ const content = ref('') // 文章内容
 const updateFollow = async () => {
   isFollowed.value =!isFollowed.value
   const res = await userLuntanGuanzhuGetApi(userId.value, isFollowed.value)
-  console.log(res)
   if (res.data === '关注成功') {
     isFollowed.value = true
   } else if (res.data === '取消成功') {
@@ -47,6 +47,7 @@ const userLuntanSelectxiangxi = async () => {
   userLuntanXiangxi.value = res.data
   content.value = res.data.content
   pageContentMarkShow.value = true
+  comments.value = res.data.conmments
   // 等页面渲染之后再调用这个函数
   await userLuntanIsguanzhu();
 }
@@ -81,7 +82,6 @@ const userLuntanDianzanrank = async () => {
  */
 const userLuntanIsguanzhu = async () => {
   const res = await userLuntanIsguanzhuGetApi(userId.value)
-  console.log(res)
   if (res.data === '已关注') {
     isFollowed.value = true
   } else if (res.data === '未关注') {
@@ -121,7 +121,7 @@ onMounted(() => {
           <Markdown v-if="pageContentMarkShow" :content='content'/>
         </div>
       </el-card>
-      <common v-if="pageContentMarkShow" />
+      <common v-if="pageContentMarkShow" :comments="comments" />
     </div>
 
     <div class="author-container" style="width: 24%;">

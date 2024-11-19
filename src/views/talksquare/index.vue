@@ -54,11 +54,11 @@ const handlePageChange = (page) => {
 }
 const handleMenuClick = (item) => {
   nowMenuData.value = item.id
-  console.log(nowMenuData.value)
+
   userLuntanSelecttiezTypes()
 }
 const goToDetail = (item) => {
-  console.log(item.id)
+
   router.push(`/talksquareDetail/${item.id}`);
 }
 const EditPublic = () => {
