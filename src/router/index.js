@@ -63,7 +63,25 @@ const router = createRouter({
 
     {
       path: '/aiChat',
-      component: () => import('../views/aiChat/aichat.vue')
+      component: () => import('../views/aiChat/aichat.vue'),
+      children: [
+        {
+          path: '/aiChat/chattochat',
+          component: () => import('../views/aiChat/chatToChat/index.vue')
+        },
+        {
+          path: '/aiChat/chattopic',
+          component: () => import('../views/aiChat/chatToPic/index.vue')
+        },
+        {
+          path: '/aiChat/pictochat',
+          component: () => import('../views/aiChat/picToChat/index.vue')
+        },
+        {
+          path: '/aiChat/poemrefine',
+          component: () => import('../views/aiChat/poemRefine/index.vue')
+        }
+      ]
     },
 
     {

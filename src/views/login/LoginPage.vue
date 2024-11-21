@@ -104,7 +104,7 @@ watch(formModel,()=>{
             <router-link to="/email" style="text-decoration: none">邮箱登录</router-link>
           </el-link>
         </el-form-item>
-        
+
       </el-form>
   </div>
 </template>
@@ -148,5 +148,5 @@ watch(formModel,()=>{
     }
   }
 }
-  
+
 </style>

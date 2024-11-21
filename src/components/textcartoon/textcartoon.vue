@@ -12,24 +12,31 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const text = '请选择你想对话的诗人进行对话';
-const displayedChars = ref([{ value: '', opacity: 1 }]); // 初始化数组，包含一个占位字符
+const displayedChars = ref([]);
 
 const typewriterEffect = () => {
   const chars = Array.from(text);
-  let timer = displayedChars.value.length;
 
-  // 逐个字符显示文本
+  // 清空显示字符数组并逐个字符显示文本
+  displayedChars.value = [];
   chars.forEach((char, index) => {
     setTimeout(() => {
-      displayedChars.value[index] = { value: char, opacity: 1 };
+      displayedChars.value.push({ value: char, opacity: 1 });
     }, (index + 1) * 200); // 每个字符显示的时间间隔（毫秒）
   });
 };
 
-typewriterEffect(); // 启动打字机效果
+// 增加错误处理机制
+try {
+  onMounted(() => {
+    typewriterEffect(); // 启动打字机效果
+  });
+} catch (error) {
+  console.error('启动打字机效果时发生错误:', error);
+}
 </script>
 
 <style scoped>
@@ -37,7 +44,7 @@ typewriterEffect(); // 启动打字机效果
   font-size: 35px;
   font-weight: bold;
   width: 100%;
-  height: 200px;
+  height: 120px;
   text-align: center;
   margin: 0 auto;
   background-color: #fff;
@@ -46,12 +53,7 @@ typewriterEffect(); // 启动打字机效果
 }
 
 .char {
-  display: inline-block;
-  opacity: 0;
   transition: opacity 0.5s ease;
- 
-  line-height: 200px;
-
-  
+  line-height: 120px;
 }
 </style>
