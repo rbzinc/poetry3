@@ -13,6 +13,7 @@ import 'mavon-editor/dist/css/index.css'
 import "./assets/scss/highLight.scss"
 import 'highlight.js/scss/atom-one-dark.scss'
 
+
 //全局组件
 import Header from './components/header/header.vue'
 import Pagenation from './components/pagenation/pagenation.vue'
@@ -21,6 +22,7 @@ const pinia =createPinia()
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
+
 app.use(mavonEditor)
 app.component('Header',Header)
 app.component('Pagenation',Pagenation)

@@ -53,8 +53,7 @@ export default defineConfig({
     proxy: {
       '/user': {
         target: 'http://fuze1.nat300.top',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/user/, ''),
+        changeOrigin: true
       },
     },
   },

@@ -4,28 +4,25 @@
       <li class="sidebar-item">
         <i class="icon-home">tx</i>
       </li>
-      <el-divider />
+      <el-divider/>
       <li class="sidebar-item">
-        <i class="icon-ai-tool">1</i>
+        <i class="icon-design" @click="$router.push('/chattochat')">1</i>
       </li>
       <li class="sidebar-item">
-        <i class="icon-design">2</i>
-
+        <i class="icon-design" @click="$router.push('/chattopic')">2</i>
       </li>
       <li class="sidebar-item">
-        <i class="icon-program">3</i>
-
+        <i class="icon-program" @click="$router.push('/pictochat')">3</i>
       </li>
       <li class="sidebar-item">
-        <i class="icon-shopping">4</i>
-
+        <i class="icon-shopping" @click="$router.push('/poemrefine')">4</i>
       </li>
     </ul>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {ref} from 'vue';
 </script>
 
 <style lang="scss" scoped>
@@ -37,9 +34,8 @@ import { ref } from 'vue';
   height: 70%;
   margin-top: 60px;
   margin-left: 20px;
-  z-index: 999;
+  z-index: 9999;
   border-radius: 20px;
-
 
 
   .sidebar-menu {
@@ -79,7 +75,7 @@ import { ref } from 'vue';
   }
 }
 
-.el-divider--horizontal{
+.el-divider--horizontal {
   margin: 6px 0;
 }
 </style>

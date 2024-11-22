@@ -4,12 +4,12 @@ const userStore = useUserInfoStore()
 
 const instance = axios.create({
   // TODO 1. 基础地址，超时时间
-  baseURL:" http://fuze1.nat300.top",
+  baseURL:"http://fuze1.nat300.top",
   headers: {
     'Content-Type': 'application/json',
     'token': userStore.userInfo?.token
 },
-  timeout:5000
+  timeout:10000
 })
 
 //请求拦截器

@@ -1,5 +1,32 @@
-import component from 'element-plus/es/components/tree-select/src/tree-select-option.mjs'
 import {createRouter, createWebHistory} from 'vue-router'
+
+
+
+const originPush = createRouter.prototype.push
+const originReplace = createRouter.prototype.replace
+createRouter.prototype.push = function (location, resolve, reject) {
+  if (resolve && reject) {
+    originPush.call(this, location, resolve, reject)
+  } else {
+    originPush.call(
+      this,
+      location,
+      () => {},
+      () => {}
+    )
+  }
+}
+createRouter.prototype.replace = function (location, resolve, reject) {
+  resolve && reject
+    ? originReplace.call(this, location, resolve, reject)
+    : originReplace.call(
+      this,
+      location,
+      () => {},
+      () => {}
+    )
+}
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -60,30 +87,22 @@ const router = createRouter({
       path: '/poetryAi',
       component: () => import('../views/poetryAi/poetryAi.vue')
     },
-
     {
-      path: '/aiChat',
-      component: () => import('../views/aiChat/aichat.vue'),
-      children: [
-        {
-          path: '/aiChat/chattochat',
-          component: () => import('../views/aiChat/chatToChat/index.vue')
-        },
-        {
-          path: '/aiChat/chattopic',
-          component: () => import('../views/aiChat/chatToPic/index.vue')
-        },
-        {
-          path: '/aiChat/pictochat',
-          component: () => import('../views/aiChat/picToChat/index.vue')
-        },
-        {
-          path: '/aiChat/poemrefine',
-          component: () => import('../views/aiChat/poemRefine/index.vue')
-        }
-      ]
+      path: '/chattochat',
+      component: () => import('../views/aiChat/chatToChat/index.vue')
     },
-
+    {
+      path: '/chattopic',
+      component: () => import('../views/aiChat/chatToPic/index.vue')
+    },
+    {
+      path: '/pictochat',
+      component: () => import('../views/aiChat/picToChat/index.vue')
+    },
+    {
+      path: '/poemrefine',
+      component: () => import('../views/aiChat/poemRefine/index.vue')
+    },
     {
       path: '/writer',
       component: () => import('../views/writer/writer.vue')
