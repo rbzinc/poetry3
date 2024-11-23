@@ -1,43 +1,46 @@
-import axios from 'axios'
-import { useUserInfoStore } from '@/stores/index.js'
-const userStore = useUserInfoStore()
+import axios from 'axios';
+import { useUserInfoStore } from '@/stores/index.js';
+const userStore = useUserInfoStore();
 
 const instance = axios.create({
   // TODO 1. 基础地址，超时时间
-  baseURL:"http://fuze1.nat300.top",
+  baseURL: "http://fuze1.nat300.top", // 确保这里的URL是正确的，没有多余的字符
   headers: {
     'Content-Type': 'application/json',
     'token': userStore.userInfo?.token
-},
-  timeout:10000
-})
+  },
+  timeout: 5000
+});
 
-//请求拦截器
+// 请求拦截器
 instance.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
   config.headers['token'] = userStore.userInfo?.token || '';
   return config;
 }, function (error) {
   // 对请求错误做些什么
-  alert(error);
+  console.error(error);
   return Promise.reject(error);
-})
+});
 
-//响应拦截器
+// 响应拦截器
 instance.interceptors.response.use(
   (res) => {
-    if (res.data.code ===1) {
-      return res.data
+    if (res.data.code === 1) {
+      return res.data;
     }
-    alert("error")
-    return Promise.reject(res.data)
+    // 将alert替换为console.log
+    console.error("Error:", res.data);
+    return Promise.reject(res.data);
   },
   (err) => {
     // TODO 5. 处理401错误
     if (err.response && err.response.status === 401) {
-      console.log("Unauthorized: Please login again")
+      console.log("Unauthorized: Please login again");
     }
-    return Promise.reject(err)
+    console.error(err); // 将错误记录到控制台
+    return Promise.reject(err);
   }
-)
-export default instance
+);
+
+export default instance;

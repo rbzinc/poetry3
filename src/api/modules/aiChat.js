@@ -1,20 +1,12 @@
 import instance from '../index'
+import {fetchEventSource} from "@microsoft/fetch-event-source";
+import {useUserInfoStore} from "@/stores/index.js";
 
-export const aiChatGetApi = (id, message) => {
-  return instance({
-    url: '/ai/chat',
-    method: 'POST',
-    params: {
-      id: id,
-      message: message
-    }
-  }).then(response => {
-    // 处理响应数据
-    return response.data;
-  }).catch(error => {
-    // 处理错误
-    console.error('Error:', error);
-    throw error; // 将错误抛出，以便调用者可以进一步处理
-  });
-};
-
+export const aiChatGetApi = (idd, message) => instance({
+  url: '/ai/chat11',
+  method: 'POST',
+  data: {
+    idd: idd,
+    message: message
+  }
+})
