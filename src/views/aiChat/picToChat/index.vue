@@ -17,12 +17,54 @@ const handleExceed = (files) => {
   file.uid = genFileId()
   upload.value.handleStart(file)
 }
-const submitUpload = () => {
-  upload.value.submit()
+
+const isAdding = ref(false)
+const value = ref([])
+const optionName = ref('')
+const cities = ref([
+  {
+    value: 'Beijing',
+    label: 'Beijing',
+  },
+  {
+    value: 'Shanghai',
+    label: 'Shanghai',
+  },
+  {
+    value: 'Nanjing',
+    label: 'Nanjing',
+  },
+  {
+    value: 'Chengdu',
+    label: 'Chengdu',
+  },
+  {
+    value: 'Shenzhen',
+    label: 'Shenzhen',
+  },
+  {
+    value: 'Guangzhou',
+    label: 'Guangzhou',
+  },
+])
+
+const onAddOption = () => {
+  isAdding.value = true
 }
 
-const choiceCustomize = () => {
-  isCustomStyleVisible.value = true
+const onConfirm = () => {
+  if (optionName.value) {
+    cities.value.push({
+      label: optionName.value,
+      value: optionName.value,
+    })
+    clear()
+  }
+}
+
+const clear = () => {
+  optionName.value = ''
+  isAdding.value = false
 }
 </script>
 
@@ -40,51 +82,95 @@ const choiceCustomize = () => {
       </div>
     </div>
     <div class="dialog-input">
-      <div style="display: flex;align-items: center;justify-content: space-evenly;">
-        <el-dropdown v-show="isCustomStyleVisible" split-button type="primary" >
-          <span>体裁</span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item>Action 1</el-dropdown-item>
-              <el-dropdown-item>Action 2</el-dropdown-item>
-              <el-dropdown-item>Action 3</el-dropdown-item>
-              <el-dropdown-item>Action 4</el-dropdown-item>
-              <el-dropdown-item @click="choiceCustomize">自定义</el-dropdown-item>
-            </el-dropdown-menu>
+      <div style="display: flex;align-items: center;justify-content: space-evenly; width: 1200px">
+
+        <el-select v-model="value" placeholder="体裁" style="width: 180px">
+          <el-option
+              v-for="item in cities"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+
+          />
+          <template #footer>
+            <el-button v-if="!isAdding" text bg size="small" @click="onAddOption">
+              Add an option
+            </el-button>
+            <template v-else>
+              <el-input
+                  v-model="optionName"
+                  class="option-input"
+                  placeholder="请输入体裁内容"
+                  size="small"
+                  style="width: 180px"
+              />
+              <br />
+              <el-button type="primary" size="small" @click="onConfirm">
+                确定
+              </el-button>
+              <el-button size="small" @click="clear">取消</el-button>
+            </template>
           </template>
-        </el-dropdown>
+        </el-select>
 
-        <el-input v-show="!isCustomStyleVisible" v-model="input" style="width: 140px" placeholder="输入文章标题" />
+        <el-select v-model="value" placeholder="体裁" style="width: 180px">
+          <el-option
+              v-for="item in cities"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
 
-        <el-dropdown split-button type="primary">
-          情感
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item>Action 1</el-dropdown-item>
-              <el-dropdown-item>Action 2</el-dropdown-item>
-              <el-dropdown-item>Action 3</el-dropdown-item>
-              <el-dropdown-item>Action 4</el-dropdown-item>
-              <el-dropdown-item>自定义</el-dropdown-item>
-            </el-dropdown-menu>
+          />
+          <template #footer>
+            <el-button v-if="!isAdding" text bg size="small" @click="onAddOption">
+              Add an option
+            </el-button>
+            <template v-else>
+              <el-input
+                  v-model="optionName"
+                  class="option-input"
+                  placeholder="请输入体裁内容"
+                  size="small"
+                  style="width: 180px"
+              />
+              <br />
+              <el-button type="primary" size="small" @click="onConfirm">
+                确定
+              </el-button>
+              <el-button size="small" @click="clear">取消</el-button>
+            </template>
           </template>
-        </el-dropdown>
+        </el-select>
 
-        <el-dropdown split-button type="primary">
-          主题
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item>Action 1</el-dropdown-item>
-              <el-dropdown-item>Action 2</el-dropdown-item>
-              <el-dropdown-item>Action 3</el-dropdown-item>
-              <el-dropdown-item>Action 4</el-dropdown-item>
-              <el-dropdown-item>自定义</el-dropdown-item>
-            </el-dropdown-menu>
+        <el-select v-model="value" placeholder="体裁" style="width: 180px">
+          <el-option
+              v-for="item in cities"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+
+          />
+          <template #footer>
+            <el-button v-if="!isAdding" text bg size="small" @click="onAddOption">
+              Add an option
+            </el-button>
+            <template v-else>
+              <el-input
+                  v-model="optionName"
+                  class="option-input"
+                  placeholder="请输入体裁内容"
+                  size="small"
+                  style="width: 180px"
+              />
+              <br />
+              <el-button type="primary" size="small" @click="onConfirm">
+                确定
+              </el-button>
+              <el-button size="small" @click="clear">取消</el-button>
+            </template>
           </template>
-        </el-dropdown>
-
-
-        <el-input v-model="input" style="width: 140px" placeholder="输入文章标题" />
-
+        </el-select>
+        <el-input v-model="input" placeholder="自定义标题" style="width: 180px;"></el-input>
         <el-upload
             ref="upload"
             class="upload-demo"
@@ -100,7 +186,7 @@ const choiceCustomize = () => {
         </el-upload>
       </div>
 
-      <el-button style="margin-left: 540px">发送</el-button>
+      <el-button style="margin-left: 320px">发送</el-button>
     </div>
   </div>
 </template>
@@ -140,5 +226,10 @@ const choiceCustomize = () => {
     display: flex;
     align-items: center;
   }
+}
+
+.option-input {
+  width: 100%;
+  margin-bottom: 8px;
 }
 </style>

@@ -2,11 +2,11 @@
   <div class="sidebar">
     <ul class="sidebar-menu">
       <li class="sidebar-item">
-        <i class="icon-home">tx</i>
+        <i class="icon-home" @click="$router.push('/poetryAi')">tx</i>
       </li>
       <el-divider/>
       <li class="sidebar-item">
-        <i class="icon-design" @click="$router.push('/chattochat')">1</i>
+        <i class="icon-design" @click="$router.push('/chattochat/1')">1</i>
       </li>
       <li class="sidebar-item">
         <i class="icon-design" @click="$router.push('/chattopic')">2</i>
@@ -23,6 +23,7 @@
 
 <script setup>
 import {ref} from 'vue';
+
 </script>
 
 <style lang="scss" scoped>
@@ -50,13 +51,11 @@ import {ref} from 'vue';
     height: 50px;
     color: #fff;
     cursor: pointer;
-    transition: background-color 0.3s;
-
+    //transition: background-color 0.3s;
     &:hover {
       background-color: #3a4a58;
       border-radius: 20px;
     }
-
     i {
       width: 24px;
       height: 24px;

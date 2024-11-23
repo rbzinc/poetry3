@@ -23,39 +23,46 @@ const sendMessage = () => {
 
 const controller = new AbortController();
 
-const sseService = fetchEventSource('http://fuze1.nat300.top/ai/submita', {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-    'token': useUserInfoStore().userInfo.token,
-  },
-  signal: controller.signal,
-  openWhenHidden: true,
-  onmessage(event) {
-    try {
-      const data = JSON.parse(event.data);
-      if (data) {
-        const lastMessage = messages.value[messages.value.length - 1];
-        if (lastMessage && !lastMessage.self) {
-          lastMessage.text += data;
-        } else {
-          messages.value.push({text: data, self: false});
+const GetSSE = () => {
+  const sseService = fetchEventSource('http://fuze1.nat300.top/ai/submita', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'token': useUserInfoStore().userInfo.token,
+    },
+    signal: controller.signal,
+    openWhenHidden: true,
+    onmessage(event) {
+      try {
+        const data = JSON.parse(event.data);
+        if (data) {
+          const lastMessage = messages.value[messages.value.length - 1];
+          if (lastMessage && !lastMessage.self) {
+            lastMessage.text += data;
+          } else {
+            messages.value.push({text: data, self: false});
+          }
         }
+      } catch (error) {
+        console.error('消息解析失败:', error);
+        messages.value.push({text: '消息格式有误，请稍后再试。', self: false});
       }
-    } catch (error) {
-      console.error('消息解析失败:', error);
-      messages.value.push({text: '消息格式有误，请稍后再试。', self: false});
-    }
-  },
-  onerror(event) {
-    console.log('错误:', event);
-    messages.value.push({text: '连接出现问题，请稍后再试。', self: false});
-  },
-});
+    },
+    onerror(event) {
+      console.log('错误:', event);
+      messages.value.push({text: '连接出现问题，请稍后再试。', self: false});
+    },
+  });
+}
 
 onBeforeUnmount(() => {
-  controller.abort(); // 在组件卸载前 abort 请求
+  controller.abort();
 });
+
+onMounted(() =>{
+  // GetSSE()
+})
+
 </script>
 
 <template>
@@ -97,16 +104,15 @@ onBeforeUnmount(() => {
 .chat-container {
   width: 80%;
   height: 600px;
-  background-color: skyblue;
   margin: 30px auto;
 
   .messages-container {
-    display: flex; // 横向布局
-    flex-direction: column; // 纵向排列消息
+    display: flex;
+    flex-direction: column;
     height: 534px;
     margin-bottom: 10px;
     margin-left: 10px;
-    align-items: flex-start; // 消息靠左对齐
+    align-items: flex-start;
     overflow-y: auto;
 
     .message {
