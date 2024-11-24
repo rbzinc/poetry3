@@ -51,7 +51,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/user': {
+      '/api': {
         target: 'http://fuze1.nat300.top',
         changeOrigin: true
       },

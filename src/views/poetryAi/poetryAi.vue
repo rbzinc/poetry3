@@ -82,8 +82,6 @@ const changeChat = (id)=>{
 
 <style scoped lang="scss">
 .bgc {
-
-
   background: url('./pic/微信图片_20241016021536.jpg');
 
   .home {

@@ -1,30 +1,48 @@
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUserInfoStore } from '@/stores/modules/user.js'
+const userInfo = useUserInfoStore()
+const txUrl =userInfo.userInfo.touxiang
+const router = useRouter();
+
+const menuItems = ref([
+  { label: '1', icon: 'iconfont icon-contract', route: '/chattochat/1', tooltip: '诗人对话' },
+  { label: '2', icon: 'iconfont icon-tiaobodanguanli', route: '/chattopic', tooltip: '生成图片' },
+  { label: '3', icon: 'iconfont icon-huanjidanshenpi', route: '/pictochat', tooltip: '图片转古诗' },
+  { label: '4', icon: 'iconfont icon-bianji', route: '/poemrefine', tooltip: '诗句优化' }
+]);
+const navigate = (route) => {
+  try {
+    if (route) {
+      router.push(route);
+    }
+  } catch (error) {
+    console.error('导航错误:', error.message);
+  }
+};
+</script>
 <template>
   <div class="sidebar">
     <ul class="sidebar-menu">
       <li class="sidebar-item">
-        <i class="icon-home" @click="$router.push('/poetryAi')">tx</i>
+        <img src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
+             alt="" class="avatar" @click="navigate('/poetryAi')"/>
       </li>
-      <el-divider/>
-      <li class="sidebar-item">
-        <i class="icon-design" @click="$router.push('/chattochat/1')">1</i>
-      </li>
-      <li class="sidebar-item">
-        <i class="icon-design" @click="$router.push('/chattopic')">2</i>
-      </li>
-      <li class="sidebar-item">
-        <i class="icon-program" @click="$router.push('/pictochat')">3</i>
-      </li>
-      <li class="sidebar-item">
-        <i class="icon-shopping" @click="$router.push('/poemrefine')">4</i>
+      <el-divider style="margin: 5px 0;"/>
+      <li
+          v-for="(item, index) in menuItems"
+          :key="index"
+          class="sidebar-item"
+      >
+        <el-tooltip :content="item.tooltip" placement="right" >
+          <i :class="item.icon" @click="navigate(item.route)"></i>
+        </el-tooltip>
       </li>
     </ul>
   </div>
 </template>
 
-<script setup>
-import {ref} from 'vue';
-
-</script>
 
 <style lang="scss" scoped>
 .sidebar {
@@ -38,7 +56,6 @@ import {ref} from 'vue';
   z-index: 9999;
   border-radius: 20px;
 
-
   .sidebar-menu {
     list-style: none;
     padding: 0;
@@ -48,12 +65,18 @@ import {ref} from 'vue';
   .sidebar-item {
     display: flex;
     align-items: center;
+    justify-content: center;
     height: 50px;
     color: #fff;
     cursor: pointer;
-    //transition: background-color 0.3s;
+    .avatar{
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
     &:hover {
-      background-color: #3a4a58;
+      background-color: #6f5842;
+      opacity: 0.8;
       border-radius: 20px;
     }
     i {
@@ -62,12 +85,9 @@ import {ref} from 'vue';
       margin: 0 20px;
       font-size: 20px;
     }
-
   }
-
 }
 
-// Add media query for responsive design if needed
 @media (min-width: 768px) {
   .sidebar-item span {
     display: inline;
