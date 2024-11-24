@@ -102,6 +102,12 @@ const router = createRouter({
       component: () => import('../views/aiChat/poemRefine/index.vue')
     },
     {
+      path: '/game',
+      component: () => import('../views/game/index.vue')
+    },
+
+
+    {
       path: '/writer',
       component: () => import('../views/writer/writer.vue')
     },
