@@ -12,8 +12,7 @@ import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import "./assets/scss/highLight.scss"
 import 'highlight.js/scss/atom-one-dark.scss'
-
-
+import '@/iconfont/iconfont.css'
 //全局组件
 import Header from './components/header/header.vue'
 import Pagenation from './components/pagenation/pagenation.vue'

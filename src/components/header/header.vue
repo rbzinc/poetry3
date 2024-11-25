@@ -29,7 +29,7 @@ const useUser = useUserInfoStore()
                 <router-link to="/poetryAi">AI助学</router-link>
               </el-dropdown-item>
               <el-dropdown-item>
-                <router-link to="/poet">游戏助学</router-link>
+                <router-link to="/game">游戏助学</router-link>
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>

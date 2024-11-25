@@ -1,0 +1,51 @@
+{
+  "id": "4751028",
+  "name": "点赞",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "42491578",
+      "name": "contract",
+      "font_class": "contract",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "42528960",
+      "name": "调拨单管理",
+      "font_class": "tiaobodanguanli",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "42529158",
+      "name": "换机单审批",
+      "font_class": "huanjidanshenpi",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "42535418",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "101d0",
+      "unicode_decimal": 66000
+    },
+    {
+      "icon_id": "6334468",
+      "name": "点赞",
+      "font_class": "dianzan1",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "1221242",
+      "name": "点赞",
+      "font_class": "dianzan",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    }
+  ]
+}

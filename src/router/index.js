@@ -35,7 +35,6 @@ const router = createRouter({
       path: '/login',
       component: () => import('../views/login/LoginPage.vue')
     },
-
     {
       path: '/register',
       component: () => import('../views/register/register.vue')
@@ -45,7 +44,6 @@ const router = createRouter({
       path: '/email',
       component: () => import('../views/login/EmailLogin.vue')
     },
-
     //首页
     {
       path: '/',
@@ -88,7 +86,7 @@ const router = createRouter({
       component: () => import('../views/poetryAi/poetryAi.vue')
     },
     {
-      path: '/chattochat',
+      path: '/chattochat/:id',
       component: () => import('../views/aiChat/chatToChat/index.vue')
     },
     {
@@ -103,6 +101,12 @@ const router = createRouter({
       path: '/poemrefine',
       component: () => import('../views/aiChat/poemRefine/index.vue')
     },
+    {
+      path: '/game',
+      component: () => import('../views/game/index.vue')
+    },
+
+
     {
       path: '/writer',
       component: () => import('../views/writer/writer.vue')
