@@ -58,7 +58,7 @@ export const getWriterData = (data,pagenum) =>{
 
 //随机返回十句名句
 export const getsenRandomData = (data) =>{
-  return instance.get('/user/rhesis/GetRhesisDateRondom',data)
+  return instance.get('/user/rhesis/GetRhesisDateRondom',data)          
 }
 
 //根据诗人查询名句

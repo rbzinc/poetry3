@@ -51,9 +51,6 @@ const login = async () => {
   router.push('/layout/home')
 }
 
-watch(formModel,()=>{
-  console.log(formModel)
-})
 </script>
 
 <template>

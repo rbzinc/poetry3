@@ -25,6 +25,7 @@ onMounted(() => {
 </script>
 
 <template>
+ <div class="bgc">
   <div class="container">
   <div class="poem-header">
     <h1 class="poem-title"> {{ writertitle }} </h1>
@@ -37,18 +38,23 @@ onMounted(() => {
 <div v-for="item in writerList" :key="item?.id">
     <Writercontent
     :content = item.content
+    
     :title = item.title
     >
     </Writercontent>
 </div>
 
 
+ </div>
  
 </template>
 
 <style>
-
-
+.bgc{
+  width: 100%;
+  height: 100%;
+  background-image: url('./pic/微信图片_20241016230009.jpg');
+  background-size: 100% 100%;
   .container {
     max-width: 1000px;
     margin: 0 auto 30px;
@@ -56,8 +62,9 @@ onMounted(() => {
     background-color: #fff;
     box-sizing: border-box;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    opacity: 70%;
+    border-radius: 10px;
   }
-
   .poem-header {
     margin-bottom: 20px;
     display: flex;
@@ -122,4 +129,5 @@ onMounted(() => {
     margin: 0;
     margin-bottom: 10px;
   }
+}
 </style>

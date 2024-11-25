@@ -1,20 +1,42 @@
 <script setup>
-import { defineExpose } from "vue"
-import Search from "../../components/search/search.vue"
+import { defineExpose,ref} from "vue"
+import { useRouter} from "vue-router"
+import { userSearchStore } from '../../stores/modules/search'
+import SearchSen from "../../components/search/searchsen.vue"
+const userSearch = userSearchStore()
 defineExpose({
-  Search
+  SearchSen
 })
+const input = ref('')
+const activeNav = ref(null)
+const router = useRouter()
+const handleSearch = () => {
+  userSearch.userinput = input.value
+  router.push('/poetsearch')
+}
+const handleClick = (event) => {
+  const navCards = document.querySelectorAll('.nav a')
+  navCards.forEach(card => card.style.backgroundColor = '')
+  event.target.style.backgroundColor = '#dcdbdb'
+  activeNav.value = event.target
+}
+
 </script>
 
 <template>
  <div class="home">
    <div class="header">
-    <Search></Search>
+    <div class="search">
+      <el-input v-model="input" 
+      class="el-input"
+      placeholder="回车进行搜索"
+      @keyup.enter="handleSearch" />
+    </div>
    </div>
    <div class="nav">
-        <router-link to="/writersearch">诗人</router-link>
-        <router-link to="/poetsearch">古诗</router-link>
-        <router-link to="/sensearch">名句</router-link>
+        <router-link to="/writersearch" @click="handleClick">诗人</router-link>
+        <router-link to="/poetsearch"@click="handleClick">古诗</router-link>
+        <router-link to="/sensearch"@click="handleClick">名句</router-link>
    </div>
    <div class="body">
     <router-view></router-view>
@@ -25,48 +47,72 @@ defineExpose({
 
 <style scoped lang="scss">
 .home{
-  width: 1200px;
   height: 1000px;
-  background-color: #befef0;
+  background: none;
   margin: 10px auto 0; 
   .header{
-    width: 1200px;
-    height: 120px;
-    background-color: #e8f0cc;
+    width: 100%;
+    height: 160px;
+    padding-top: 30px;
+    background: none;
     text-align: center;
+    background-image: url('./pic/微信图片_20241116182414.jpg');
+    background-size: 100% 100%;
+    .search{
+      width: 1000px;
+      height: 80px;
+      margin: 0 auto;
+      display: flex;
+      background-color: rgb(194, 194, 194);
+      opacity: 0.6;
+      box-sizing: border-box; 
+      text-align: center;
+      align-items: center;
+      border-radius: 10px;
+    }
+    .el-input{
+      border: 2px #aca9a9 ;
+      border-radius: 50px; 
+      width: 720px;
+      height: 40px;
+      margin: 0 auto;
+    }
   }
   .nav{
     width: 1200px;
     height: 50px;
-    background-color: #f1f6b8;
+    background: none;
     padding: 10px 0;
     position: sticky;
     top: 0;
     z-index: 1000;
     list-style: none;
-    margin: 0;
+    margin: 0 auto;
     padding: 0;
     overflow: hidden;
     display: flex;
     a{
-      width: 60px;
+      width: 100px;
       display: block;
-      color: rgb(199, 155, 155);
+      line-height: 50px;
+      color: rgb(112, 112, 112);
       text-align: center;
-      padding: 14px 16px;
       text-decoration: none;
-      transition: color 0.3s ease, transform 0.3s ease;
-      &:hover{
-          border-radius: 150px;
-          background-color: #4CAF50; 
-          transform: scale(1.1); 
-      }
+      border: 2px solid transparent; 
+      cursor: pointer;
+      transition: border-color 0.3s, transform 0.3s;
+
+      &:active{
+      background-color: #dcdbdb;
+      transform: scale(0.98); 
     }
+    }
+    
   }
   .body{
       width: 1200px;
       height: 800px;
-      background-color: #deb9e5;
+      background: none;
     }
 }
 </style>

@@ -1,16 +1,16 @@
 <script setup>
-import{ ref,onMounted} from "vue"
-import { storeToRefs } from "pinia"
+import{ ref,onMounted,onActivated} from "vue"
 import { defineExpose } from "vue"
 import Poetryitem from "../../../components/poetryitem/poetryitem.vue"
 import Search from "../../../components/search/search.vue"
+import { userSearchStore } from "../../../stores/modules/poepavilion"
 import { getpoemRandomData,getDynastyData,getClassData,getWriterPoemData } from "../../../api/modules/poePavilion"
 import { useRouter } from "vue-router"
 defineExpose({
   Poetryitem,
   Search
 })
-
+const charactersearch = userSearchStore()
 const router = useRouter()
 //控制展开和收缩的变量
 const isopen =ref(false)
@@ -37,10 +37,10 @@ const getRandom = async () =>{
   randomList.value=res.data
 }
 
-
 //根据朝代来渲染数据
 const getDynasty = async (dynastyname,pagenum) =>{
   useDynastyName.value = dynastyname
+  charactersearch.searchname = dynastyname
   const res = await getDynastyData(dynastyname,pagenum)
   randomList.value=res.data.records
   pagetotal = res.data.total
@@ -49,6 +49,7 @@ const getDynasty = async (dynastyname,pagenum) =>{
 
 //根据分类来渲染数据
 const getClass = async (classname,pagenum) =>{
+  charactersearch.searchname = classname
   useClassName.value = classname
   const res = await getClassData(classname,pagenum)
   randomList.value=res.data.records
@@ -58,11 +59,12 @@ const getClass = async (classname,pagenum) =>{
 
 //根据诗人来渲染数据
 const getPoet = async (poetname,pagenum) =>{
+  charactersearch.searchname = poetname
   usePoetName.value = poetname
   const res = await getWriterPoemData(poetname,pagenum)
   randomList.value=res.data.records
-  pagetotal = res.data.total
-  console.log(randomList.value)
+  pagetotal = res.data.total                  
+  console.log(randomList.value)               
 }
 //朝代页码发生改变
 const currentChange = (pagenum) =>{
@@ -101,9 +103,10 @@ const poemDetail =(data) =>{
   poemid = data
   router.push(`/poedetails?id=${poemid}`)}
 
-onMounted(() => {
-  getRandom()
-})
+  onMounted(() => {
+  getDynasty(charactersearch.searchname,pagenum);
+  getRandom();
+});
 //分类栏的展开和收缩
   const toggleopened = () =>{
     isopen.value = !isopen.value
@@ -114,6 +117,7 @@ onMounted(() => {
   const toggleopened3 = () =>{
     isopen3.value = !isopen3.value
   }
+
 
 </script>
 

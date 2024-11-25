@@ -27,7 +27,7 @@ defineExpose({
   width: 100%;
   height: 100%;
   background-image:url('./pic/微信图片_20241016040103.jpg');
-  background-size: 100% 2000px
+  background-size: 100% 100%;
 }
 .home{
   width: 1300px;

@@ -14,13 +14,22 @@ export const userRegisterService = ({username,password}) => {
 }
 
 //使用邮箱登录注册
-export const userEmailService = ({email,password}) => {
-  return instance.post('/user/login/email',{email,password})
-}
+export const userEmailService = (email,password) => instance({
+  url:'/user/login/email', 
+  method:'post',
+  data:{
+    email,
+    password
+  }
+})
 
 //发送验证码
-export const getCodeService = () => {
-  return instance.post('/user/login/code')
+export const getCodeService = (email) => {
+  return instance.post('/user/login/code',
+    { params:{ 
+      phone:email,
+    }}
+  )
 }
 
 //根据用户id获取用户信息

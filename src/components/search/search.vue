@@ -1,22 +1,24 @@
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from "vue-router"
+import { useRouter,useRoute } from "vue-router"
+import { userSearchStore } from '../../stores/modules/search'
+const userSearch = userSearchStore()
 const input = ref('')
 const router = useRouter()
 const handleSearch = () => {
-  router.push('/search')
+  userSearch.userinput = input.value
+  router.push('/poetsearch')
 }
 
 </script>
 
 <template>
  <div class="search">
-  <el-input v-model="input" 
-  class="el-input"
-  placeholder="回车进行搜索"
-  @keyup.enter="handleSearch" />
+    <el-input v-model="input" 
+    class="el-input"
+    placeholder="回车进行搜索"
+    @keyup.enter="handleSearch" />
  </div>
- 
 </template>
 
 <style scoped lang="scss">

@@ -7,13 +7,16 @@
 import { User, Lock } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getCodeService } from '../../api/modules/user'
+import { getCodeService,userEmailService } from '../../api/modules/user'
+import { useUserInfoStore } from '../../stores/modules/user.js'
+const useUser = useUserInfoStore()
 const router = useRouter()
 const form =ref(null)
 const entry = ref(false)
 const formModel = ref({
-  username: '',
+  name: '',
   password: '' ,
+  email: ''
 })
 const rules = {
   email: [
@@ -53,32 +56,33 @@ const ButtonText = ref('发送验证码')
 //验证码按钮
 const startCountdown = () => {
   if (countdown.value > 0) {
-    captchaDisabled.value = true;
-    captchaButtonText.value = `${countdown.value}秒后再次获取`;
-    countdown.value--;
+    captchaDisabled.value = true
+    captchaButtonText.value = `${countdown.value}秒后再次获取`
+    countdown.value--
     setTimeout(() => {
       startCountdown();
     }, 1000);
   } else {
-    countdown.value = 60;
-    disabled.value = false;
-    ButtonText.value = '发送验证码';
+    countdown.value = 60
+    disabled.value = false
+    ButtonText.value = '发送验证码'
   }
 }
 
 const captch = async() =>{
-  const res = await getCodeService()
+  const res = await getCodeService(formModel.value.email,1)
   startCountdown()
   alert('验证码发送成功！')
 }
 
-// const login = async () => {
-//   await form.value.validate()
-//   await userLoginService(formModel.value)
-//   entry.value = !entry.value 
-//   router.push(`/poedetails?id=${poemid}`)
-//   alert('登录成功')
-// }
+const login = async () => {
+  await form.value.validate()
+  await userEmailService(formModel.value.email,formModel.value.password)
+  const userStore = useUserInfoStore()
+  userStore.setUserInfo(UserLogin.data)
+  ElMessage.success('登录成功')
+  router.push('/layout/home')
+}
 
 </script>
 

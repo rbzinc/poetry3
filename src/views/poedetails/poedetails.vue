@@ -1,8 +1,9 @@
 <script setup>
 import { VideoPlay} from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
-import {useRoute} from 'vue-router'
+import {useRoute,useRouter} from 'vue-router'
 import { getPoemDetatils } from "../../api/modules/poePavilion"
+import router from '../../router';
 const route = useRoute()
 const dataList = ref([])
 let dialogFormVisible = ref(false)
@@ -27,6 +28,10 @@ const getData = async()=>{
   dynasty.value = dataList.value[0].dynasty
   content.value = dataList.value[0].content
 }
+//返回主页面
+const returnView = () =>{
+  router.push('/poet/class')
+}
 
 onMounted(() => {
   titleid = route.query.id;
@@ -35,17 +40,20 @@ onMounted(() => {
 </script>
 
 <template>
+<div class="bgc">
+  <div class="return" @click="returnView">返回</div>
   <div class="container">
   <div class="poem-header">
     <h1 class="poem-title">{{ poemtitle }}</h1>
     <p class="poem-author">{{ writer }}（{{ dynasty }}）</p>
   </div>
-  <div class="poem-content">
+  <div class="poem-content" >
     {{ content }}
   </div>
-  <div class="other">
-      <el-button type="info">播放</el-button>
-    <el-button type="info" plain @click="dialogFormVisible = true">文生图</el-button>
+    <div class="others">
+        <el-button type="info" class="but">播放</el-button>
+        <el-button type="info" plain @click="dialogFormVisible = true" class="but"
+        >文生图</el-button>
     </div>
   </div>
   <div class="container">
@@ -77,15 +85,18 @@ onMounted(() => {
       </div>
     </template>
   </el-dialog>
+</div>
 </template>
 
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    margin: 0 auto;
+<style scoped lang="scss">
+.bgc{
+  width: 100%;
+  height: 1800px;
+  background-image: url('./pic/微信图片_20241016230002.jpg');
+  background-size: 100% 1800px;
+  .return{
+    margin-left: 10px;
+    cursor: pointer;
   }
   .pic{
     width: 300px;
@@ -99,15 +110,21 @@ onMounted(() => {
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
+    opacity: 70%;
+    border-radius: 10px;
     .p {
+      background: none;
     margin: 0;
     margin-bottom: 10px;
   }
   }
   .others{
-      width:40px;
-      height: 20px;
-      background-color: #8d6969;
+     display: flex;
+     margin-top: 30px;
+      .but{
+        margin-right: 30px;
+        margin-left: 0;
+      }
     }
   .poem-header {
     text-align: center;
@@ -150,4 +167,13 @@ onMounted(() => {
     margin: 0;
     margin-bottom: 10px;
   }
+}
+  // body {
+  //   font-family: 'Arial', sans-serif;
+  //   margin: 0;
+  //   padding: 0;
+  //   background-color: #f4f4f4;
+  //   margin: 0 auto;
+  // }
+  
 </style>

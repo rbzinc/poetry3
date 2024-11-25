@@ -1,39 +1,38 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
+import { useRouter } from "vue-router"
+import { userSearchStore } from '../../stores/modules/search'
+const userSearch = userSearchStore()
 const input = ref('')
+const router = useRouter()
 const handleSearch = () => {
-  if (input.value) {
-      async () => {
-      const res = await userSearchService(input.value)
-    }
-    console.log(input.value);
-    
-  }
+  router.push('/search')
+  userSearch.userinput = input.value
 }
 
-    
 </script>
 
 <template>
  <div class="search">
   <el-input v-model="input" 
   class="el-input"
-  placeholder="请输入名句进行搜索"
+  placeholder="回车进行搜索"
   @keyup.enter="handleSearch" />
  </div>
- 
 </template>
 
 <style scoped lang="scss">
 .search{
   width: 1000px;
-  height: 80px;
-  margin: 0 auto;
+  height: 80px;           
+  margin: 0 auto ; 
   display: flex;
-  background-color: #76a7e7;
+  background-color: rgb(194, 194, 194);
+  opacity: 0.6;
   box-sizing: border-box; 
   text-align: center;
-  align-items: center
+  align-items: center;
+  border-radius: 10px;
 }
 
 .el-input{

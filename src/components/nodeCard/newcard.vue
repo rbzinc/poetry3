@@ -15,6 +15,16 @@
     <textarea placeholder="留言..." class="message"></textarea>
     <input type="text" placeholder="签名" class="name"/>
   </div>
+  <div class="labels">
+    <div class="title">选择标签</div>
+    <div class="button">
+      <div class="line"></div>
+    </div>
+  </div>
+  <div class="footnav">
+    <div class="footbut">删除</div>
+    <div class="footbut">确定</div>
+  </div>
   </div>
 </template>
 
@@ -55,8 +65,32 @@
       line-height: 20px;
       border: 1px solid #fff;
       font-size: 15px;
-
     }
+  }
+  .labels{
+    margin-top: 20px;
+    .title{
+      font-size: 16px;
+      font-weight: 600;
+      color: #616161;
+    }
+  }
+  .footnav{
+    display: flex;
+    .footbut{
+      margin-top: 20px;
+      height: 40px;
+      width: 80px;
+      margin-right: 20px;
+      color: #616161;
+      background-color: #fff;
+      line-height: 40px;
+      text-align: center;
+      border: #616161 2px solid;
+      border-radius: 25px;
+      cursor:pointer;
+    }
+    
   }
 }
 </style>

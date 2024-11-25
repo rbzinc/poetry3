@@ -1,30 +1,27 @@
 <script setup>
-import { CloseBold } from '@element-plus/icons-vue';
+import { CloseBold } from '@element-plus/icons-vue'
 import { defineProps,ref,onMounted,defineEmits } from 'vue'
-import { talkSquareStore } from '../../stores/modules/talksquare'
-const talkstore = talkSquareStore()
 const props = defineProps({
     title:{
     default:'发表帖子',
-    }
+    },
+    isShow: String
 })
-
-// let isModel = ref(talkstore.ismodel)
-// const change = () =>{
-//   talkstore.funmodel()
-//   isModel.value = talkstore.ismodel
-// }
-// onMounted(() => {
-//   isModel.value = talkstore.ismodel
-// })
-let open = ref(true)
+console.log(props.isShow + '123')
+let isModel = ref(true)
+const change = () =>{
+  
+}
+onMounted(() => {
+  
+})
 </script>
 
 <template>
-<div class="modal" v-if="open">
+<div class="modal" v-if="false">
   <div class="head">
     <div class="name">{{ title }}</div>
-    <span><el-icon class="close" @click="change"><CloseBold /></el-icon></span>
+    <span><el-icon class="close" @click="change"> <CloseBold /> </el-icon></span>
   </div>
   <div class="main">
     <slot ></slot>
@@ -61,8 +58,6 @@ let open = ref(true)
   }
   .main{
     font-size: 16px;
-    // border:1px solid black;
-    // background-color: #ecebeb;
     height:80%;
     overflow-y: auto;
     padding-bottom: 116px;
@@ -70,7 +65,6 @@ let open = ref(true)
   }
   .slot{
     height: 1200px;
-    // border:1px solid black;
   }
 }
 </style>

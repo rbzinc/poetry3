@@ -5,7 +5,9 @@
 <template>
  <div class="body">
   <div class="banner">
+    <keep-alive>
       <router-link to="/poet">古诗</router-link>
+    </keep-alive>
       <router-link to="/poet/writer">作者</router-link>
       <router-link to="/poet/sentence">名句</router-link>
       <img src="../banner/pic/98903ef06c7b8f687f0dade7485098b.jpg" alt="" width="230px" height="590px" >
