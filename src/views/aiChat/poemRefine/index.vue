@@ -78,9 +78,9 @@ const placeholderText = computed(() => {
         :placeholder="placeholderText"
         @keyup.enter="sendMessage"
         size="large"
-        style="width:85%; margin-left:10px"
+        style="width:80%; margin-left:10px"
       />
-      <el-dropdown split-button type="primary" size="large" style="margin-right:10px" @click.native="sendMessage">
+      <el-dropdown split-button type="primary" size="large" style="margin-left:30px" @click.native="sendMessage">
         发送
         <template #dropdown>
           <el-dropdown-menu>
@@ -146,7 +146,10 @@ const placeholderText = computed(() => {
   .dialog-input {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    position: fixed;
+    bottom: 4vh;
+    left: 7vw;
+    width: 90vw;
   }
 }
 </style>

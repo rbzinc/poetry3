@@ -11,38 +11,37 @@ const currentPage = ref(1) // 当前页
 const nowMenuData = ref(1) // 当前选择的分类
 
 const userLuntanSelecttiezTypesData = ref([]) // 根据分类选择的列表
-// TODO 无法解决icon图标问题
 // 自定义数据
 const menuData = ref([
   {
     id: '1',
     name: '诗词创作',
-    icon: 'CirclePlus'
+    icon: 'iconfont icon-chuangzuo'
   },
   {
     id: '2',
     name: '诗词赏析',
-    icon: 'Minus'
+    icon: 'iconfont icon-shuhuashangxi'
   },
   {
     id: '3',
     name: '诗词学习',
-    icon: 'CirclePlus'
+    icon: 'iconfont icon-xinshouxuetang'
   },
   {
     id: '4',
     name: '诗词活动',
-    icon: 'activity'
+    icon: 'iconfont icon-huodong'
   },
   {
     id: '5',
     name: '诗词资源',
-    icon: 'connection'
+    icon: 'iconfont icon-ziyuan'
   },
   {
     id: '6',
     name: '诗词杂谈',
-    icon: 'chat-round'
+    icon: 'iconfont icon-zatan'
   }
 ]);
 const handleClick = (tab, event) => {
@@ -67,6 +66,7 @@ const EditPublic = () => {
 const userLuntanSelecttiezTypes = async() => {
   const res = await userLuntanSelecttiezTypesGetApi(currentPage.value, pageSize.value, nowMenuData.value)
   userLuntanSelecttiezTypesData.value = res.data.records
+
 }
 
 onMounted(()=>{
@@ -82,7 +82,7 @@ onMounted(()=>{
           :default-active="activeIndex"
       >
         <el-menu-item v-for="item in menuData" :key="item.id" :index="item.id" @click="handleMenuClick(item)">
-          <el-icon :name="item.icon"></el-icon>
+          <i :class="item.icon" style="margin-right: 10px;"/>
           <span>{{ item.name }}</span>
         </el-menu-item>
       </el-menu>
@@ -96,10 +96,10 @@ onMounted(()=>{
                 <h3 class="list-title">{{item.title}}</h3>
                 <p class="list-content" style="margin: 5px 0; text-indent: 2em;">{{item.content}}</p>
                 <div class="list-footer" style="margin-top: 25px;">
-                  <p style="margin-right: 12px;">{{item.username}}</p>
+                  <p style="margin-right: 12px;">作者: {{item.username}}</p>
                   <p style="margin-right: 12px;">赞 {{item.liked}}</p>
                   <p style="margin-right: 12px;">评 {{item.conmments}}</p>
-                  <p>{{item.poemword}}</p>
+                  <p v-if="item.poemWord">引用 “{{item.poemWord}}” </p>
                 </div>
               </div>
               <div class="list-right" style="background-color: skyblue; height: 100px; width: 150px;">

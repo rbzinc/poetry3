@@ -9,6 +9,7 @@ import {ElMessage} from 'element-plus';
 import {useUserInfoStore} from "@/stores/modules/user.js";
 // 导入 Element Plus 图标组件
 import {Plus} from '@element-plus/icons-vue';
+import {userUpdatemessagebyidPutApi} from "@/api/modules/myUser.js";
 
 // 当前激活的菜单索引
 const activeIndex = ref('1');
@@ -34,7 +35,7 @@ const ResetRules = ref({
     {min: 4, max: 10, message: '密码长度在 4 到 10 个字符', trigger: 'blur'}],
   confirmPassword: [
     {
-      validator: ( rule,value, callback) => {
+      validator: (rule, value, callback) => {
         if (value === ResetForm.value.newPassword) {
           callback();
         } else {
@@ -45,14 +46,12 @@ const ResetRules = ref({
 })
 // 表单数据模型定义
 const ruleForm = ref({
-  name: userInfo.userInfo.username,
-  careerPath: '',
-  position: '',
-  company: '',
-  address: '',
-  desc: '',
-  date: '',
-  url:''
+  name: userInfo.userInfo.username || '',
+  age: userInfo.userInfo.age || '',
+  degree: userInfo.userInfo.degree || '',
+  touxiang: userInfo.userInfo.touxiang || '',
+  sex: userInfo.userInfo.sex || '',
+  phone: userInfo.userInfo.phone || '',
 });
 
 // 表单验证规则定义
@@ -68,39 +67,10 @@ const rules = reactive({
   desc: [{required: true, message: '请输入活动描述', trigger: 'blur'}],
 });
 
-// 头像上传的图片 URL
-const imageUrl = ref('');
-
-// 头像上传成功的处理函数
-const handleAvatarSuccess = (response, uploadFile) => {
-  imageUrl.value = URL.createObjectURL(uploadFile.raw);
-};
-
-// 头像上传前的验证函数
-const beforeAvatarUpload = (rawFile) => {
-  const isJPG = rawFile.type === 'image/jpeg';
-  const isLimitSize = rawFile.size / 1024 / 1024 <= 2;
-
-  if (!isJPG) {
-    ElMessage.error('头像必须为 JPG 格式!');
-    return false;
-  }
-  if (!isLimitSize) {
-    ElMessage.error('头像大小不能超过 2MB!');
-    return false;
-  }
-  return true;
-};
-
 // 提交表单信息的处理函数
 const handleSubmit = () => {
-  // 表单的基本验证可以通过 v-if 或其他逻辑完善
-  try {
-    ElMessage.success('保存成功');
-  } catch (error) {
-    ElMessage.error('保存失败，请稍后重试');
-    console.error(error); // 打印错误信息用于调试
-  }
+  userUpdatemessagebyid()
+  ElMessage.success('保存成功');
 };
 
 // 账号设置内容数据
@@ -118,12 +88,20 @@ const resetPassword = (e) => {
   }
 }
 // 确认重置密码的处理函数
-const confirmResetPassword = async() => {
+const confirmResetPassword = async () => {
 
 }
 
 const handleSuccess = (res) => {
-  ruleForm.value.images = res.data
+  console.log(res.data)
+  ruleForm.value.touxiang = res.data
+  console.log(ruleForm.value.touxiang)
+}
+
+const userUpdatemessagebyid = async () => {
+  console.log(ruleForm.value)
+  // const res = await userUpdatemessagebyidPutApi(ruleForm.value)
+  // console.log(res)
 }
 </script>
 
@@ -155,38 +133,32 @@ const handleSuccess = (res) => {
           <p class="info-title">个人资料</p>
           <el-divider style="margin: 16px 0;"/>
           <div class="info-form">
-            <el-form ref="ruleFormRef" label-width="100px" :model="ruleForm" class="demo-ruleForm" status-icon>
-              <el-form-item label="用户名" prop="name" required>
+            <el-form label-width="auto" :model="ruleForm" class="demo-ruleForm" status-icon>
+              <el-form-item label="用户名" prop="name" required style="width: 500px">
                 <el-input v-model="ruleForm.name"/>
               </el-form-item>
-              <el-form-item label="职业方向" prop='careerPath'>
-                <el-input v-model="ruleForm.careerPath" placeholder="请输入职业方向"/>
+              <el-form-item label="职业" prop="degree">
+                <el-input v-model="ruleForm.degree" placeholder="请输入职业方向"/>
               </el-form-item>
-              <el-form-item label="职位" prop="position">
-                <el-input v-model="ruleForm.position" placeholder="请输入职位" maxlength="50" show-word-limit/>
+              <el-form-item label="年龄" prop="age">
+                <el-input v-model="ruleForm.age" placeholder="请输入你的年龄"/>
               </el-form-item>
-              <el-form-item label="家庭地址" prop="address">
-                <el-input v-model="ruleForm.address" placeholder="请输入家庭地址" maxlength="50" show-word-limit/>
+              <el-form-item label="性别" prop="sex">
+                <el-input v-model="ruleForm.sex" placeholder="请输入性别"/>
               </el-form-item>
-              <el-form-item label="公司" prop="company">
-                <el-input v-model="ruleForm.company" placeholder="请输入公司" maxlength="50" show-word-limit/>
-              </el-form-item>
-              <el-form-item label="出生日期" prop="date">
-                <el-date-picker v-model="ruleForm.date" type="date" placeholder='请选择出生日期' style="width: 400px"/>
-              </el-form-item>
-              <el-form-item label="个人介绍" prop="desc">
-                <el-input v-model="ruleForm.desc" type="textarea" placeholder="请输入个人介绍" maxlength="200"
-                          show-word-limit :autosize="{ minRows: 2, maxRows: 4 }"/>
+              <el-form-item label="手机号" prop="phone">
+                <el-input v-model="ruleForm.phone" placeholder="请输入手机号" maxlength="11" show-word-limit/>
               </el-form-item>
             </el-form>
             <div class="avatar-uploader">
-              <el-upload action="http://fuze1.nat300.top/user/luntan/updateImage" list-type="picture-card" :headers="headers"
+              <el-upload action="http://fuze1.nat300.top/user/luntan/updateImage"
+                         list-type="picture-card"
+                         :headers="headers"
                          :on-success="handleSuccess">
                 <el-icon>
                   <Plus/>
                 </el-icon>
               </el-upload>
-              <p style="margin-left: 30px; margin-top: 10px; width: 80%;">格式：支持 JPG、PNG、JPEG 大小：2MB以内</p>
             </div>
           </div>
           <el-button type="primary" style="margin-left: 40px; margin-top: 20px;" @click="handleSubmit">保存</el-button>
@@ -217,7 +189,7 @@ const handleSuccess = (res) => {
               status-icon
           >
             <el-form-item label="请输入旧密码" prop="oldPassword">
-              <el-input type="password" show-password v-model="ResetForm.oldPassword" />
+              <el-input type="password" show-password v-model="ResetForm.oldPassword"/>
             </el-form-item>
             <el-form-item label="请输入新密码" prop="newPassword">
               <el-input type="password" show-password v-model="ResetForm.newPassword"/>
@@ -283,7 +255,7 @@ const handleSuccess = (res) => {
       width: 78%;
 
       .info-right-one {
-        height: 600px;
+        height: 500px;
 
         .info-title {
           font-size: 20px;

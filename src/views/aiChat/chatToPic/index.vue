@@ -106,13 +106,15 @@ onMounted(() => {
 
     <div class="dialog-input">
       <el-input
-        v-model="inputMessage"
-        placeholder="有什么想问的你都可以畅所欲言！"
-        @keyup.enter="sendMessage"
-        size="large"
-        style="width:92%; margin-left:10px"/>
-      <el-button size="large" style="margin-right:10px" @click="sendMessage">发送</el-button>
+          v-model="inputMessage"
+          placeholder="有什么想问的你都可以畅所欲言！"
+          @keyup.enter="sendMessage"
+          size="large"
+          style="width:80%; margin-left:10px"
+      />
+      <el-button size="large" style="margin-left:20px" @click="sendMessage">发送</el-button>
     </div>
+
   </div>
 </template>
 
@@ -167,8 +169,11 @@ onMounted(() => {
 
   .dialog-input {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    position: fixed;
+    bottom: 4vh;
+    left: 7vw;
+    width: 90vw;
   }
 }
 </style>

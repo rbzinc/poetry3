@@ -3,14 +3,13 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserInfoStore } from '@/stores/modules/user.js'
 const userInfo = useUserInfoStore()
-const txUrl =userInfo.userInfo.touxiang
 const router = useRouter();
 
 const menuItems = ref([
-  { label: '1', icon: 'iconfont icon-contract', route: '/chattochat/1', tooltip: '诗人对话' },
-  { label: '2', icon: 'iconfont icon-tiaobodanguanli', route: '/chattopic', tooltip: '生成图片' },
-  { label: '3', icon: 'iconfont icon-huanjidanshenpi', route: '/pictochat', tooltip: '图片转古诗' },
-  { label: '4', icon: 'iconfont icon-bianji', route: '/poemrefine', tooltip: '诗句优化' }
+  { label: '1', icon: 'iconfont icon-liaotianduihua', route: '/chattochat/1', tooltip: '诗人对话' },
+  { label: '2', icon: 'iconfont icon-shengchengtupian', route: '/chattopic', tooltip: '生成图片' },
+  { label: '3', icon: 'iconfont icon-tupianzhuanwenzi', route: '/pictochat', tooltip: '图片转古诗' },
+  { label: '4', icon: 'iconfont icon-gudaishici', route: '/poemrefine', tooltip: '诗句优化' }
 ]);
 const navigate = (route) => {
   try {
@@ -26,7 +25,7 @@ const navigate = (route) => {
   <div class="sidebar">
     <ul class="sidebar-menu">
       <li class="sidebar-item">
-        <img src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
+        <img :src="userInfo.userInfo.touxiang"
              alt="" class="avatar" @click="navigate('/poetryAi')"/>
       </li>
       <el-divider style="margin: 5px 0;"/>
@@ -47,8 +46,8 @@ const navigate = (route) => {
 <style lang="scss" scoped>
 .sidebar {
   width: 50px;
-  background-color: #342e05;
-  opacity: 0.6;
+  background-color: #000000;
+  opacity: 0.4;
   position: fixed;
   height: 70%;
   margin-top: 60px;

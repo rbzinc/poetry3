@@ -6,6 +6,118 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1208",
+      "name": "标签",
+      "font_class": "biaoqian",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "1166063",
+      "name": "分享",
+      "font_class": "iconfontzhizuobiaozhun023130",
+      "unicode": "e684",
+      "unicode_decimal": 59012
+    },
+    {
+      "icon_id": "2076196",
+      "name": "赞",
+      "font_class": "zan",
+      "unicode": "e870",
+      "unicode_decimal": 59504
+    },
+    {
+      "icon_id": "2076265",
+      "name": "评论",
+      "font_class": "pinglun",
+      "unicode": "e891",
+      "unicode_decimal": 59537
+    },
+    {
+      "icon_id": "3427871",
+      "name": "浏览量",
+      "font_class": "icon-",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "6776389",
+      "name": "收藏",
+      "font_class": "shoucang",
+      "unicode": "eca7",
+      "unicode_decimal": 60583
+    },
+    {
+      "icon_id": "1727430",
+      "name": "208聊天、对话",
+      "font_class": "liaotianduihua",
+      "unicode": "e8bc",
+      "unicode_decimal": 59580
+    },
+    {
+      "icon_id": "13815911",
+      "name": "生成图片",
+      "font_class": "shengchengtupian",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "20301393",
+      "name": "古代诗词",
+      "font_class": "gudaishici",
+      "unicode": "e666",
+      "unicode_decimal": 58982
+    },
+    {
+      "icon_id": "27374473",
+      "name": "图片转文字",
+      "font_class": "tupianzhuanwenzi",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "1175",
+      "name": "新手学堂",
+      "font_class": "xinshouxuetang",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "768176",
+      "name": "杂谈",
+      "font_class": "zatan",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "8337858",
+      "name": "资源 5",
+      "font_class": "ziyuan",
+      "unicode": "e6ae",
+      "unicode_decimal": 59054
+    },
+    {
+      "icon_id": "8676320",
+      "name": "活动",
+      "font_class": "huodong",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "11603929",
+      "name": "书画赏析",
+      "font_class": "shuhuashangxi",
+      "unicode": "e6a8",
+      "unicode_decimal": 59048
+    },
+    {
+      "icon_id": "38105487",
+      "name": "创作",
+      "font_class": "chuangzuo",
+      "unicode": "e6a5",
+      "unicode_decimal": 59045
+    },
+    {
       "icon_id": "42491578",
       "name": "contract",
       "font_class": "contract",

@@ -40,14 +40,26 @@ const createOption = (optionName, options) => {
   }
 };
 
+
 // 体裁相关的响应式数据
 const genre = ref([
   { value: '人物情感', label: '人物情感' },
   { value: '自然风光', label: '自然风光' },
   { value: '政治讽喻', label: '政治讽喻' },
 ]);
+const genreValue = ref('');
 const genreOptionName = ref('');
 const genreAdding = ref(false);
+const onGenreConfirm = ()=> {
+  if (genreOptionName.value) {
+    genre.value.push({
+      label: genreOptionName.value,
+      value: genreOptionName.value,
+    })
+  }
+  onGenreConfirm.value = ''
+  genreAdding.value = false
+}
 
 // 情感相关的响应式数据
 const emotion = ref([
@@ -55,20 +67,41 @@ const emotion = ref([
   { value: '秋思', label: '秋思' },
   { value: '江雪', label: '江雪' },
 ]);
+const emotionValue = ref('');
 const emotionOptionName = ref('');
 const emotionAdding = ref(false);
-
+const onEmotionConfirm = ()=> {
+  if (emotionOptionName.value) {
+    genre.value.push({
+      label: emotionOptionName.value,
+      value: emotionOptionName.value,
+    })
+  }
+  onGenreConfirm.value = ''
+  genreAdding.value = false
+}
 // 主题相关的响应式数据
 const theme = ref([
   { value: '春意', label: '春意' },
   { value: '秋思', label: '秋思' },
   { value: '江雪', label: '江雪' },
 ]);
+const themeValue = ref('');
 const themeOptionName = ref('');
 const themeAdding = ref(false);
-
+const onThemeConfirm = ()=> {
+  if (themeOptionName.value) {
+    genre.value.push({
+      label: themeOptionName.value,
+      value: themeOptionName.value,
+    })
+  }
+  onGenreConfirm.value = ''
+  genreAdding.value = false
+}
 // 确认和清除函数
 const confirmAndClear = (optionName, options, adding) => {
+  console.log(optionName.value, options.value, adding.value);
   createOption(optionName, options);
   adding.value = false;
 };
@@ -107,7 +140,7 @@ const offerPic = () => {
     </el-scrollbar>
 
     <div class="dialog-input">
-      <div style="display: flex;align-items: center;justify-content: space-evenly; width: 1200px">
+      <div style="display: flex;align-items: center;justify-content: space-evenly; width: 1100px">
         <!-- 体裁选择 -->
         <el-select v-model="genreValue" placeholder="体裁" style="width: 180px">
           <el-option
@@ -116,7 +149,7 @@ const offerPic = () => {
             :label="item.label"
             :value="item.value" />
           <template #footer>
-            <el-button v-if="!genreAdding" text bg size="small" @click="genreAdding.value = true">
+            <el-button v-if="!genreAdding" text bg size="small" @click="genreAdding = true">
               自定义体裁
             </el-button>
             <template v-else>
@@ -127,10 +160,10 @@ const offerPic = () => {
                 size="default"
                 style="width: 180px" />
               <br />
-              <el-button type="primary" size="small" @click="confirmAndClear(genreOptionName, genre, genreAdding)">
+              <el-button type="primary" size="small" @click="onGenreConfirm">
                 确定
               </el-button>
-              <el-button size="small" @click="genreOptionName = ''; genreAdding.value = false">取消</el-button>
+              <el-button size="small" @click="genreOptionName = ''; genreAdding = false">取消</el-button>
             </template>
           </template>
         </el-select>
@@ -143,7 +176,7 @@ const offerPic = () => {
             :label="item.label"
             :value="item.value" />
           <template #footer>
-            <el-button v-if="!emotionAdding" text bg size="small" @click="emotionAdding.value = true">
+            <el-button v-if="!emotionAdding" text bg size="small" @click="emotionAdding">
               自定义体裁
             </el-button>
             <template v-else>
@@ -154,10 +187,10 @@ const offerPic = () => {
                 size="default"
                 style="width: 180px" />
               <br />
-              <el-button type="primary" size="small" @click="confirmAndClear(emotionOptionName, emotion, emotionAdding)">
+              <el-button type="primary" size="small" @click="onEmotionConfirm">
                 确定
               </el-button>
-              <el-button size="small" @click="emotionOptionName = ''; emotionAdding.value = false">取消</el-button>
+              <el-button size="small" @click="emotionOptionName = ''; emotionAdding = false">取消</el-button>
             </template>
           </template>
         </el-select>
@@ -170,7 +203,7 @@ const offerPic = () => {
             :label="item.label"
             :value="item.value" />
           <template #footer>
-            <el-button v-if="!themeAdding" text bg size="small" @click="themeAdding.value = true">
+            <el-button v-if="!themeAdding" text bg size="small" @click="themeAdding = true">
               自定义体裁
             </el-button>
             <template v-else>
@@ -181,16 +214,17 @@ const offerPic = () => {
                 size="default"
                 style="width: 180px" />
               <br />
-              <el-button type="primary" size="small" @click="confirmAndClear(themeOptionName, theme, themeAdding)">
+              <el-button type="primary" size="small" @click="onThemeConfirm">
                 确定
               </el-button>
-              <el-button size="small" @click="themeOptionName = ''; themeAdding.value = false">取消</el-button>
+              <el-button size="small" @click="themeOptionName = ''; themeAdding = false">取消</el-button>
             </template>
           </template>
         </el-select>
 
         <!-- 自定义标题输入框 -->
         <el-input v-model="input" placeholder="自定义标题" style="width: 180px;"></el-input>
+
         <el-upload
           ref="upload"
           class="upload-demo"
@@ -205,7 +239,7 @@ const offerPic = () => {
       </div>
 
       <!-- 发送按钮 -->
-      <el-button style="margin-left: 160px; margin-right: 20px;" @click="offerPic">发送</el-button>
+      <el-button style="margin-left: 60px; margin-right: 20px;" @click="offerPic">发送</el-button>
     </div>
   </div>
 </template>
@@ -262,6 +296,10 @@ const offerPic = () => {
   .dialog-input {
     display: flex;
     align-items: center;
+    position: fixed;
+    bottom: 4vh;
+    left: 7vw;
+    width: 90vw;
   }
 }
 
