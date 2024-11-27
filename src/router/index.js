@@ -80,7 +80,6 @@ const router = createRouter({
         }
       ]
     },
-
     {
       path: '/poetryAi',
       component: () => import('../views/poetryAi/poetryAi.vue')
@@ -103,9 +102,27 @@ const router = createRouter({
     },
     {
       path: '/game',
-      component: () => import('../views/game/index.vue')
+      component: () => import('../views/game/index.vue'),
+      redirect: '/dictronary',
+      children: [
+        {
+          path: '/dictronary',
+          component: () => import('../views/game/dictionaty.vue'),
+        },
+        {
+          path: '/textlist',
+          component: () => import('../views/game/textlist.vue'),
+        },
+        {
+          path: '/poetgame',
+          component: () => import('../views/game/poetgame.vue'),
+        },
+        {
+          path: '/fillpoetgame',
+          component: () => import('../views/game/fillpoetgame.vue'),
+        },
+      ]
     },
-
 
     {
       path: '/writer',

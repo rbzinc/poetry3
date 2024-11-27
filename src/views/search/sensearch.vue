@@ -8,7 +8,6 @@ const usePoetName = ref('')
 let poetsearch = userSearch.userinput
 let pagenum = ref(1)
 let pagetotal = ref(0)
-const pagesize = ref(5)
 const randomList = ref([])
 defineExpose({
   Poetryitem,
@@ -19,6 +18,7 @@ const getSentence = async (poetsearch,pagenum) =>{
   randomList.value=res.data.records
   console.log(randomList.value)
   pagetotal = res.data.total
+  console.log(pagetotal)
 }
 
 const currentChange = (pagenum) =>{
@@ -26,9 +26,8 @@ const currentChange = (pagenum) =>{
 }
 
 onMounted(() => {
-  pagenum = 1
+  pagenum = 1;
   getSentence(userSearch.userinput,pagenum)
-
 })
 </script>
 

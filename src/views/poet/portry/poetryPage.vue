@@ -19,10 +19,10 @@ import{ ref,onMounted} from "vue"
 // )
 import { storeToRefs } from "pinia"
 import { defineExpose } from "vue";
-import { usePoetStore } from "../../../stores/modules/poepavilion/";
+import { userSearchStore } from "../../../stores/modules/poepavilion";
 import Poetryitem from "../../../components/poetryitem/poetryitem.vue";
 import Search from "../../../components/search/search.vue";
-const poetstore = usePoetStore()
+const poetstore = userSearchStore()
 const { dynastyList,classList} = storeToRefs(poetstore)
 defineExpose({
   Poetryitem,

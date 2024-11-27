@@ -45,7 +45,6 @@ onMounted(() => {
   pagenum = 1
   getPoet(userSearch.userinput,pagenum)
   console.log(randomList.value)
-  
 })
 </script>
 
@@ -75,6 +74,7 @@ onMounted(() => {
 .home{
   width: 1200px;
   height: 1000px;
+  margin: 0 auto;
   .content{
     width: 1200px;
     height: 800px;

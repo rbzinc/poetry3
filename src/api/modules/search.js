@@ -20,5 +20,9 @@ export const getSenSearch = (data,pagenum) => {
 }
 //模糊查询诗人
 export const getWriterSearch = (name) => {
-  return instance.get('', name)
+  return instance.get('/user/poetry/GetPoemWriterByName11',
+      { params:{
+              name:name
+          }}
+  )
 }

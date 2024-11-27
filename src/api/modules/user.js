@@ -14,12 +14,12 @@ export const userRegisterService = ({username,password}) => {
 }
 
 //使用邮箱登录注册
-export const userEmailService = (email,password) => instance({
+export const userEmailService = (email,code) => instance({
   url:'/user/login/email', 
   method:'post',
   data:{
-    email,
-    password
+    email:email,
+    code:code
   }
 })
 
@@ -27,7 +27,7 @@ export const userEmailService = (email,password) => instance({
 export const getCodeService = (email) => {
   return instance.post('/user/login/code',
     { params:{ 
-      phone:email,
+      phone:email
     }}
   )
 }

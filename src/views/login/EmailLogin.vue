@@ -70,7 +70,8 @@ const startCountdown = () => {
 }
 
 const captch = async() =>{
-  const res = await getCodeService(formModel.value.email,1)
+  const res = await getCodeService(formModel.value.email)
+  console.log(res)
   startCountdown()
   alert('验证码发送成功！')
 }

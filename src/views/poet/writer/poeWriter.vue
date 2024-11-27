@@ -55,6 +55,7 @@ const writerDetail =(data) =>{
 onMounted(() => {
 getRandom()
 })
+
 </script>
 
 <template>
@@ -89,7 +90,7 @@ getRandom()
       :name="item.name"
       :content="item.simpleIntro"
       :dynasty="item.dynasty"
-      @click="writerDetail(item.id)"></Writeritem>
+      @click="writerDetail(item.id)" ></Writeritem>
       </div>
   <el-pagination
     :page-size="pagesize"

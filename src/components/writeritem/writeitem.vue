@@ -19,7 +19,7 @@ const writerDetails =()=>{
     <div class="title" @click="writerDetails">
       <div class="headimage"></div>
       {{ name }}
-      <div class="author">{{ dynasty }}</div>
+      <div class="author">（{{ dynasty }}）</div>
     </div>
     
     <div class="stanza">
