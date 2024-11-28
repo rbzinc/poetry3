@@ -11,11 +11,9 @@ import {getpoemRandomData} from "@/api/modules/index.js";
 // 初始化变量
 const length = ref(0);
 const dialogTableVisible = ref(false);
-const disabled = ref(false);
 const drawer = ref(false);
 const inputValue = ref('');
 const shakeButton = ref(false);
-const checked = ref(false)
 const poemData = ref([]);
 // 表单数据
 const EditForm = ref({
@@ -123,6 +121,7 @@ const tagData = ref([
     checked: false
   }
 ]);
+
 const selectedTagId = ref(null);
 
 const selectedTagName = computed(() => {

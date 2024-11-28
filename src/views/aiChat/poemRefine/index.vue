@@ -3,10 +3,13 @@
 import AiPoemAside from "@/components/AiPoetAside/index.vue";
 import { ref, computed } from 'vue';
 import { ElMessage } from "element-plus";
+import {fetchEventSource} from "@microsoft/fetch-event-source";
+import {useUserInfoStore} from "@/stores/index.js";
+import {aiChatRefinePostApi} from "@/api/modules/aiChat.js";
 
 // 定义messages变量，用于存储聊天记录
 const messages = ref([
-  { text: '你好，这里是古韵传习堂诗词网，有什么可以帮助您？', self: false },
+  { text: '选择优化类型，并且输入您的古诗，我会帮您进行优化。', self: false },
 ]);
 
 // 定义inputMessage变量，用于存储用户输入的消息
@@ -14,17 +17,63 @@ const inputMessage = ref('');
 // 定义typeIndex变量，用于存储当前选择的类型索引
 const typeIndex = ref(1);
 
-// 定义发送消息的函数
+// 发送消息的函数
 const sendMessage = () => {
   const trimmedInput = inputMessage.value.trim();
-  if (!trimmedInput) {
+  if (trimmedInput) {
+    messages.value.push({text: trimmedInput, self: true});
+    aiChatRefinePostApi(10086, trimmedInput).catch(err => {
+      console.error('API请求失败:', err);
+    });
+    inputMessage.value = '';
+  } else {
     ElMessage.error('请输入内容');
-    return; // 直接返回，避免后续不必要的计算
   }
-
-  messages.value.push({ text: trimmedInput, self: true });
-  inputMessage.value = '';
 };
+
+const controller = new AbortController();
+
+// 获取服务器发送事件的函数
+const GetSSE = () => {
+  const sseService = fetchEventSource('http://fuze1.nat300.top/ai/submita', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'token': useUserInfoStore().userInfo.token,
+    },
+    signal: controller.signal,
+    openWhenHidden: true,
+    onmessage(event) {
+      try {
+        const data = JSON.parse(event.data);
+        if (data) {
+          const lastMessage = messages.value[messages.value.length - 1];
+          if (lastMessage && !lastMessage.self) {
+            lastMessage.text += data;
+          } else {
+            messages.value.push({text: data, self: false});
+          }
+        }
+      } catch (error) {
+        console.error('消息解析失败:', error);
+        messages.value.push({text: '消息格式有误，请稍后再试。', self: false});
+      }
+    },
+    onerror(event) {
+      console.log('错误:', event);
+      messages.value.push({text: '连接出现问题，请稍后再试。', self: false});
+    },
+  });
+}
+
+onBeforeUnmount(() => {
+  controller.abort();
+});
+
+
+onMounted(() => {
+  GetSSE()
+})
 
 // 定义改变消息类型的函数
 const changeType = (event) => {
@@ -41,6 +90,8 @@ const placeholderText = computed(() => {
   ];
   return placeholders[typeIndex.value] || placeholders[0];
 });
+
+
 </script>
 
 <template>

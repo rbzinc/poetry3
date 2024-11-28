@@ -1,7 +1,6 @@
 <script setup>
 // 导入组件和库
 import AiPoemAside from "@/components/AiPoetAside/index.vue";
-import PoemIntroduce from '@/components/PoemIntroduce/index.vue'
 import {fetchEventSource} from "@microsoft/fetch-event-source";
 import {useUserInfoStore} from "@/stores/index.js";
 import { usePoemImgStore} from "@/stores/index.js";
@@ -17,7 +16,7 @@ const imgUrl = PoemImg[Number(route.params.id) - 1].url
 const poetPoem = ref([])
 // 定义消息存储
 const messages = ref([
-  {text: `亲爱的朋友你好，我是诗人${PoemImg[Number(route.params.id) - 1].title},有什么都可以尽管向我提问`, self: false},
+  {text: PoemImg[Number(route.params.id) - 1].content, self: false},
 ]);
 
 // 定义输入内容
@@ -74,7 +73,6 @@ const GetSSE = () => {
 
 const getSentence = async () => {
   const res = await getSentenceData(PoemImg[Number(route.params.id) - 1].title,1)
-  console.log(res)
   poetPoem.value = res.data.records
   console.log(poetPoem.value)
 }
@@ -96,10 +94,9 @@ onMounted(() => {
       <AiPoemAside/>
     </div>
     <div class="ai-chat-title">
-      <el-card style="width: 100%" shadow="never" class="title-card">{{ PoemImg[Number(route.params.id) - 1].content }}</el-card>
       <div class="chat-container">
         <el-scrollbar>
-          <div class="messages-container">
+          <div class="messages-container" >
             <div
                 v-for="(message, index) in messages" :key="index"
                 class="message"

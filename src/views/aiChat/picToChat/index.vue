@@ -2,29 +2,24 @@
 // 引入 AiPoemAside 组件
 import AiPoemAside from "@/components/AiPoetAside/index.vue";
 // 从 vue 引入 ref 方法
-import { ref } from 'vue';
+import {ref} from 'vue';
 // 从 element-plus 引入 ElMessage 和 genFileId
-import { ElMessage, genFileId } from 'element-plus';
+import {ElMessage, genFileId} from 'element-plus';
+import {useUserInfoStore} from "@/stores/index.js";
+import {aiPicturePostApi} from "@/api/modules/aiChat.js";
+import {fetchEventSource} from "@microsoft/fetch-event-source";
 
 // 定义消息的响应式数据
 const messages = ref([
-  { text: '你好，这里是古韵传习堂诗词网，有什么可以帮助您？', self: false },
+  {text: '你好，这里是古韵传习堂诗词网，有什么可以帮助您？', self: false},
 ]);
-
 const input = ref('');
-const upload = ref();
+const url = ref('');
 
-// 处理文件超出的回调函数
-const handleExceed = (files) => {
-  upload.value.clearFiles();
-  const file = files[0];
-  // 给上传的文件添加唯一 ID
-  if (file) {
-    file.uid = genFileId();
-    upload.value.handleStart(file);
-  } else {
-    ElMessage.error('未选择文件');
-  }
+
+// 处理图片上传的函数
+const handleSuccess = (res) => {
+  url.value = res.data
 };
 
 // 创建选项的函数
@@ -43,14 +38,14 @@ const createOption = (optionName, options) => {
 
 // 体裁相关的响应式数据
 const genre = ref([
-  { value: '人物情感', label: '人物情感' },
-  { value: '自然风光', label: '自然风光' },
-  { value: '政治讽喻', label: '政治讽喻' },
+  {value: '人物情感', label: '人物情感'},
+  {value: '自然风光', label: '自然风光'},
+  {value: '政治讽喻', label: '政治讽喻'},
 ]);
 const genreValue = ref('');
 const genreOptionName = ref('');
 const genreAdding = ref(false);
-const onGenreConfirm = ()=> {
+const onGenreConfirm = () => {
   if (genreOptionName.value) {
     genre.value.push({
       label: genreOptionName.value,
@@ -63,14 +58,14 @@ const onGenreConfirm = ()=> {
 
 // 情感相关的响应式数据
 const emotion = ref([
-  { value: '春意', label: '春意' },
-  { value: '秋思', label: '秋思' },
-  { value: '江雪', label: '江雪' },
+  {value: '亲情', label: '亲情'},
+  {value: '友情', label: '友情'},
+  {value: '爱情', label: '爱情'},
 ]);
 const emotionValue = ref('');
 const emotionOptionName = ref('');
 const emotionAdding = ref(false);
-const onEmotionConfirm = ()=> {
+const onEmotionConfirm = () => {
   if (emotionOptionName.value) {
     genre.value.push({
       label: emotionOptionName.value,
@@ -82,14 +77,14 @@ const onEmotionConfirm = ()=> {
 }
 // 主题相关的响应式数据
 const theme = ref([
-  { value: '春意', label: '春意' },
-  { value: '秋思', label: '秋思' },
-  { value: '江雪', label: '江雪' },
+  {value: '春意', label: '春意'},
+  {value: '秋思', label: '秋思'},
+  {value: '江雪', label: '江雪'},
 ]);
 const themeValue = ref('');
 const themeOptionName = ref('');
 const themeAdding = ref(false);
-const onThemeConfirm = ()=> {
+const onThemeConfirm = () => {
   if (themeOptionName.value) {
     genre.value.push({
       label: themeOptionName.value,
@@ -99,42 +94,121 @@ const onThemeConfirm = ()=> {
   onGenreConfirm.value = ''
   genreAdding.value = false
 }
-// 确认和清除函数
-const confirmAndClear = (optionName, options, adding) => {
-  console.log(optionName.value, options.value, adding.value);
-  createOption(optionName, options);
-  adding.value = false;
-};
 
+const controller = new AbortController();
+
+// 获取服务器发送事件的函数
+const GetSSE = () => {
+  const sseService = fetchEventSource('http://fuze1.nat300.top/ai/submita', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'token': useUserInfoStore().userInfo.token,
+    },
+    signal: controller.signal,
+    openWhenHidden: true,
+    onmessage(event) {
+      try {
+        const data = JSON.parse(event.data);
+        if (data) {
+          const lastMessage = messages.value[messages.value.length - 1];
+          if (lastMessage && !lastMessage.self) {
+            lastMessage.text += data;
+          } else {
+            messages.value.push({text: data, self: false});
+          }
+        }
+      } catch (error) {
+        console.error('消息解析失败:', error);
+        messages.value.push({text: '消息格式有误，请稍后再试。', self: false});
+      }
+    },
+    onerror(event) {
+      console.log('错误:', event);
+      messages.value.push({text: '连接出现问题，请稍后再试。', self: false});
+    },
+  });
+}
+
+onBeforeUnmount(() => {
+  controller.abort();
+});
+
+
+onMounted(() => {
+  // GetSSE()
+})
 // 输出输入框内容的函数
 const offerPic = () => {
-  console.log(input.value);
+  if (genreValue.value === '') {
+    ElMessage.error('请选择体裁');
+    return;
+  }
+  if (emotionValue.value === '') {
+    ElMessage.error('请选择情感');
+    return;
+  }
+  if (themeValue.value === '') {
+    ElMessage.error('请选择主题');
+    return;
+  }
+  if (input.value === '') {
+    ElMessage.error('请输入标题');
+    return;
+  }
+  if (url.value === '') {
+    ElMessage.error('请上传图片');
+    return;
+  }
+  messages.value.push({
+    text: `我要生成一个体裁为${genre.value}, 情感为${emotion.value}, 主题为${theme.value}的古诗词，标题为${input.value}的古诗，请帮我生成一首古诗`,
+    self: true
+  });
+  genreValue.value = '';
+  emotionValue.value = '';
+  themeValue.value = '';
+  url.value = '';
+  input.value = '';
+  aiPicture()
+
 };
+
+const userStore = useUserInfoStore()
+const headers = ref({
+  'token': userStore.userInfo.token
+})
+
+const aiPicture = async () => {
+  const res = await aiPicturePostApi(genreValue.value, emotionValue.value, themeValue.value, input.value, url.value)
+  console.log(res)
+}
+
+
 </script>
 
 <template>
   <div>
     <!-- 渲染 AiPoemAside 组件 -->
-    <AiPoemAside />
+    <AiPoemAside/>
   </div>
   <div class="chat-container">
     <el-scrollbar>
       <div class="messages-container">
         <div
-          v-for="(message, index) in messages" :key="index"
-          class="message"
-          :class="{ 'my-message': message.self, 'ai-message': !message.self }">
+            v-for="(message, index) in messages" :key="index"
+            class="message"
+            :class="{ 'my-message': message.self, 'ai-message': !message.self }">
           <img
-            src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
-            alt=""
-            class="avatar avatarAi"
-            v-if="!message.self" />
+              src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
+              alt=""
+              class="avatar avatarAi"
+              v-if="!message.self"/>
           <p>{{ message.text }}</p>
           <img
-            src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
-            alt=""
-            class="avatar avatarMy"
-            v-if="message.self" />
+              src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
+              alt=""
+              class="avatar avatarMy"
+              v-if="message.self"/>
         </div>
       </div>
     </el-scrollbar>
@@ -144,22 +218,22 @@ const offerPic = () => {
         <!-- 体裁选择 -->
         <el-select v-model="genreValue" placeholder="体裁" style="width: 180px">
           <el-option
-            v-for="item in genre"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value" />
+              v-for="item in genre"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"/>
           <template #footer>
             <el-button v-if="!genreAdding" text bg size="small" @click="genreAdding = true">
               自定义体裁
             </el-button>
             <template v-else>
               <el-input
-                v-model="genreOptionName"
-                class="option-input"
-                placeholder="请输入体裁内容"
-                size="default"
-                style="width: 180px" />
-              <br />
+                  v-model="genreOptionName"
+                  class="option-input"
+                  placeholder="请输入体裁内容"
+                  size="default"
+                  style="width: 180px"/>
+              <br/>
               <el-button type="primary" size="small" @click="onGenreConfirm">
                 确定
               </el-button>
@@ -171,22 +245,22 @@ const offerPic = () => {
         <!-- 情感选择 -->
         <el-select v-model="emotionValue" placeholder="情感" style="width: 180px">
           <el-option
-            v-for="item in emotion"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value" />
+              v-for="item in emotion"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"/>
           <template #footer>
             <el-button v-if="!emotionAdding" text bg size="small" @click="emotionAdding">
               自定义体裁
             </el-button>
             <template v-else>
               <el-input
-                v-model="emotionOptionName"
-                class="option-input"
-                placeholder="请输入情感内容"
-                size="default"
-                style="width: 180px" />
-              <br />
+                  v-model="emotionOptionName"
+                  class="option-input"
+                  placeholder="请输入情感内容"
+                  size="default"
+                  style="width: 180px"/>
+              <br/>
               <el-button type="primary" size="small" @click="onEmotionConfirm">
                 确定
               </el-button>
@@ -198,22 +272,22 @@ const offerPic = () => {
         <!-- 主题选择 -->
         <el-select v-model="themeValue" placeholder="主题" style="width: 180px">
           <el-option
-            v-for="item in theme"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value" />
+              v-for="item in theme"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"/>
           <template #footer>
             <el-button v-if="!themeAdding" text bg size="small" @click="themeAdding = true">
               自定义体裁
             </el-button>
             <template v-else>
               <el-input
-                v-model="themeOptionName"
-                class="option-input"
-                placeholder="请输入体裁内容"
-                size="default"
-                style="width: 180px" />
-              <br />
+                  v-model="themeOptionName"
+                  class="option-input"
+                  placeholder="请输入体裁内容"
+                  size="default"
+                  style="width: 180px"/>
+              <br/>
               <el-button type="primary" size="small" @click="onThemeConfirm">
                 确定
               </el-button>
@@ -226,12 +300,11 @@ const offerPic = () => {
         <el-input v-model="input" placeholder="自定义标题" style="width: 180px;"></el-input>
 
         <el-upload
-          ref="upload"
-          class="upload-demo"
-          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-          :limit="1"
-          :on-exceed="handleExceed"
-          :auto-upload="false">
+            action="http://fuze1.nat300.top/user/luntan/updateImage"
+            :headers="headers"
+            :limit="1"
+            :on-success="handleSuccess"
+        >
           <template #trigger>
             <el-button type="primary" style="margin-top: 10px">选择图片</el-button>
           </template>

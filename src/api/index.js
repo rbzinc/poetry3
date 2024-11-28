@@ -9,7 +9,7 @@ const instance = axios.create({
     'Content-Type': 'application/json',
     'token': userStore.userInfo?.token
   },
-  timeout: 5000
+  timeout: 10000
 });
 
 // 请求拦截器
