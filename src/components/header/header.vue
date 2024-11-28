@@ -1,8 +1,14 @@
 <script setup>
-import {User} from '@element-plus/icons-vue'
+import {ArrowDown, User} from '@element-plus/icons-vue'
 import {useUserInfoStore} from '@/stores/index.js'
+import router from "@/router/index.js";
 
 const useUser = useUserInfoStore()
+
+const loyout = () => {
+  useUser.clearUserInfo()
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -35,8 +41,25 @@ const useUser = useUserInfoStore()
           </template>
         </el-dropdown>
         <router-link to="/talksquare">论坛</router-link>
+
         <span v-if="useUser.userInfo">
-          <router-link to="/user">我的<el-icon class="user"><User/></el-icon></router-link>
+          <el-dropdown placement="bottom">
+          <p>
+            <router-link to="/user">
+              我的
+              <el-icon class="user"><User/></el-icon>
+
+            </router-link>
+          </p>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item>
+                <p @click="loyout">退出登录</p>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+
         </span>
         <span v-else>
           <router-link to="/login">登录<el-icon class="user"><User/></el-icon></router-link>

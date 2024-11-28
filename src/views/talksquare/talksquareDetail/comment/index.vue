@@ -148,11 +148,7 @@ onMounted(() => {
           <div class="listbox-middle-root">{{ item.context }}</div>
           <div class="listbox-bottom">
             <span>发布时间：{{ item.createTiem }}</span>
-<!--            TODO 点赞 -->
-<!--              <span>-->
-<!--                <i class="iconfont icon-dianzan"></i>-->
-<!--                <i class="iconfont icon-dianzan1"></i>-->
-<!--              </span>-->
+
               <span v-show="item.name !== name" @click="showReplyInput">回复</span>
           </div>
         </div>
