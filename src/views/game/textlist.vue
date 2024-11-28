@@ -46,22 +46,27 @@ const title = ref([
     name: '渔家傲.秋思',
   }])
 const status = ref()
+let checked = ref(false)
 const returnclick = () =>{
   router.push('/dictronary')
 }
 const entergame = () =>{
+
   const checked1 = ref(false)
   router.push('/poetgame')
 }
-const recitestatus = ()  =>{
-  if(status.value === 2){
-    const checked = ref( true )
+const recitestatus = () => {
+  if (status.value === 2) {
+    checked.value = true;
+  } else {
+    checked.value = false;
   }
 }
+
 onMounted(()=> {
   status.value = gameStore.poetstatus;
-  console.log(status.value)
-  recitestatus(status.value)
+  console.log(status.value);
+  recitestatus();
 })
 </script>
 

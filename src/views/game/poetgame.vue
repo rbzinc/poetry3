@@ -104,7 +104,8 @@ const fillgameclick = () =>{
   border-bottom: 1px #727171 solid;
   display: flex;
   margin: 0 auto 60px;
-  cursor: pointer
+  cursor: pointer;
+  font-size: 20px;
 }
 .game{
   width: 900px;
