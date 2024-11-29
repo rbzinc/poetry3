@@ -9,6 +9,7 @@ import { userLoginService } from '../../api/modules/user'
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserInfoStore } from '../../stores/modules/user.js'
+import {ElMessage} from "element-plus";
 const useUser = useUserInfoStore()
 const router = useRouter()
 const form =ref(null)
@@ -45,6 +46,7 @@ const login = async () => {
   console.log(formModel.value.name,formModel.value.password)
   const UserLogin = await userLoginService(formModel.value.name,formModel.value.password)
   console.log(UserLogin)
+  console.log(UserLogin.data)
   const userStore = useUserInfoStore()
   userStore.setUserInfo(UserLogin.data)
   ElMessage.success('登录成功')

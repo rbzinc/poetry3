@@ -4,6 +4,7 @@ import common from './comment/index.vue';
 import Markdown from './markdown/index.vue'
 import {useRoute} from 'vue-router';
 import DayRecommend from '@/components/talksquare/DayRecommend/index.vue'
+import ArticleRecommentDation from '@/components/talksquare/ArticleRecommendation/index.vue'
 import {
   userLuntanDianzanGetApi,
   userLuntanDianzanrankGetApi,
@@ -58,6 +59,8 @@ const userLuntanSelectxiangxi = async () => {
  */
 const updateLike = async () => {
   const res = await userLuntanDianzanGetApi(blogid.value)
+  console.log(res)
+  await userLuntanDianzanrank();
   if (res.data === '点赞成功') {
     userLuntanXiangxi.value.blogLike = !userLuntanXiangxi.value.blogLike
     userLuntanXiangxi.value.liked += 1
@@ -65,6 +68,7 @@ const updateLike = async () => {
     userLuntanXiangxi.value.liked -= 1
     userLuntanXiangxi.value.blogLike = !userLuntanXiangxi.value.blogLike
   }
+
 }
 
 /**
@@ -167,19 +171,7 @@ onMounted(() => {
         </div>
       </el-card>
 
-      <el-card class="contents-card">
-        <div>
-          <h2>相关文章</h2>
-        </div>
-        <el-divider style="margin: 16px 0"/>
-        <div v-for="(item, index) in 5" :key="index" style="margin-bottom: 16px; margin-left: 5px; cursor: pointer;">
-          <h3 style="margin-bottom: 10px;">这是文章标题</h3>
-          <div style="display: flex; color: #666;">
-            <p style="margin-right: 16px;">阅读量123 · </p>
-            <p>点赞量31</p>
-          </div>
-        </div>
-      </el-card>
+     <ArticleRecommentDation />
 
      <DayRecommend style="margin-top: 30px;"/>
     </div>

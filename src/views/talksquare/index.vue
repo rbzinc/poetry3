@@ -1,9 +1,9 @@
 <script setup>
 import {ref} from 'vue'
 import router from "@/router/index.js";
-import { userLuntanSelecttiezTypesGetApi } from "@/api/modules/talkSquare.js";
+import {userLuntanSelectForumGetApi, userLuntanSelecttiezTypesGetApi} from "@/api/modules/talkSquare.js";
 import DayRecommend from "@/components/talksquare/DayRecommend/index.vue";
-
+import ArticleRecommendation from "@/components/talksquare/ArticleRecommendation/index.vue";
 const activeName = ref('new') // 当前激活的tab
 const activeIndex = ref('1') // 当前激活的tab
 const pageSize = ref(6) // 每页显示的条数
@@ -66,9 +66,7 @@ const EditPublic = () => {
 const userLuntanSelecttiezTypes = async() => {
   const res = await userLuntanSelecttiezTypesGetApi(currentPage.value, pageSize.value, nowMenuData.value)
   userLuntanSelecttiezTypesData.value = res.data.records
-
 }
-
 onMounted(()=>{
   userLuntanSelecttiezTypes()
 })
@@ -126,15 +124,7 @@ onMounted(()=>{
     </div>
 
     <div class="article-right">
-      <el-card style="margin-bottom: 30px;">
-        <template #header>
-          <span>精选文章推荐</span>
-        </template>
-        <div v-for="(item, index) in 5" :key="index" style="margin-bottom: 10px;">
-          <h4>这是标题</h4>
-        </div>
-
-      </el-card>
+      <ArticleRecommendation />
       <DayRecommend />
     </div>
 

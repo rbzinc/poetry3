@@ -6,8 +6,8 @@ import instance from "@/api/index.js";
  * @returns {*}
  */
 export const userLuntanUpdateImagePostApi = (file) => instance({
-  url:'/user/luntan/updateImage',
-  method:'post',
+  url: '/user/luntan/updateImage',
+  method: 'post',
   data: {
     file
   }
@@ -18,9 +18,9 @@ export const userLuntanUpdateImagePostApi = (file) => instance({
  * @param data 更改测试
  * @returns {*}
  */
-export const userLuntanFabutieziPostApi = ({content,images,poemid,title,type,poemword}) => instance({
-  url:'/user/luntan/fabutiezi',
-  method:'post',
+export const userLuntanFabutieziPostApi = ({content, images, poemid, title, type, poemword}) => instance({
+  url: '/user/luntan/fabutiezi',
+  method: 'post',
   data: {
     content,
     images,
@@ -38,9 +38,9 @@ export const userLuntanFabutieziPostApi = ({content,images,poemid,title,type,poe
  * @param type
  * @returns {*}
  */
-export const userLuntanSelecttiezTypesGetApi = (pageNum,  pageSize, type1) => instance({
-  url:`/user/luntan/selecttiez`,
-  method:'get',
+export const userLuntanSelecttiezTypesGetApi = (pageNum, pageSize, type1) => instance({
+  url: `/user/luntan/selecttiez`,
+  method: 'get',
   params: {
     pageNum,
     pageSize,
@@ -49,8 +49,8 @@ export const userLuntanSelecttiezTypesGetApi = (pageNum,  pageSize, type1) => in
 })
 
 export const userPoetryGetVeryGoodPoemGetApi = () => instance({
-  url:'/user/poetry/GetVeryGoodPoem',
-  method:'get'
+  url: '/user/poetry/GetVeryGoodPoem',
+  method: 'get'
 
 })
 
@@ -60,8 +60,8 @@ export const userPoetryGetVeryGoodPoemGetApi = () => instance({
  * @returns {*}
  */
 export const userLuntanSelectxiangxiGetApi = (blogid) => instance({
-  url:'/user/luntan/selectxiangxi',
-  method:'get',
+  url: '/user/luntan/selectxiangxi',
+  method: 'get',
   params: {
     blogid
   }
@@ -72,9 +72,9 @@ export const userLuntanSelectxiangxiGetApi = (blogid) => instance({
  * @param blogid
  * @returns {*}
  */
-export const  userLuntanDianzanGetApi = (blogid) => instance({
-  url:'/user/luntan/dianzan',
-  method:'get',
+export const userLuntanDianzanGetApi = (blogid) => instance({
+  url: '/user/luntan/dianzan',
+  method: 'get',
   params: {
     blogid
   }
@@ -86,8 +86,8 @@ export const  userLuntanDianzanGetApi = (blogid) => instance({
  * @returns {*}
  */
 export const userLuntanDianzanrankGetApi = (blogid) => instance({
-  url:'/user/luntan/dianzanrank',
-  method:'get',
+  url: '/user/luntan/dianzanrank',
+  method: 'get',
   params: {
     blogid
   }
@@ -100,9 +100,9 @@ export const userLuntanDianzanrankGetApi = (blogid) => instance({
  * @returns {*}
  */
 export const userLuntanIsguanzhuGetApi = (followUserid) => instance({
-  url:'/user/luntan/isguanzhu',
-  method:'get',
-  params:{
+  url: '/user/luntan/isguanzhu',
+  method: 'get',
+  params: {
     followUserid
   }
 })
@@ -113,10 +113,10 @@ export const userLuntanIsguanzhuGetApi = (followUserid) => instance({
  * @param isFollow
  * @returns {*}
  */
-export const userLuntanGuanzhuGetApi = (followUserid,isFollow) => instance({
-  url:'/user/luntan/guanzhu',
-  method:'get',
-  params:{
+export const userLuntanGuanzhuGetApi = (followUserid, isFollow) => instance({
+  url: '/user/luntan/guanzhu',
+  method: 'get',
+  params: {
     followUserid,
     isFollow
   }
@@ -127,9 +127,9 @@ export const userLuntanGuanzhuGetApi = (followUserid,isFollow) => instance({
  * @param followid
  * @returns {*}
  */
-export const userLuntanSelectUserFollowid =(followid) => instance({
-  url:`/user/luntan/select/user/${followid}`,
-  method:'get'
+export const userLuntanSelectUserFollowid = (followid) => instance({
+  url: `/user/luntan/select/user/${followid}`,
+  method: 'get'
 })
 
 /**
@@ -139,10 +139,10 @@ export const userLuntanSelectUserFollowid =(followid) => instance({
  * @param followid
  * @returns {*}
  */
-export const userLuntanSelectBlogFollowid = (pageNum,pageSize,followid ) => instance({
-  url:`/user/luntan/select/blog/${followid}`,
-  method:'get',
-  params:{
+export const userLuntanSelectBlogFollowid = (pageNum, pageSize, followid) => instance({
+  url: `/user/luntan/select/blog/${followid}`,
+  method: 'get',
+  params: {
     pageNum,
     pageSize
   }
@@ -155,9 +155,9 @@ export const userLuntanSelectBlogFollowid = (pageNum,pageSize,followid ) => inst
  * @param blogId
  * @returns {*}
  */
-export const userLuntanFabacommentPostApi = (parentId,tagerrName,context,blogId) => instance({
-  url:'/user/luntan/fabacomment',
-  method:'post',
+export const userLuntanFabacommentPostApi = (parentId, tagerrName, context, blogId) => instance({
+  url: '/user/luntan/fabacomment',
+  method: 'post',
   data: {
     parentId,
     tagerrName,
@@ -172,10 +172,35 @@ export const userLuntanFabacommentPostApi = (parentId,tagerrName,context,blogId)
  * @param blogid
  * @returns {*}
  */
-export const userLuntanSelectConmmetsGetApi = (blogid) =>instance({
-  url:'/user/luntan/selectConmmets',
-  method:'get',
-  params:{
+export const userLuntanSelectConmmetsGetApi = (blogid) => instance({
+  url: '/user/luntan/selectConmmets',
+  method: 'get',
+  params: {
     blogid
+  }
+})
+
+/**
+ * 查询推荐文章接口
+ * @returns {*}
+ */
+export const userLuntanSelectForumGetApi = () => instance({
+  url: '/user/luntan/select/forum',
+  method: 'get'
+})
+
+/**
+ * 查询一个人发布的全部笔记
+ * @param pageNum
+ * @param pageSize
+ * @param followid
+ * @returns {*}
+ */
+export const userLuntanSelectBlogGetApi = (pageNum, pageSize, followid) => instance({
+  url: `/user/luntan/select/blog/${followid}`,
+  method: 'get',
+  params: {
+    pageNum,
+    pageSize
   }
 })

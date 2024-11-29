@@ -4,17 +4,9 @@ import {ElCard, ElMessage} from 'element-plus';
 
 import {useUserInfoStore} from "@/stores/modules/user.js";
 import router from "@/router/index.js";
+import {userLuntanSelectBlogGetApi} from "@/api/modules/talkSquare.js";
 
 const userLuntanSelecttiezTypesData = ref([
-  {
-    "comments": 5,
-    "content": "春天来了，万物复苏，公园里的樱花开得正盛，和家人一起散步，感受着温暖的阳光和花香，真是一个美好的周末。",
-    "images": "https://example.com/spring_cherry_blossoms.jpg",
-    "liked": 23,
-    "poemWord": null,
-    "title": "春日漫步",
-    "username": "springlover"
-  },
   {
     "comments": 5,
     "content": "春天来了，万物复苏，公园里的樱花开得正盛，和家人一起散步，感受着温暖的阳光和花香，真是一个美好的周末。",
@@ -83,6 +75,8 @@ const achievement = ref([
 ])
 const myInterest = ref(['诗词创作', '诗词赏析', '诗词学习', '诗词活动', '诗词资源', '诗词杂谈'])
 const dialogTableVisible = ref(false)
+const pageNum = ref(1)
+const pageSize = ref(6)
 // 判断用户是否登录
 if (!userStore.userInfo) {
   ElMessage.error('请先登录！')
@@ -115,6 +109,17 @@ const removeInterest = (item) => {
   }
 }
 
+const dialogVisibleFalse = () => {
+  dialogTableVisible.value = false;
+  ElMessage.success('自定义兴趣领域成功');
+}
+
+const userLuntanSelectBlog = async() => {
+
+  const res = await userLuntanSelectBlogGetApi(pageNum.value, pageSize.value, Number(userStore.userInfo.id))
+  console.log(res)
+}
+userLuntanSelectBlog()
 </script>
 <template>
   <div class="container">
@@ -150,7 +155,7 @@ const removeInterest = (item) => {
           </div>
           <div class="user-info-number">
             <p>39299 总访问量</p>
-            <p>45 原创</p>
+            <p>{{userLuntanSelecttiezTypesData.length}} 原创</p>
             <p>503 粉丝</p>
             <p>0 铁粉</p>
           </div>
@@ -230,7 +235,13 @@ const removeInterest = (item) => {
           <i style="margin-left: 10px;" @click="removeInterest(item)">x</i>
         </li>
       </ul>
-
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="dialogVisibleFalse">
+            确定
+          </el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>
