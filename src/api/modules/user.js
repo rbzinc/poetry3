@@ -41,8 +41,11 @@ export const userChangeMessage = ({params}) => {
   return instance.get('/user/updatemessagebyid',{params})
 }
 //用户收藏古诗
-export const userCollectPoem = ({params}) => {
-  return instance.post('/user/collect/addpem',{params})
+export const userCollectPoem = (data) => {
+  return instance.post('/user/collect/addpem',
+      {params:{
+          poemid:data
+        }})
 }
 //用户取消收藏古诗
 export const userCancelPoem = ({params}) => {

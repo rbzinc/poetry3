@@ -67,7 +67,7 @@ const login = async () => {
         class="form"
       >
         <el-form-item>
-          <h1>登录</h1>
+          <div class="title">登录</div>
         </el-form-item>
         <el-form-item prop="username">
           <el-input
@@ -87,12 +87,12 @@ const login = async () => {
         </el-form-item>
         <el-form-item>
           <el-button
-            @click="login"
-            class="button"
-            type="primary"
-            auto-insert-space
-            style="color: white; background-color: #cbcaca; border-color: #cbcaca;"
-            >登录</el-button
+              @click="login"
+              class="button"
+              type="primary"
+              auto-insert-space
+              style="color: white; background-color: #cbcaca; border-color: #cbcaca;margin: auto;"
+          >登录</el-button
           >
         </el-form-item>
         <el-form-item class="flex">
@@ -102,8 +102,10 @@ const login = async () => {
           <el-link type="info" :underline="false">
             <router-link to="/email" style="text-decoration: none">邮箱登录</router-link>
           </el-link>
+          <el-link type="info" :underline="false" style="margin-left: auto;">
+            <router-link to="/forget" style="text-decoration: none">忘记密码</router-link>
+          </el-link>
         </el-form-item>
-
       </el-form>
   </div>
 </template>
@@ -142,10 +144,16 @@ const login = async () => {
     }
     .flex {
       width: 100%;
-      display: flex;
-      justify-content: space-between;
+      .right{
+        float: right;
+      }
     }
   }
+   .title{
+     text-align: center;
+     font-weight: bold;
+     font-size: 32px;
+   }
 }
 
 </style>

@@ -2,16 +2,21 @@
 import { defineProps } from 'vue';
 import { Star,VideoPlay } from '@element-plus/icons-vue';
 import { useRouter } from "vue-router";
+import {userCollectPoem} from "@/api/modules/index.js";
 
 const props = defineProps({
   poetitle:String,
   writer:String,
   content:String,
-  dynasty:String
+  dynasty:String,
+  id:String
 })
 const router =useRouter()
 const poetDetails =()=>{
   router.push(`/poedetails${item.id}`)
+}
+const collect =async()=>{
+  const res  =  await userCollectPoem(item.id)
 }
 
 </script>
@@ -29,7 +34,7 @@ const poetDetails =()=>{
         {{ content }}</p>
     </div>
     <div class="footer">
-      <el-icon  size ='24' class="icon" ><Star /></el-icon>
+      <el-icon  size ='24' class="icon" @click="collect"><Star /></el-icon>
       <el-icon size ='24' class="icon" ><VideoPlay /></el-icon>
     </div>
   </div>

@@ -39,10 +39,13 @@ const router = createRouter({
       path: '/register',
       component: () => import('../views/register/register.vue')
     },
-
     {
       path: '/email',
       component: () => import('../views/login/EmailLogin.vue')
+    },
+    {
+      path: '/forget',
+      component: () => import('../views/forget/index.vue')
     },
     //首页
     {

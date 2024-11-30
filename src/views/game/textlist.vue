@@ -50,11 +50,12 @@ let checked = ref(false)
 const returnclick = () =>{
   router.push('/dictronary')
 }
-const entergame = () =>{
 
+const entergame = () =>{
   const checked1 = ref(false)
   router.push('/poetgame')
 }
+
 const recitestatus = () => {
   if (status.value === 2) {
     checked.value = true;

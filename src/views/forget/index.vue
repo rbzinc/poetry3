@@ -38,15 +38,15 @@ const rules = {
       message: '验证码必须是 6-15位 的非空字符',
       trigger: 'blur'
     }
+  ],
+  newpassword: [
+    { required: true, message: '请输入新密码', trigger: 'blur' },
+    {
+      pattern: /^\S{6,15}$/,
+      message: '密码必须是 6-15位 的非空字符',
+      trigger: 'blur'
+    },
   ]
-  // repassword: [
-  //   { required: true, message: '请输入密码', trigger: 'blur' },
-  //   {
-  //     pattern: /^\S{6,15}$/,
-  //     message: '密码必须是 6-15位 的非空字符',
-  //     trigger: 'blur'
-  //   },
-  // ]
 }
 
 //发送验证码
@@ -90,107 +90,122 @@ const login = async () => {
 <template>
   <div class="bgc">
     <div class="bg"></div>
-        <el-form
+    <el-form
         :model="formModel"
         :rules="rules"
         ref="form"
         size="large"
         autocomplete="off"
         class="form"
-      >
-        <el-form-item>
-          <div class="title">登录</div>
-        </el-form-item>
-        <el-form-item prop="email" style="display: flex" class="item">
-          <el-input
+    >
+      <el-form-item class="item">
+        <div class="title"></div>
+      </el-form-item>
+      <el-form-item prop="email" style="display: flex" class="item">
+        <el-input
             v-model="formModel.email"
             :prefix-icon="Message"
             placeholder="请输入邮箱"
             class="input"
-          ></el-input>
-          <el-button
-           class="button"
-           @click="captch"
-          >{{ ButtonText }}</el-button>
-        </el-form-item>
-        
-        <el-form-item prop="captchword">
-          <el-input
+        ></el-input>
+        <el-button
+            class="button"
+            @click="captch"
+        >{{ ButtonText }}</el-button>
+      </el-form-item>
+
+      <el-form-item prop="captchword">
+        <el-input
             v-model="formModel.password"
             :prefix-icon="Lock"
             type="password"
             placeholder="请输入验证码"
-            
-          ></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            @click="login"
+
+        ></el-input>
+      </el-form-item>
+      <el-form-item prop="newpassword">
+        <el-input
+            v-model="formModel.password"
+            :prefix-icon="Lock"
+            type="password"
+            placeholder="请输入新密码"
+
+        ></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button
             class="button"
+            @click="login"
             type="primary"
-            auto-insert-space
-            style="color: white; background-color: #cbcaca; border-color: #cbcaca;margin: auto;"
-            >登录</el-button
-          >
-        </el-form-item>
-        <el-form-item class="flex">
-          <el-link type="info" :underline="false">
-            <router-link to="/login" style="text-decoration: none" 
-            @focus.prevent @mousedown.prevent>返回</router-link>
-          </el-link>
-        </el-form-item>
-        
-      </el-form>
+            style="color: white;
+             background-color: #cbcaca;
+             border-color: #cbcaca;
+             margin: auto;
+             "
+        >登录</el-button
+        >
+      </el-form-item>
+      <el-form-item class="flex">
+        <el-link type="info" :underline="false">
+          <router-link to="/login" style="text-decoration: none"
+                       @focus.prevent @mousedown.prevent>返回</router-link>
+        </el-link>
+      </el-form-item>
+
+    </el-form>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .bgc{
+  margin: 0 auto;
+  width: 1300px;
+  height: 800px;
+  background: none;
+  padding-top:160px ;
+  display: flex;
+}
+.bg {
+  width: 900px;
+  height: 520px;
+  background: url('../pic/微信图片_20241015002509.jpg')  no-repeat center center;
+  padding-top: 100px;
+  background-size: cover;
+  box-sizing: border-box;
+  border-radius: 20px 0 0 20px;
+}
+.form {
+  width: 400px;
+  height: 520px;
+  background-color:#fdfcf7;
+  margin:  0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius:  0 20px 20px 0;
+  .item{
+    display: flex;
+  }
+  .title {
     margin: 0 auto;
-    width: 1300px;
-    height: 800px;
-    background: none;
-    padding-top:160px ;
+  }
+  .button {
+    width: 100px;
     display: flex;
-  }
-  .bg {
-    width: 900px;
-    height: 520px;
-    background: url('../pic/微信图片_20241015002509.jpg')  no-repeat center center;
-    padding-top: 100px;
-    background-size: cover;
-    box-sizing: border-box;
-    border-radius: 20px 0 0 20px;
-  }
-  .form {
-    width: 400px;
-    height: 520px;
-    background-color:#fdfcf7;
-    margin:  0 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border-radius:  0 20px 20px 0;
-    .item{
-      display: flex;
-    }
-    .button {
-      width: 100px;
-    }
-    .flex {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-    }
-    .input{
-      width: 300px;
-    }
-    .title{
-      text-align: center;
-      font-weight: bold;
-      font-size: 32px;
-      margin: 0 auto;
-    }
-  }
 
-  </style>
+  }
+  .flex {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .input{
+    width: 300px;
+  }
+ .title{
+ text-align: center;
+   font-weight: bold;
+   font-size: 32px;
+ }
+}
+</style>

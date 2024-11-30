@@ -205,6 +205,7 @@ const poemDetail =(data) =>{
       <Poetryitem :poetitle="item.title"
       :writer="item.writer"
       :content="item.content"
+                  :id="item.id"
       :dynasty="item.dynasty"
       @click="poemDetail(item.id)"
      ></Poetryitem>
