@@ -59,14 +59,15 @@ const userLuntanSelectxiangxi = async () => {
  */
 const updateLike = async () => {
   const res = await userLuntanDianzanGetApi(blogid.value)
-  console.log(res)
+  // console.log(res)
   await userLuntanDianzanrank();
   if (res.data === '点赞成功') {
     userLuntanXiangxi.value.blogLike = !userLuntanXiangxi.value.blogLike
     userLuntanXiangxi.value.liked += 1
-  } else if (res.data === '点赞取消') {
-    userLuntanXiangxi.value.liked -= 1
+  }
+    if (res.data === '点赞取消') {
     userLuntanXiangxi.value.blogLike = !userLuntanXiangxi.value.blogLike
+    userLuntanXiangxi.value.liked -= 1
   }
 
 }

@@ -1,49 +1,12 @@
 <script setup>
-import {ref} from 'vue';
+import {computed, ref} from 'vue';
 import {ElCard, ElMessage} from 'element-plus';
 
 import {useUserInfoStore} from "@/stores/modules/user.js";
 import router from "@/router/index.js";
 import {userLuntanSelectBlogGetApi} from "@/api/modules/talkSquare.js";
 
-const userLuntanSelecttiezTypesData = ref([
-  {
-    "comments": 5,
-    "content": "春天来了，万物复苏，公园里的樱花开得正盛，和家人一起散步，感受着温暖的阳光和花香，真是一个美好的周末。",
-    "images": "https://example.com/spring_cherry_blossoms.jpg",
-    "liked": 23,
-    "poemWord": null,
-    "title": "春日漫步",
-    "username": "springlover"
-  },
-  {
-    "comments": 12,
-    "content": "今天尝试了一家新开的意大利餐厅，他们的海鲜意面做得非常地道，服务也很周到，强烈推荐给喜欢意大利美食的朋友们。",
-    "images": "https://example.com/italian_seafood_pasta.jpg",
-    "liked": 47,
-    "poemWord": null,
-    "title": "美食探店",
-    "username": "foodie"
-  },
-  {
-    "comments": 8,
-    "content": "周末去爬山，虽然累但是非常值得。站在山顶上，看着脚下的城市和远处的山脉，感觉所有的烦恼都烟消云散了。",
-    "images": "https://example.com/mountain_view.jpg",
-    "liked": 35,
-    "poemWord": null,
-    "title": "山顶风光",
-    "username": "hiker"
-  }, {
-    "comments": 15,
-    "content": "新书发布会非常成功，作者的演讲非常鼓舞人心，书的内容也很吸引人，我已经迫不及待想要读完整本书了。",
-    "images": "https://example.com/book_launch.jpg",
-    "liked": 52,
-    "poemWord": null,
-    "title": "新书分享",
-    "username": "bookworm"
-  }
-
-])
+const userLuntanSelecttiezTypesData = ref([ ])
 const userStore = useUserInfoStore();
 const activeIndex = ref('1')
 const achievement = ref([
@@ -77,6 +40,7 @@ const myInterest = ref(['诗词创作', '诗词赏析', '诗词学习', '诗词�
 const dialogTableVisible = ref(false)
 const pageNum = ref(1)
 const pageSize = ref(6)
+const scrollbarRef = ref(null);
 // 判断用户是否登录
 if (!userStore.userInfo) {
   ElMessage.error('请先登录！')
@@ -115,11 +79,29 @@ const dialogVisibleFalse = () => {
 }
 
 const userLuntanSelectBlog = async() => {
-
-  const res = await userLuntanSelectBlogGetApi(pageNum.value, pageSize.value, Number(userStore.userInfo.id))
-  console.log(res)
+  const res = await userLuntanSelectBlogGetApi(pageNum.value, pageSize.value, Number(userStore.userInfo.id));
+  userLuntanSelecttiezTypesData.value = [...userLuntanSelecttiezTypesData.value, ...res.data.records];
 }
-userLuntanSelectBlog()
+const handleScroll = (event) => {
+    console.log(event)
+    if(event.scrollTop === 280){
+         pageNum.value += 1;
+      userLuntanSelectBlog()
+    }
+};
+const truncatedContent = computed(() => {
+  return userLuntanSelecttiezTypesData.value.map(item => {
+    return {
+      ...item,
+      content: item.content.length > 100 ? item.content.slice(0, 100) + '...' : item.content
+    };
+  });
+});
+onMounted(() => {
+  userLuntanSelectBlog()
+  scrollbarRef.value = document.querySelector('.el-scrollbar__wrap');
+})
+console.log(scrollbarRef.value)
 </script>
 <template>
   <div class="container">
@@ -199,26 +181,24 @@ userLuntanSelectBlog()
               <el-menu-item index="4">收藏列表</el-menu-item>
             </el-menu>
           </template>
-          <el-scrollbar style="height: 500px;">
-            <div class="article" v-for="(item, index) in userLuntanSelecttiezTypesData" :key="index">
+          <el-scrollbar style="height: 500px;" @scroll="handleScroll"  ref="scrollbarRef" >
+            <div class="article" v-for="(item, index) in truncatedContent" :key="index">
               <div class="article-list">
                 <div class="list-left">
                   <h3 class="list-title">{{ item.title }}</h3>
                   <p class="list-content" style="margin: 5px 0; text-indent: 2em;">{{ item.content }}</p>
                   <div class="list-footer" style="margin-top: 25px;">
-                    <p style="margin-right: 12px;">作者: {{ item.username }}</p>
                     <p style="margin-right: 12px;">赞 {{ item.liked }}</p>
                     <p style="margin-right: 12px;">评 {{ item.conmments }}</p>
                     <p v-if="item.poemWord">引用 “{{ item.poemWord }}” </p>
                   </div>
                 </div>
-                <div class="list-right" style="background-color: skyblue; height: 100px; width: 150px;">
+                <div class="list-right" style="background-color: skyblue; height: 100px; width: 100px;">
                   <img alt="" :src=item.images style="width: 100%; height: 100%;">
                 </div>
               </div>
             </div>
           </el-scrollbar>
-
         </el-card>
       </div>
     </div>
@@ -346,6 +326,7 @@ userLuntanSelectBlog()
             justify-content: space-between;
 
             .list-left {
+              width: 90%;
               .list-footer {
                 display: flex;
               }

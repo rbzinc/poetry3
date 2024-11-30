@@ -4,6 +4,7 @@ import router from "@/router/index.js";
 import {userLuntanSelectForumGetApi, userLuntanSelecttiezTypesGetApi} from "@/api/modules/talkSquare.js";
 import DayRecommend from "@/components/talksquare/DayRecommend/index.vue";
 import ArticleRecommendation from "@/components/talksquare/ArticleRecommendation/index.vue";
+import { computed } from 'vue';
 const activeName = ref('new') // 当前激活的tab
 const activeIndex = ref('1') // 当前激活的tab
 const pageSize = ref(6) // 每页显示的条数
@@ -67,6 +68,17 @@ const userLuntanSelecttiezTypes = async() => {
   const res = await userLuntanSelecttiezTypesGetApi(currentPage.value, pageSize.value, nowMenuData.value)
   userLuntanSelecttiezTypesData.value = res.data.records
 }
+
+
+const truncatedContent = computed(() => {
+  return userLuntanSelecttiezTypesData.value.map(item => {
+    return {
+      ...item,
+      content: item.content.length > 100 ? item.content.slice(0, 100) + '...' : item.content
+    };
+  });
+});
+
 onMounted(()=>{
   userLuntanSelecttiezTypes()
 })
@@ -88,7 +100,7 @@ onMounted(()=>{
     <div class="article-middle">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="最新" name="new">
-          <div class="article" v-for="(item, index) in userLuntanSelecttiezTypesData"  @click="goToDetail(item)" :key="index">
+          <div class="article" v-for="(item, index) in truncatedContent" @click="goToDetail(item)" :key="index">
             <div class="article-list">
               <div class="list-left">
                 <h3 class="list-title">{{item.title}}</h3>
@@ -100,11 +112,12 @@ onMounted(()=>{
                   <p v-if="item.poemWord">引用 “{{item.poemWord}}” </p>
                 </div>
               </div>
-              <div class="list-right" style="background-color: skyblue; height: 100px; width: 150px;">
-                <img alt="" :src=item.images style="width: 100%; height: 100%;">
+              <div class="list-right" style=" height: 100px; width:100px;">
+                <img alt="" :src="item.images" style="width: 100%; height: 100%;">
               </div>
             </div>
-          </div >
+          </div>
+
         </el-tab-pane>
         <el-tab-pane label="最热" name="heat"></el-tab-pane>
       </el-tabs>
@@ -164,6 +177,7 @@ onMounted(()=>{
         justify-content: space-between;
 
         .list-left {
+          width: 90%;
           .list-footer {
             display: flex;
           }
