@@ -1,7 +1,6 @@
 <script setup>
-import {defineExpose} from 'vue';
+import { defineExpose } from 'vue';
 import Header from './components/header/header.vue';
-
 defineExpose({
   Header,
 });
@@ -9,10 +8,10 @@ defineExpose({
 </script>
 
 <template>
-  <div>
-    <Header v-show="($route.path!=='/login' && $route.path!=='/register') && $route.path!=='/email'"></Header>
-    <router-view></router-view>
-  </div>
+ <div>
+  <Header v-show="($route.path!=='/login' && $route.path!=='/register') && $route.path!=='/email' && $route.path!=='/forget'"> </Header>
+  <router-view></router-view>
+ </div>
 
 </template>
 

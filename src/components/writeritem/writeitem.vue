@@ -1,16 +1,21 @@
 <script setup>
 import { defineProps } from 'vue';
- import { Star,VideoPlay } from '@element-plus/icons-vue';
+import { Star,VideoPlay } from '@element-plus/icons-vue';
 import { useRouter } from "vue-router";
-
+import {userCollectPoem} from "@/api/modules/index.js";
+const router =useRouter()
 const props = defineProps({
   name:String,
   content:String,
   dynasty:String
 })
-const router =useRouter()
+const bgcActive = ref(false)
 const writerDetails =()=>{
   router.push(`/writer${item.id}`)
+}
+const collect =async()=>{
+  const res  =  await userCollectPoem(item.id)
+  bgcActive.value = !bgcActive.value
 }
 </script>
 
@@ -28,8 +33,9 @@ const writerDetails =()=>{
       </p>
     </div>
     <div class="footer">
-      <el-icon  size ='24' class="icon"  @click="toggleIconColor"><Star /> </el-icon>
-      <el-icon size ='24' class="icon" @click="toggleIconColor"><VideoPlay /> </el-icon>
+      <el-icon  size ='24' :class="{ active: bgcActive }"
+                @click="collect"><Star /> </el-icon>
+      <el-icon size ='24' class="icon"><VideoPlay /> </el-icon>
     </div>
   </div>
 </template>
@@ -86,7 +92,6 @@ const writerDetails =()=>{
       text-align: center;
       align-items: center; 
     }
-
    .line {
       margin: 10px 0;
       text-align: left;
@@ -97,10 +102,15 @@ const writerDetails =()=>{
       height: 40px;
       background: none;
       display: flex;
-     .icon{
+     .active{
       width: 40px;
       height: 40px;
+       background-color: #f6a4a4;
      }
+      .icon{
+        width: 40px;
+        height: 40px;
+      }
 
     
     }
