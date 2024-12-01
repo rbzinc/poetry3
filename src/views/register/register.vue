@@ -104,7 +104,7 @@ const register = async () => {
         class="form"
       >
         <el-form-item>
-          <h1>注册</h1>
+          <div class="title">注册</div>
         </el-form-item>
         <!-- <el-form-item prop="email" style="display: flex" class="item">
           <el-input
@@ -158,7 +158,7 @@ const register = async () => {
             class="button"
             type="primary"
             auto-insert-space
-            style="color: white; background-color: #cbcaca; border-color: #cbcaca;"
+            style="color: white; background-color: #cbcaca; border-color: #cbcaca;margin: auto;"
           >
             注册
           </el-button>
@@ -203,9 +203,6 @@ const register = async () => {
     .item{
       display: flex;
     }
-    .title {
-      margin: 0 auto;
-    }
     .button {
       width: 100px;
     }
@@ -216,6 +213,12 @@ const register = async () => {
     }
     .input{
       width: 300px;
+    }
+    .title{
+      text-align: center;
+      font-weight: bold;
+      font-size: 32px;
+      margin: 0 auto;
     }
   }
   

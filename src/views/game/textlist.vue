@@ -72,11 +72,14 @@ onMounted(()=> {
 </script>
 
 <template>
-  <div class="title">
-    <div class="return" @click="returnclick">
-      <el-icon><ArrowLeftBold /></el-icon>
-      返回
-    </div>
+  <el-card style="max-width: 100%;max-height: 560px;" class="el-card">
+  <template #header>
+      <div class="return" @click="returnclick">
+        <el-icon><ArrowLeftBold /></el-icon>
+        返回
+      </div>
+  </template>
+
     <div class="poet">
       桃花源记
       <div class="game" @click="entergame">
@@ -86,32 +89,39 @@ onMounted(()=> {
     <div v-for="item in title" :key="item.id" :index="item.id" class="poet">
       {{item.name}}
       <div class="game" @click="entergame">
-        <el-checkbox v-model="checked1" class="game" size="30" />
+        <el-checkbox v-model="checked1" class="game" size="large" />
       </div>
     </div>
-  </div>
+
+  </el-card>
 </template>
 
 <style scoped lang="scss">
-.title{
+.el-card {
+  background-image: url('./pic/7754bcfc0e4b6ca416b0c0435aac38f.jpg');
+  background-size: cover; /* 覆盖整个元素 */
+  background-position: center; /* 居中显示 */
+  background-repeat: no-repeat; /* 不重复 */
+}
+.return{
+  display: flex;
+  cursor: pointer;
   font-size: 20px;
   font-family: 'Georgia', serif;
-  .return{
-    height: 40px;
-    width: 100%;
-    border-bottom: 2px black solid;
-    display: flex;
-    margin: 0 auto 10px;
-    cursor: pointer
-  }
+}
   .poet{
     display: flex;
-    margin-bottom: 10px;
+    margin-top: 10px;
+    height: 30px;
+    width: 100%;
+    border-bottom: #4a4949 1px dashed;
+    font-size: 20px;
+    font-family: 'Georgia', serif;
     .game{
-      margin-left: 60px;
       width: 20px;
       height: 20px;
+      margin-left: auto;
     }
   }
-}
+
 </style>

@@ -60,6 +60,10 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+.el-card{
+  margin-top: 30px
+;
+}
 .rank-item {
   display: flex;
   margin-bottom: 12px;

@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import {useRouter} from "vue-router";
+import { ElMessage } from 'element-plus'
 const router = useRouter()
 let number = ref(0)
 let score = ref(0)
@@ -22,7 +23,10 @@ const active = ref(0);
 const checkAnswer = () => {
   if (answer.value === correctAnswer.value) {
     score.value += 1;
-    alert('正确！')
+    ElMessage({
+      message: '回答正确！',
+      type: 'success',
+    })
   } else {
     alert('错误！正确答案是：' + correctAnswer.value)
   }
@@ -63,30 +67,36 @@ const fillgameclick = () =>{
 </script>
 
 <template>
-  <div class="return" @click="returnclick">
-    <el-icon><ArrowLeftBold /></el-icon>
-    返回
-  </div>
+  <el-card style="max-width: 100%;height: 560px;" class="el-card">
+    <template #header>
+      <div class="return" @click="returnclick">
+        <el-icon><ArrowLeftBold /></el-icon>
+        返回
+      </div>
+    </template>
  <div class="game">
-   <div class="poetry-quiz">
-     <div class="question">
-       <div class="ask">{{ question }}</div>
-       <el-input v-model="answer" style="width: 240px" :placeholder="message" />
+   <div class="inner">
+     <div class="poetry-quiz">
+       <div class="question">
+         <div class="ask">{{ question }}</div>
+         <el-input v-model="answer" style="width: 240px" :placeholder="message" />
+       </div>
+       <el-button @click="nextQuestion">{{ button }}</el-button>
      </div>
-     <el-button @click="nextQuestion">{{ button }}</el-button>
+     <div class="progress-bar">
+       <el-steps
+           style="max-width: 600px"
+           :space="180"
+           :active="active"
+           finish-status="success"
+       >
+         <el-step title="古诗填句" />
+         <el-step title="挖词填空" @click="fillgameclick"/>
+       </el-steps>
+     </div>
    </div>
  </div>
-  <div class="progress-bar">
-    <el-steps
-        style="max-width: 600px"
-        :space="180"
-        :active="active"
-        finish-status="success"
-    >
-      <el-step title="古诗填句" />
-      <el-step title="挖词填空" @click="fillgameclick"/>
-    </el-steps>
-  </div>
+
   <el-dialog v-model="dialogFormVisible" title="以下是您的得分" width="800px">
     <p>{{score}}</p>
     <template #footer>
@@ -95,26 +105,44 @@ const fillgameclick = () =>{
       </div>
     </template>
   </el-dialog>
+  </el-card>
 </template>
 
 <style scoped lang="scss">
+.el-card {
+  background-image: url('./pic/微信图片_20241201193836.jpg');
+  background-size: cover; /* 覆盖整个元素 */
+  background-position: center; /* 居中显示 */
+  background-repeat: no-repeat; /* 不重复 */
+}
 .return{
-  height: 40px;
-  width: 100%;
-  border-bottom: 1px #727171 solid;
   display: flex;
-  margin: 0 auto 60px;
   cursor: pointer;
   font-size: 20px;
+  font-family: 'Georgia', serif;
 }
 .game{
-  width: 900px;
+  width: 1060px;
+  height: 440px;
   margin: 10px auto;
-  .poetry-quiz {
-    text-align: center;
+  box-sizing: border-box;
+  border: rgba(171, 74, 3, 0.3) solid 7px;
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .inner{
+    width: 1000px;
+    height: 380px;
+    border: rgba(171, 74, 3, 0.3) solid 2px;
+    border-radius: 20px;
+
+    .poetry-quiz {
+      text-align: center;
       .question {
         margin-bottom: 20px;
         .ask{
+          margin-top: 40px;
           margin-bottom:20px ;
           font-size: 25px;
           font-family: 'Georgia', serif;
@@ -122,10 +150,14 @@ const fillgameclick = () =>{
         }
       }
     }
+    .progress-bar{
+      width: 200px;
+      height: 200px;
+      margin: 50px auto 0;
+      box-sizing: border-box;
+      padding: 15px;
+    }
+  }
 }
-.progress-bar{
-  width: 200px;
-  height: 150px;
-  margin: 50px auto 0;
-}
+
 </style>

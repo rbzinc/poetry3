@@ -25,38 +25,50 @@ const textlist = () => {
 </script>
 
 <template>
+  <el-card style="max-width: 100%;max-height: 560px;" class="el-card">
   <div class="dictbox">
     <div v-for="item in dictionaty" :key="item.id" :index="item.id" >
       <Textcard
           :title="item.name"
           :content="item.content"
-          @click = textlist
+          @click = "textlist"
       ></Textcard>
     </div>
     <div class="add">
       <el-icon size ='60' class="icon"><Plus /></el-icon>
     </div>
   </div>
+    </el-card>
 </template>
 
 <style scoped lang="scss">
-.dictbox{
+.el-card {
+  height: 560px;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  width: 100%;
-  .add{
-    margin: 10px;
-    width: 190px;
-    height: 200px;
-    background-color: #ffffff;
-    border-radius: 5px;
-    border: 1px #797878 solid;
+  overflow-y: auto;
+  background-image: url('./pic/2e9520938fcd4da8d130e9bdd3b18bf.jpg');
+  background-size: cover; /* 覆盖整个元素 */
+  background-position: center; /* 居中显示 */
+  background-repeat: no-repeat; /* 不重复 */
+  .dictbox {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
 
-    .icon{
-      width: 190px;
-      height: 190px;
-      color: #999797;
+    .add {
+      margin: 10px;
+      width: 170px;
+      height: 220px;
+      background:none;
+      border-radius: 5px;
+      border: 1px #797878 solid;
+
+      .icon {
+        width: 170px;
+        height: 220px;
+        color: #999797;
+      }
     }
   }
 }

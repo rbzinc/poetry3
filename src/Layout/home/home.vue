@@ -109,7 +109,7 @@ const pieChartion = ref({
   <div class="bgc">
     <Cartoon></Cartoon>
     <div class="diagram">
-      <h2>今日推荐</h2>
+      <div class="headtitle">今日推荐</div>
       <div class="block text-center" m="t-4">
         <el-carousel trigger="click" height="400px">
           <el-carousel-item v-for="(img,index) in imgs">
@@ -140,10 +140,12 @@ const pieChartion = ref({
   background: none;
   margin: 20px auto;
 
-  h2 {
+  .headtitle {
+    font-size: 24px;
     margin-bottom: 15px;
     font-family: "Heiti", "黑体", sans-serif;
-    opacity: 0.6
+    opacity: 0.6;
+    font-weight: bold;
   }
 }
 

@@ -36,20 +36,20 @@ let information = {
     [2, 6, 3, 7, 3, 7, 1],
     [4, 5, 3, 2, 3, 5, 2],
   ],
-  colors: ["#1165b2", "#b17706", "#af3b14"],
+  colors: ["rgba(6,157,251,0.41)", "#b17706", "rgba(175,59,20,0.58)"],
 };
 
 
 const renderChart = () => {
   const option = {
-    backgroundColor: "#8297ae",
+    backgroundColor: "rgba(243, 234, 225, 1)",
     color: information.colors,
     legend: {
       itemWidth: 12,
       itemHeight: 12,
       textStyle: {
         //图例文字的样式
-        color: "#b4e4ff",
+        color: "rgba(11,11,11,0.8)",
         fontSize: 18,
 
       },
@@ -74,13 +74,13 @@ const renderChart = () => {
     xAxis: {
       type: "category",
       axisLabel: {
-        color: "#b4e4ff",
+        color: "rgba(11,11,11,0.8)",
         fontSize: 20,
         margin: 20,
       },
       axisLine: {
         lineStyle: {
-          color: "rgba(180, 228, 255, 0.3)",
+          color: "rgba(11,11,11,0.8)",
           width: 1,
         },
       },
@@ -88,7 +88,7 @@ const renderChart = () => {
         show: true,
         interval: information.area.length,
         lineStyle: {
-          color: "rgba(180, 228, 255, 0.1)",
+          color: "rgba(11,11,11,0.8)"
 
         },
       },
@@ -98,13 +98,13 @@ const renderChart = () => {
       name: "单位：首",
       nameLocation: "end",
       nameTextStyle: {
-        color: "#b4e4ff",
+        color: "rgba(11,11,11,0.8)",
         fontSize: 20,
         padding: [0, 0, 0, 110],
       },
       type: "value",
       axisLabel: {
-        color: "#b4e4ff",
+        color: "rgba(11,11,11,0.8)",
         fontSize: 20,
       },
       axisLine: {
