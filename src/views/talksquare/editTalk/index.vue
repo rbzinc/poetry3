@@ -35,6 +35,12 @@ const submitForm = async () => {
   console.log(EditForm.value)
   const res = await userLuntanFabutieziPostApi(EditForm.value)
   console.log(res)
+  if(res.data === '发布成功'){
+    ElMessage.success('发布成功！')
+    EditForm.value
+    router.push('/talksquare')
+  }
+
 };
 
 // 保存草稿

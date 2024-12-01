@@ -72,7 +72,7 @@ onBeforeUnmount(() => {
 
 
 onMounted(() => {
-  GetSSE()
+  // GetSSE()
 })
 
 // 定义改变消息类型的函数

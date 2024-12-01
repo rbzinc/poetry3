@@ -57,7 +57,8 @@ const userLuntanFabacomment = async () => {
     ElMessage.error('评论内容不能为空')
     return
   }
-  const res = await userLuntanFabacommentPostApi(parentCommentId, parentName.value, comment.value, route.params.id)
+  console.log('parentCommentId', parentCommentId.value, 'parentName', parentName.value, 'comment', comment.value)
+  const res = await userLuntanFabacommentPostApi(parentCommentId.value, parentName.value, comment.value, route.params.id)
   if (res.data === '发布成功') {
     ElMessage.success('发布成功')
     comment.value = ''

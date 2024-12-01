@@ -1,33 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
-
-
-
-const originPush = createRouter.prototype.push
-const originReplace = createRouter.prototype.replace
-createRouter.prototype.push = function (location, resolve, reject) {
-  if (resolve && reject) {
-    originPush.call(this, location, resolve, reject)
-  } else {
-    originPush.call(
-      this,
-      location,
-      () => {},
-      () => {}
-    )
-  }
-}
-createRouter.prototype.replace = function (location, resolve, reject) {
-  resolve && reject
-    ? originReplace.call(this, location, resolve, reject)
-    : originReplace.call(
-      this,
-      location,
-      () => {},
-      () => {}
-    )
-}
-
-
+import { ref } from 'vue';
+export const key = ref(0);
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -190,6 +163,10 @@ const router = createRouter({
     },
   ]
 })
+
+
+
+
 // 添加全局错误处理
 router.onError((error) => {
   console.error('路由错误:', error);
