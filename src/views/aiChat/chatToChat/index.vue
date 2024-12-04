@@ -27,9 +27,10 @@ const sendMessage = () => {
   const trimmedInput = inputMessage.value.trim();
   if (trimmedInput) {
     messages.value.push({text: trimmedInput, self: true});
-    aiChatGetApi(1, trimmedInput).catch(err => {
+    aiChatGetApi(route.params.id, trimmedInput).catch(err => {
       console.error('API请求失败:', err);
     });
+
     inputMessage.value = '';
   } else {
     ElMessage.error('请输入内容');
@@ -51,6 +52,8 @@ const GetSSE = () => {
     onmessage(event) {
       try {
         const data = JSON.parse(event.data);
+        console.log(event)
+        console.log(event.data)
         if (data) {
           const lastMessage = messages.value[messages.value.length - 1];
           if (lastMessage && !lastMessage.self) {
@@ -74,7 +77,6 @@ const GetSSE = () => {
 const getSentence = async () => {
   const res = await getSentenceData(PoemImg[Number(route.params.id) - 1].title,1)
   poetPoem.value = res.data.records
-  console.log(poetPoem.value)
 }
 
 onBeforeUnmount(() => {
