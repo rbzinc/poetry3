@@ -3,11 +3,12 @@
 import AiPoemAside from "@/components/AiPoetAside/index.vue";
 import {fetchEventSource} from "@microsoft/fetch-event-source";
 import {useUserInfoStore} from "@/stores/index.js";
-import { usePoemImgStore} from "@/stores/index.js";
+import {usePoemImgStore} from "@/stores/index.js";
 import {aiChatGetApi} from "@/api/modules/aiChat.js";
 import {ElMessage} from "element-plus";
 import {useRoute} from "vue-router";
 import {getSentenceData} from "@/api/modules/index.js";
+
 const route = useRoute();
 const userInfo = useUserInfoStore();
 const PoemImgStore = usePoemImgStore();
@@ -50,10 +51,10 @@ const GetSSE = () => {
     signal: controller.signal,
     openWhenHidden: true,
     onmessage(event) {
-      try {
-        const data = JSON.parse(event.data);
-        console.log(event)
-        console.log(event.data)
+      const data = JSON.parse(event.data);
+      console.log(event)
+      console.log(event.data)
+      if(!event.data.includes('\\ndata')){
         if (data) {
           const lastMessage = messages.value[messages.value.length - 1];
           if (lastMessage && !lastMessage.self) {
@@ -62,9 +63,8 @@ const GetSSE = () => {
             messages.value.push({text: data, self: false});
           }
         }
-      } catch (error) {
-        console.error('消息解析失败:', error);
-        messages.value.push({text: '消息格式有误，请稍后再试。', self: false});
+      }else{
+        console.log('我没有\\ndata数据')
       }
     },
     onerror(event) {
@@ -75,7 +75,7 @@ const GetSSE = () => {
 }
 
 const getSentence = async () => {
-  const res = await getSentenceData(PoemImg[Number(route.params.id) - 1].title,1)
+  const res = await getSentenceData(PoemImg[Number(route.params.id) - 1].title, 1)
   poetPoem.value = res.data.records
 }
 
@@ -85,7 +85,7 @@ onBeforeUnmount(() => {
 
 
 onMounted(() => {
-  // GetSSE()
+  GetSSE()
   getSentence()
 })
 </script>
@@ -98,7 +98,7 @@ onMounted(() => {
     <div class="ai-chat-title">
       <div class="chat-container">
         <el-scrollbar>
-          <div class="messages-container" >
+          <div class="messages-container">
             <div
                 v-for="(message, index) in messages" :key="index"
                 class="message"
@@ -131,15 +131,15 @@ onMounted(() => {
       </div>
     </div>
     <div>
-      <el-card class="introduce-card" >
+      <el-card class="introduce-card">
         <template #header>
           <div class="card-header">
             <span>{{ PoemImg[Number(route.params.id) - 1].title }} -- 经典名句</span>
           </div>
         </template>
-        <div  v-for="item in poetPoem" :key="item.id" style="margin-bottom: 10px;">
+        <div v-for="item in poetPoem" :key="item.id" style="margin-bottom: 10px;">
           <p style="font-size: 16px; font-weight: 550; margin-bottom: 15px;">
-            {{item.fromm}}
+            {{ item.fromm }}
           </p>
           <p>
             {{ item.name }}
@@ -157,7 +157,7 @@ onMounted(() => {
   margin-left: 100px;
   width: 70%;
 
-  .title-card{
+  .title-card {
     text-indent: 2em;
     font-size: 14px;
 
@@ -205,11 +205,13 @@ onMounted(() => {
         align-self: flex-end;
         background: linear-gradient(to left, transparent 0%, transparent 50px, #e6f7ff 50px, #e6f7ff 100%);
       }
+
       .ai-message {
         align-self: flex-start;
         background: linear-gradient(to right, transparent 0%, transparent 50px, #e6f7ff 50px, #e6f7ff 100%);
       }
     }
+
     .dialog-input {
       display: flex;
       align-items: center;
@@ -223,7 +225,7 @@ onMounted(() => {
   }
 }
 
-.introduce-card{
+.introduce-card {
   margin-top: 30px;
   margin-left: 30px;
   width: 300px;

@@ -122,7 +122,6 @@ onMounted(()=>{
         <el-tab-pane label="最热" name="heat"></el-tab-pane>
       </el-tabs>
 
-
       <div class="pagination-container">
         <el-pagination
             :page-size="pageSize"

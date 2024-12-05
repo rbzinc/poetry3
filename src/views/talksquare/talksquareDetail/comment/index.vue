@@ -13,18 +13,18 @@ const userInfo = useUserInfoStore()
 name.value = userInfo.userInfo.name
 const parentCommentId = ref(-1) // 默认父评论id为-1
 const comment = ref(""); // 收集 “编辑区” 的输入内容
-const replyComment = ref(""); // 收集 “回复框” 的输入内容
+const replyComment = reactive({}); // 收集每个回复框的输入内容
 // 存储请求回来的数据总数
 const total = ref(0);
 // 存储请求回来的留言列表
 const commentsList = ref();
 // 控制回复框的索引
-const showReplyIndex = ref(false);
+const showReplyIndex = reactive({});
 const parentName = ref('')
 const blogid = ref('')
 const postAddCommentForm = ref([])
 const router = useRoute()
-const showChildComments = ref(false)
+const showChildComments = reactive({});
 
 blogid.value = router.params.id
 const props = defineProps({
@@ -39,13 +39,11 @@ const comments = props.comments
  * 子组件返回回来的数据
  * @param parentId
  * @param tagerrName
- * @param showInput
  */
-const handleReply = (parentId, tagerrName, showInput) => {
-  showReplyIndex.value = showInput;
+const handleReply = (parentId, tagerrName) => {
   parentCommentId.value = parentId;
   parentName.value = tagerrName;
-  showReplyIndex.value = true;
+  showReplyIndex.value = !showReplyIndex.value;
 };
 
 /**
@@ -57,7 +55,6 @@ const userLuntanFabacomment = async () => {
     ElMessage.error('评论内容不能为空')
     return
   }
-  console.log('parentCommentId', parentCommentId.value, 'parentName', parentName.value, 'comment', comment.value)
   const res = await userLuntanFabacommentPostApi(parentCommentId.value, parentName.value, comment.value, route.params.id)
   if (res.data === '发布成功') {
     ElMessage.success('发布成功')
@@ -70,17 +67,21 @@ const userLuntanFabacomment = async () => {
  * 回复评论接口
  * @returns {Promise<void>}
  */
-const replayParent = async () => {
-  if (comment.value === '' && replyComment.value === '') {
-    ElMessage.error('评论内容不能为空')
-    return
+const replayParent = async (parentId) => {
+  // 获取当前评论对应的回复内容
+  const replyContent = replyComment[parentId] || '';
+
+  if (replyContent === '') {
+    ElMessage.error('评论内容不能为空');
+    return;
   }
-  const res = await userLuntanFabacommentPostApi(parentCommentId.value, parentName.value, replyComment.value, route.params.id)
+
+  const res = await userLuntanFabacommentPostApi(parentId, parentName.value, replyContent, route.params.id);
   if (res.data === '发布成功') {
-    ElMessage.success('发布成功')
-    replyComment.value = ''
-    showReplyIndex.value = false;
-    await userLuntanSelectConmmets()
+    ElMessage.success('发布成功');
+    replyComment[parentId] = ''; // 清空对应评论的回复内容
+    showReplyIndex[parentId] = false; // 隐藏相应回复框
+    await userLuntanSelectConmmets();
   }
 }
 
@@ -92,39 +93,52 @@ const replayParent = async () => {
 const userLuntanSelectConmmets = async () => {
   const res = await userLuntanSelectConmmetsGetApi(blogid.value)
   postAddCommentForm.value = res.data
+  // 初始化每个评论的子评论状态为 false
+  postAddCommentForm.value.forEach(item => {
+    showChildComments[item.id] = false;
+  });
+
+  // 初始化每个评论的回复框状态为 false
+  postAddCommentForm.value.forEach(item => {
+    showReplyIndex[item.id] = false;
+  });
 };
 
 /**
  * 控制回复输入框的显示与隐藏
  */
 const showReplyInput = () => {
-  showReplyIndex.value = true;
+  showReplyIndex.value = !showReplyIndex.value;
   parentCommentId.value = -1;
 }
 
+const handleParentReply =(item)=>{
+  console.log(item)
+  showReplyIndex[item.id] = !showReplyIndex[item.id]
+  parentName.value = item.name
+
+}
 
 onMounted(() => {
   userLuntanSelectConmmets()
 })
 
-/**
- * Show the reply input for a new comment
- * This function initializes the state for showing the reply input box.
- */
 
 </script>
 
 <template>
   <div class="comments">
     <el-card>
+      <!-- 头部区域 -->
       <template #header>
         <div class="comments-header">
           <h3>评论 {{ comments }}</h3>
         </div>
       </template>
+      <!-- 个人发布评论-->
       <div class="editbox">
         <div class="editbox-left">
-          <el-avatar :size="45" src="#"/>
+          <el-avatar :size="45" :src="userInfo.userInfo.touxiang"/>
         </div>
         <div class="editbox-middle">
           <el-input
@@ -136,8 +150,7 @@ onMounted(() => {
           <el-button @click="userLuntanFabacomment()">发布</el-button>
         </div>
       </div>
-
-
+      <!--渲染根评论-->
       <div class="listbox" v-for="(item, index) in postAddCommentForm" :key="index">
         <div class="top-level">
           <div class="listbox-top-user">
@@ -149,21 +162,21 @@ onMounted(() => {
           <div class="listbox-middle-root">{{ item.context }}</div>
           <div class="listbox-bottom">
             <span>发布时间：{{ item.createTiem }}</span>
-
-              <span v-show="item.name !== name" @click="showReplyInput">回复</span>
+            <!--如果不是自己，则可以进行回复-->
+            <span v-show="item.name !== name" @click="handleParentReply(item)">回复</span>
           </div>
         </div>
 
-
+        <!--渲染子评论查看更多列表-->
         <div v-if="item.children && item.children.length"
              style="text-align: center; margin: 10px 0; cursor: pointer"
-             @click="showChildComments = !showChildComments">
-          {{ showChildComments ? '收起评论' : '查看更多评论' }}
-          <span v-show="!showChildComments"><el-icon><ArrowDown/></el-icon></span>
-          <span v-show="showChildComments"><el-icon><ArrowUp/></el-icon></span>
+             @click="showChildComments[item.id] = !showChildComments[item.id]">
+          {{ showChildComments[item.id] ? '收起评论' : '查看更多评论' }}
+          <span v-show="!showChildComments[item.id]"><el-icon><ArrowDown/></el-icon></span>
+          <span v-show="showChildComments[item.id]"><el-icon><ArrowUp/></el-icon></span>
         </div>
-        <div v-if="item.children && item.children.length && showChildComments"
-        >
+        <!--子评论组件-->
+        <div v-if="item.children && item.children.length && showChildComments[item.id]">
           <SecondComment
               :secondComments="item.children"
               :parentName="item.name"
@@ -172,27 +185,30 @@ onMounted(() => {
           />
         </div>
 
+        <!--回复评论组件-->
         <div
             class="reply-box-container"
-            v-show="showReplyIndex === true"
+            v-show="showReplyIndex[item.id]"
         >
           <div class="replybox" id="reply-box">
             <div class="replybox-left">
-              <el-avatar :size="30" src="#"/>
+              <el-avatar :size="30" :src="userInfo.userInfo.touxiang"/>
             </div>
             <div class="replybox-middle">
-              <el-input placeholder="回复" v-model="replyComment"></el-input>
+              <el-input :placeholder="`回复 ${parentName}`" v-model="replyComment[item.id]"></el-input>
             </div>
             <div class="replybox-right">
-              <el-button @click="replayParent()">提交</el-button>
+              <el-button @click="() => replayParent(item.id)">提交</el-button>
             </div>
           </div>
         </div>
+
+
       </div>
-<!-- TODO 滑动分页-->
-<!--      <div style="text-align: center; margin: 10px 0; cursor: pointer">-->
-<!--        显示更多<el-icon><ArrowDown /></el-icon>-->
-<!--      </div>-->
+      <!-- TODO 滑动分页-->
+      <!--      <div style="text-align: center; margin: 10px 0; cursor: pointer">-->
+      <!--        显示更多<el-icon><ArrowDown /></el-icon>-->
+      <!--      </div>-->
     </el-card>
   </div>
 </template>
@@ -201,8 +217,6 @@ onMounted(() => {
 $title-color: #333;
 $second-text: #666;
 
-
-// 留言区
 .comments {
   margin-top: 30px;
   margin-bottom: 100px;

@@ -1,5 +1,5 @@
 <script setup>
-import {defineProps, defineEmits, ref, watch} from "vue";
+import {defineProps, defineEmits, ref } from "vue";
 import {useUserInfoStore} from "@/stores/index.js";
 
 // 获取用户信息
@@ -19,17 +19,18 @@ const props = defineProps({
 });
 
 // 将属性简化赋值
-const { secondComments = [], parentName } = props;
+const { secondComments = [], parentName, replyComment } = props;
 
 // 初始化评论列表
-const commentList = ref([{ comments: secondComments, parent: parentName }]);
-const showInput = ref(false);
+const commentList = ref([{ comments: secondComments, parent: parentName}]);
+const showInput = ref({});
 
 const emit = defineEmits(["to-reply"]);
 
 // 处理回复操作
-const handleReply = (parentId, tagerrName, showInput) => {
-  emit("to-reply", parentId, tagerrName, showInput);
+const handleReply = (parentId, tagerrName) => {
+  console.log(parentId, tagerrName)
+  emit("to-reply", parentId, tagerrName);
 };
 </script>
 
@@ -37,17 +38,20 @@ const handleReply = (parentId, tagerrName, showInput) => {
   <div class="sub-reply-container" v-if="commentList[0].comments.length">
     <div class="sub-reply" v-for="(item, index) in commentList[0].comments" :key="index">
       <div class="listbox-top-user">
+<!--头像部分-->
         <el-avatar :size="30" :src="item.touxiang"/>
+<!--姓名，回复框-->
         <p>
           <span>{{ item.name }}</span>
           <span v-if="item.tagerrName === commentList[0].parent">回复</span>
           <span style="color: #0c9dd2;" v-if="item.tagerrName === commentList[0].parent">@{{ parentName }}</span>
         </p>
+<!--内容-->
       </div>
       <div class="listbox-middle-root">{{ item.context }}</div>
       <div class="listbox-bottom">
         <span>发布时间：{{ item.createTiem }}</span>
-        <span v-show="item.name !== name" @click="handleReply(item.parentId, item.tagerrName, showInput)">回复</span>
+        <span v-show="item.name !== name" @click="handleReply(item.id, item.tagerrName)">回复</span>
       </div>
     </div>
   </div>

@@ -122,8 +122,9 @@ onMounted(() => {
             {{ userLuntanXiangxi.liked }}</p>
           <p class="article-quote">{{ userLuntanXiangxi.poemWord }}</p>
         </div>
-        <div style="margin-top: 20px; padding: 0 20px;">
-          <Markdown v-if="pageContentMarkShow" :content='content'/>
+        <div style="margin-top: 20px; padding: 0 20px; height: 100%;">
+          <Markdown v-if="pageContentMarkShow" :content='content' />
+
         </div>
       </el-card>
       <common v-if="pageContentMarkShow" :comments="comments" />
