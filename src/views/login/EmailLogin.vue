@@ -1,14 +1,10 @@
 <script setup>
-// import { User, Lock } from '@element-plus/icons-vue'
-// import { ref } from 'vue'
-// import { useRouter } from 'vue-router'
-// const isRegister = ref(true)
-// import { ElForm, ElFormItem, ElInput, ElButton } from 'element-ui';
+
 import { User, Lock } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCodeService,userEmailService } from '../../api/modules/user'
-import { useUserInfoStore } from '../../stores/modules/user.js'
+import { useUserInfoStore } from '@/stores/index.js'
 const useUser = useUserInfoStore()
 const router = useRouter()
 const form =ref(null)
@@ -21,12 +17,12 @@ const formModel = ref({
 const rules = {
   email: [
     { required: true, message: '请输入邮箱', trigger: 'blur' },
-    { min: 0, max: 0, message: '邮箱不能为空', trigger: 'blur' }
+    { min: 8, max: 30, message: '邮箱不能为空', trigger: 'blur' }
   ],
   password: [
     { required: true, message: '请输入验证码', trigger: 'blur' },
     {
-      min: 0, max: 0,
+      min: 2, max: 10,
       message: '验证码不能为空',
       trigger: 'blur'
     }
@@ -39,14 +35,7 @@ const rules = {
       trigger: 'blur'
     }
   ]
-  // repassword: [
-  //   { required: true, message: '请输入密码', trigger: 'blur' },
-  //   {
-  //     pattern: /^\S{6,15}$/,
-  //     message: '密码必须是 6-15位 的非空字符',
-  //     trigger: 'blur'
-  //   },
-  // ]
+
 }
 
 //发送验证码
@@ -113,14 +102,14 @@ const login = async () => {
            @click="captch"
           >{{ ButtonText }}</el-button>
         </el-form-item>
-        
+
         <el-form-item prop="captchword">
           <el-input
             v-model="formModel.password"
             :prefix-icon="Lock"
             type="password"
             placeholder="请输入验证码"
-            
+
           ></el-input>
         </el-form-item>
         <el-form-item>
@@ -135,11 +124,11 @@ const login = async () => {
         </el-form-item>
         <el-form-item class="flex">
           <el-link type="info" :underline="false">
-            <router-link to="/login" style="text-decoration: none" 
+            <router-link to="/login" style="text-decoration: none"
             @focus.prevent @mousedown.prevent>返回</router-link>
           </el-link>
         </el-form-item>
-        
+
       </el-form>
   </div>
 </template>

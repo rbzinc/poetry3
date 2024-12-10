@@ -1,7 +1,7 @@
 import instance from '../index'
 //用户登录
 export const userLoginService = (username,password) => instance({
-  url:'user/login', 
+  url:'user/login',
   method:'post',
   data:{
     username,
@@ -9,13 +9,19 @@ export const userLoginService = (username,password) => instance({
   }
 })
 //用户注册
-export const userRegisterService = ({username,password}) => {
-  return instance.post('/user/register',{username,password})
-}
+
+export const userRegisterService = (username,password) => instance({
+  url: '/user/register',
+  method: 'post',
+  data:{
+    username,
+    password
+  }
+})
 
 //使用邮箱登录注册
 export const userEmailService = (email,code) => instance({
-  url:'/user/login/email', 
+  url:'/user/login/email',
   method:'post',
   data:{
     email:email,
@@ -26,7 +32,7 @@ export const userEmailService = (email,code) => instance({
 //发送验证码
 export const getCodeService = (email) => {
   return instance.post('/user/login/code',
-    { params:{ 
+    { params:{
       phone:email
     }}
   )

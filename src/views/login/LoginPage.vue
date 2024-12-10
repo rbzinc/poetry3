@@ -1,9 +1,4 @@
 <script setup>
-// import { User, Lock } from '@element-plus/icons-vue'
-// import { ref } from 'vue'
-// import { useRouter } from 'vue-router'
-// const isRegister = ref(true)
-// import { ElForm, ElFormItem, ElInput, ElButton } from 'element-ui';
 import {User, Lock, Message} from '@element-plus/icons-vue'
 import {userLoginService} from '../../api/modules/user'
 import {ref, watch} from 'vue'
