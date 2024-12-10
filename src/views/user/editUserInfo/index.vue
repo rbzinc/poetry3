@@ -89,7 +89,9 @@ const resetPassword = (e) => {
 }
 // 确认重置密码的处理函数
 const confirmResetPassword = async () => {
-
+  ElMessage.success('密码重置成功，请重新登录');
+  dialogTableVisibleReset.value = false;
+  router.push('/login');
 }
 
 const handleSuccess = (res) => {

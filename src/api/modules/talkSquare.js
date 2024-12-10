@@ -204,3 +204,11 @@ export const userLuntanSelectBlogGetApi = (pageNum, pageSize, followid) => insta
     pageSize
   }
 })
+
+export const userLuntanSearchGetApi = (content) => instance({
+  url:'/user/luntan/search',
+  method: 'get',
+  params: {
+    content
+  }
+})

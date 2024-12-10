@@ -5,7 +5,7 @@ import {ElForm, ElFormItem, ElInput, ElButton, ElMessage} from 'element-plus';
 import {Delete, Download, Plus, Search, ZoomIn} from '@element-plus/icons-vue';
 import router from "@/router/index.js";
 import {useUserInfoStore} from "@/stores/index.js";
-import {userLuntanFabutieziPostApi} from "@/api/modules/talkSquare.js";
+import {userLuntanFabutieziPostApi, userLuntanSearchGetApi} from "@/api/modules/talkSquare.js";
 import {getpoemRandomData} from "@/api/modules/index.js";
 
 // 初始化变量
@@ -15,12 +15,13 @@ const drawer = ref(false);
 const inputValue = ref('');
 const shakeButton = ref(false);
 const poemData = ref([]);
+const choicePoemContent = ref('点此选择')
 // 表单数据
 const EditForm = ref({
   title: '',
   content: '',
   type: '',
-  poemid: '1',
+  poemid: '',
   images: '',
   poemword: ''
 });
@@ -32,9 +33,7 @@ const submitForm = async () => {
     return
   }
   // 发送请求
-  console.log(EditForm.value)
   const res = await userLuntanFabutieziPostApi(EditForm.value)
-  console.log(res)
   if(res.data === '发布成功'){
     ElMessage.success('发布成功！')
     EditForm.value
@@ -150,14 +149,21 @@ const toggleTag = (item) => {
 const choosePoem = async () => {
   drawer.value = true;
   const res = await getpoemRandomData()
-  console.log(res)
   poemData.value = res.data
-  console.log(poemData.value)
+  inputValue.value = ''
+
 }
 
 const getPoemContent = (e) => {
   EditForm.value.poemword = e.content;
   drawer.value = false;
+  EditForm.value.poemid = e.id
+  choicePoemContent.value = e.title
+}
+
+const searchPoemByKey = async() =>{
+  const res = await userLuntanSearchGetApi(inputValue.value)
+  poemData.value = res.data
 }
 </script>
 
@@ -213,7 +219,7 @@ const getPoemContent = (e) => {
 
       </el-form-item>
       <el-form-item label="选择古诗">
-        <el-button @click="choosePoem">点此选择</el-button>
+        <el-button @click="choosePoem">{{choicePoemContent}}</el-button>
       </el-form-item>
       <el-form-item label="古诗节选">
         <el-input v-model="EditForm.poemword" type="textarea"/>
@@ -233,7 +239,7 @@ const getPoemContent = (e) => {
         class="input-with-select"
     >
       <template #append>
-        <el-button :icon="Search"/>
+        <el-button :icon="Search" @click="searchPoemByKey"/>
       </template>
     </el-input>
 
