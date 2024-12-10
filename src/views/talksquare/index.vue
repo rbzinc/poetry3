@@ -1,15 +1,16 @@
 <script setup>
 import {ref} from 'vue'
 import router from "@/router/index.js";
-import {userLuntanSelectForumGetApi, userLuntanSelecttiezTypesGetApi} from "@/api/modules/talkSquare.js";
+import {userLuntanSelecttiezTypesGetApi} from "@/api/modules/talkSquare.js";
 import DayRecommend from "@/components/talksquare/DayRecommend/index.vue";
 import ArticleRecommendation from "@/components/talksquare/ArticleRecommendation/index.vue";
 import { computed } from 'vue';
 const activeName = ref('new') // 当前激活的tab
 const activeIndex = ref('1') // 当前激活的tab
-const pageSize = ref(6) // 每页显示的条数
+const pageSize = ref(5)// 每页显示的条数
 const currentPage = ref(1) // 当前页
 const nowMenuData = ref(1) // 当前选择的分类
+const totalPage = ref(1) // 总页数
 
 const userLuntanSelecttiezTypesData = ref([]) // 根据分类选择的列表
 // 自定义数据
@@ -58,7 +59,6 @@ const handleMenuClick = (item) => {
   userLuntanSelecttiezTypes()
 }
 const goToDetail = (item) => {
-
   router.push(`/talksquareDetail/${item.id}`);
 }
 const EditPublic = () => {
@@ -66,6 +66,7 @@ const EditPublic = () => {
 }
 const userLuntanSelecttiezTypes = async() => {
   const res = await userLuntanSelecttiezTypesGetApi(currentPage.value, pageSize.value, nowMenuData.value)
+  totalPage.value=res.data.total
   userLuntanSelecttiezTypesData.value = res.data.records
 }
 
@@ -78,6 +79,16 @@ const truncatedContent = computed(() => {
     };
   });
 });
+
+/**
+ * 跳转到诗词详情页
+ * @param item
+ * @constructor
+ */
+const JumpPoemDetails = (item)=>{
+  router.push(`/poedetails?id=${item.poemId}`)
+}
+
 
 onMounted(()=>{
   userLuntanSelecttiezTypes()
@@ -109,7 +120,7 @@ onMounted(()=>{
                   <p style="margin-right: 12px;">作者: {{item.username}}</p>
                   <p style="margin-right: 12px;">赞 {{item.liked}}</p>
                   <p style="margin-right: 12px;">评 {{item.conmments}}</p>
-                  <p v-if="item.poemWord">引用 “{{item.poemWord}}” </p>
+                  <p v-if="item.poemWord" style="cursor: pointer;" @click.stop="JumpPoemDetails(item)" >引用 “{{item.poemWord}}” </p>
                 </div>
               </div>
               <div class="list-right" style=" height: 100px; width:100px;">
@@ -129,7 +140,7 @@ onMounted(()=>{
             @current-change="handlePageChange"
             background
             layout="prev, pager, next"
-            :total="66"
+            :total="totalPage"
         />
       </div>
 

@@ -18,16 +18,16 @@ export const userLuntanUpdateImagePostApi = (file) => instance({
  * @param data 更改测试
  * @returns {*}
  */
-export const userLuntanFabutieziPostApi = ({content, images, poemid, title, type, poemword}) => instance({
+export const userLuntanFabutieziPostApi = ({content, images, poemId, title, type, poemWord}) => instance({
   url: '/user/luntan/fabutiezi',
   method: 'post',
   data: {
     content,
     images,
-    poemid,
+    poemId,
     title,
     type,
-    poemword
+    poemWord
   }
 })
 

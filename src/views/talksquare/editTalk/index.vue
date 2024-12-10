@@ -2,7 +2,7 @@
 // 引入 Vue 相关的响应式 API
 import {ref, watch} from "vue";
 import {ElForm, ElFormItem, ElInput, ElButton, ElMessage} from 'element-plus';
-import {Delete, Download, Plus, Search, ZoomIn} from '@element-plus/icons-vue';
+import { Plus, Search} from '@element-plus/icons-vue';
 import router from "@/router/index.js";
 import {useUserInfoStore} from "@/stores/index.js";
 import {userLuntanFabutieziPostApi, userLuntanSearchGetApi} from "@/api/modules/talkSquare.js";
@@ -16,19 +16,26 @@ const inputValue = ref('');
 const shakeButton = ref(false);
 const poemData = ref([]);
 const choicePoemContent = ref('点此选择')
-// 表单数据
+const ExcerptDisabled = ref(true)
+/**
+ * 发文设置表单
+ * @type {Ref<UnwrapRef<{images: string, poemId: string, poemWord: string, title: string, type: string, content: string}>, UnwrapRef<{images: string, poemId: string, poemWord: string, title: string, type: string, content: string}> | {images: string, poemId: string, poemWord: string, title: string, type: string, content: string}>}
+ */
 const EditForm = ref({
   title: '',
   content: '',
   type: '',
-  poemid: '',
+  poemId: '',
   images: '',
-  poemword: ''
+  poemWord: ''
 });
 
-// 提交表单
+/**
+ * 发布博客
+ * @returns {Promise<void>}
+ */
 const submitForm = async () => {
-  if (!EditForm.value.title || !EditForm.value.content || !EditForm.value.type || !EditForm.value.poemid || !EditForm.value.images || !EditForm.value.poemword) {
+  if (!EditForm.value.title || !EditForm.value.content || !EditForm.value.type ||  !EditForm.value.images) {
     showMessage('请认真填写发文设置！');
     return
   }
@@ -42,7 +49,9 @@ const submitForm = async () => {
 
 };
 
-// 保存草稿
+/**
+ * 保存草稿
+ */
 const saveDraft = () => {
   if (!EditForm.value.content) {
     showMessage('没有内容可以保存草稿！', 'warning');
@@ -51,13 +60,17 @@ const saveDraft = () => {
   showMessage('草稿保存成功！', 'success');
 };
 
-// 保存发文设置
+/**
+ * 保存发文设置
+ */
 const saveEdit = () => {
   dialogTableVisible.value = false;
   showMessage('发文设置保存成功！', 'success');
 }
 
-// 监控内容变化以更新字数
+/**
+ * 监听发文设置内容变化
+ */
 watch(() => EditForm.value.content, () => {
   length.value = EditForm.value.content.length
 });
@@ -137,6 +150,11 @@ const selectedTagName = computed(() => {
     return selectedTag ? selectedTag.name : '分类选择';
   }
 });
+
+/**
+ * 切换标签
+ * @param item
+ */
 const toggleTag = (item) => {
   EditForm.value.type = item.name;
   if (selectedTagId.value !== item.id) {
@@ -146,6 +164,11 @@ const toggleTag = (item) => {
   }
 };
 
+
+/**
+ * 打开侧边栏选择古诗
+ * @returns {Promise<void>}
+ */
 const choosePoem = async () => {
   drawer.value = true;
   const res = await getpoemRandomData()
@@ -154,13 +177,22 @@ const choosePoem = async () => {
 
 }
 
+/**
+ * 选择古诗
+ * @param e
+ */
 const getPoemContent = (e) => {
-  EditForm.value.poemword = e.content;
   drawer.value = false;
-  EditForm.value.poemid = e.id
+  EditForm.value.poemWord = e.content;
+  EditForm.value.poemId = e.id
   choicePoemContent.value = e.title
+  ExcerptDisabled.value = false
 }
 
+/**
+ * 通过关键字搜索古诗
+ * @returns {Promise<void>}
+ */
 const searchPoemByKey = async() =>{
   const res = await userLuntanSearchGetApi(inputValue.value)
   poemData.value = res.data
@@ -222,7 +254,7 @@ const searchPoemByKey = async() =>{
         <el-button @click="choosePoem">{{choicePoemContent}}</el-button>
       </el-form-item>
       <el-form-item label="古诗节选">
-        <el-input v-model="EditForm.poemword" type="textarea"/>
+        <el-input v-model="EditForm.poemWord" type="textarea" :disabled="ExcerptDisabled"/>
       </el-form-item>
     </el-form>
     <el-button type="primary" @click="saveEdit">保存</el-button>
@@ -246,7 +278,7 @@ const searchPoemByKey = async() =>{
     <div v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
       <div v-for="item in poemData" :key="item.id" @click="getPoemContent(item)" class="infinite-list-item">
         <h3 class="title">{{ item.title }}</h3>
-        <p class="content" v-html="item.content"></p>
+        <p class="content"  v-html="item.content"></p>
       </div>
     </div>
   </el-drawer>
