@@ -15,6 +15,10 @@ const translation =ref('')
 const remarks = ref('')
 const shangxi = ref('')
 const dynasty = ref('')
+const isopen = ref(true)
+const change = () => {
+  isopen.value = !isopen.value;
+}
 //获取诗的详细信息
 const getData = async()=>{
   const res = await getPoemDetatils(titleid)
@@ -47,8 +51,7 @@ onMounted(() => {
     <h1 class="poem-title">{{ poemtitle }}</h1>
     <p class="poem-author">{{ writer }}（{{ dynasty }}）</p>
   </div>
-  <div class="poem-content" >
-    {{ content }}
+  <div class="poem-content" v-html="content">
   </div>
     <div class="others">
         <el-button type="info" class="but">播放</el-button>
@@ -62,12 +65,19 @@ onMounted(() => {
       {{ translation }}
     </div>
   </div>
-  <div class="container">
+
+  <div class="content">
     <div class="poem-notes">
-      <h3>赏析</h3><br>   
-      {{ shangxi }}
+      <div :class="[isopen ? 'before' : 'after']">
+        <h3>赏析</h3><br>
+        <div v-html="shangxi"></div>
+      </div>
+      <div class="toggle" @click="change">
+        {{ isopen ? '点击此处展开' : '点击此处收起' }}
+      </div>
     </div>
-  </div>
+    </div>
+
   <div class="container">
     <div class="poem-notes">
       <h3>评论</h3><br>   
@@ -106,17 +116,19 @@ onMounted(() => {
   .container {
     max-width: 1000px;
     margin: 0 auto;
-    padding: 10px;
+    padding: 20px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
     opacity: 70%;
     border-radius: 10px;
+    box-sizing: border-box;
     .p {
       background: none;
-    margin: 0;
-    margin-bottom: 10px;
+     margin: 0;
+     margin-bottom: 10px;
   }
+
   }
   .others{
      display: flex;
@@ -147,7 +159,8 @@ onMounted(() => {
     text-align: center;
     font-size: 1.2em;
     color: #333;
-    display: flex;
+    display: grid;
+    place-items: center;
     
   }
 
@@ -168,12 +181,61 @@ onMounted(() => {
     margin-bottom: 10px;
   }
 }
-  // body {
-  //   font-family: 'Arial', sans-serif;
-  //   margin: 0;
-  //   padding: 0;
-  //   background-color: #f4f4f4;
-  //   margin: 0 auto;
-  // }
-  
+.content{
+  width: 1000px;
+  margin: 0 auto;
+  background: none ;
+  box-sizing: border-box;
+  .before{
+    border-radius: 10px 10px 0 0;
+    transition: height 0.3s ease;
+    height: 200px;
+    overflow: hidden;
+    width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    opacity: 70%;
+    p{
+      margin: 0 ;
+      margin-bottom: 10px ;
+      font-size: 10px;
+      opacity: 70%;
+    }
+  }
+  .after{
+    border-radius: 10px 10px 0 0;
+    transition: height 0.3s ease;
+    width: 1000px;
+    height: auto;
+    margin: 0 auto ;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    opacity: 70%;
+    p{
+      margin: 0 ;
+      margin-bottom: 10px ;
+      font-size: 10px;
+      opacity: 70%;
+    }
+  }
+  .toggle{
+    width: 1000px;
+    height: 40px;
+    margin: 0 auto 30px;
+    cursor: pointer;
+    text-align: center;
+    padding: 10px;
+    background-color: #d1cfcf;
+    background: linear-gradient(to top, #d1cfcf, #fff);
+    box-sizing: border-box;
+    opacity: 60%;
+    border-radius: 0 0 10px 10px;
+  }
+}
 </style>

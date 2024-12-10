@@ -59,13 +59,15 @@ onMounted(() => {
       @click="poemDetail(item.id)"
      ></Poetryitem>
    </div>
-   <el-pagination
-    :page-size="pagesize"
-    :pager-count="11"
-    layout="prev, pager, next"
-    :total="pagetotal"
-	  @current-change="currentChange"
-  />
+   <div class="el-pagination">
+     <el-pagination
+      :page-size="pagesize"
+      :pager-count="11"
+      layout="prev, pager, next"
+      :total="pagetotal"
+      @current-change="currentChange"
+    />
+   </div>
   </div>
 </div>
 </template>
@@ -79,6 +81,11 @@ onMounted(() => {
     width: 1200px;
     height: 800px;
     background: none;
+    .el-pagination {
+      margin:  10px auto 0;
+      height: 40px;
+
+    }
   }
 }
 </style>
