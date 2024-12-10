@@ -1,35 +1,23 @@
 <script setup>
-// import { User, Lock } from '@element-plus/icons-vue'
-// import { ref } from 'vue'
-// import { useRouter } from 'vue-router'
-// const isRegister = ref(true)
-// import { ElForm, ElFormItem, ElInput, ElButton } from 'element-ui';
-import { User, Lock } from '@element-plus/icons-vue'
+
+import {Lock, Message} from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCodeService,userEmailService } from '../../api/modules/user'
 import { useUserInfoStore } from '@/stores/index.js'
-const useUser = useUserInfoStore()
+import {ElMessage} from "element-plus";
+const userStore = useUserInfoStore()
 const router = useRouter()
 const form =ref(null)
-const entry = ref(false)
 const formModel = ref({
-  name: '',
-  password: '' ,
+  captchword: '',
+  newpassword: '' ,
   email: ''
 })
 const rules = {
   email: [
     { required: true, message: '请输入邮箱', trigger: 'blur' },
     { min: 0, max: 0, message: '邮箱不能为空', trigger: 'blur' }
-  ],
-  password: [
-    { required: true, message: '请输入验证码', trigger: 'blur' },
-    {
-      min: 0, max: 0,
-      message: '验证码不能为空',
-      trigger: 'blur'
-    }
   ],
   captchword: [
     { required: true, message: '请输入验证码', trigger: 'blur' },
@@ -54,39 +42,61 @@ const countdown = ref(30);
 const disabled = ref(false);
 const ButtonText = ref('发送验证码')
 
-//验证码按钮
-const startCountdown = () => {
-  if (countdown.value > 0) {
-    captchaDisabled.value = true
-    captchaButtonText.value = `${countdown.value}秒后再次获取`
-    countdown.value--
-    setTimeout(() => {
-      startCountdown();
-    }, 1000);
-  } else {
-    countdown.value = 60
-    disabled.value = false
-    ButtonText.value = '发送验证码'
+/**
+ * 倒计时函数
+ */
+const startCountdown = () => { // 开始倒计时
+  const countdownTimer = () => { // 倒计时函数
+    if (countdown.value > 0) {
+      ButtonText.value = `${countdown.value}秒后再次获取`;
+      countdown.value--;
+      disabled.value = true;
+      setTimeout(countdownTimer, 1000);
+    } else {
+      countdown.value = 30; // 重置倒计时为60秒
+      disabled.value = false; // 启用按钮
+      ButtonText.value = '发送验证码'; // 重置按钮文本
+    }
   }
+  countdownTimer();
 }
 
-const captch = async() =>{
-  const res = await getCodeService(formModel.value.email)
-  if(res.code===1){
-    alert('验证码发送成功！')
-    startCountdown()
-  }
-
+/**
+ * 发送验证码的函数
+ * @returns {Promise<void>}
+ */
+const captch = async () => { // 发送验证码的函数
+  console.log(formModel.value.email)
+  await getCodeService(formModel.value.email)
+  startCountdown()
+  alert('验证码发送成功！')
 }
 
-const login = async () => {
-  await form.value.validate()
-  await userEmailService(formModel.value.email,formModel.value.password)
-  const userStore = useUserInfoStore()
-  userStore.setUserInfo(UserLogin.data)
+/**
+ * 登录处理函数
+ * @returns {Promise<void>}
+ */
+const login = async () => { // 登录处理函数
+  const res = await userEmailService(formModel.value.email, formModel.value.password)
+  userStore.setUserInfo(res.data)
   ElMessage.success('登录成功')
-  router.push('/layout/home')
+  router.push('/layout/home') // 登录成功后重定向
 }
+
+/**
+ * 是否禁用按钮
+ * @type {ComputedRef<unknown>}
+ */
+const isButtonDisabled = computed(() => {
+  return !formModel.value.email || !formModel.value.password
+})
+
+/**
+ * 控制登录按钮颜色
+ * @type {ComputedRef<unknown>}
+ */
+const isLoginButtonActive = computed(() => formModel.value.email !== '' && formModel.value.password !== '');
+
 
 </script>
 
@@ -119,7 +129,7 @@ const login = async () => {
 
       <el-form-item prop="captchword">
         <el-input
-            v-model="formModel.password"
+            v-model="formModel.captchword"
             :prefix-icon="Lock"
             type="password"
             placeholder="请输入验证码"
@@ -128,7 +138,7 @@ const login = async () => {
       </el-form-item>
       <el-form-item prop="newpassword">
         <el-input
-            v-model="formModel.password"
+            v-model="formModel.newpassword"
             :prefix-icon="Lock"
             type="password"
             placeholder="请输入新密码"
@@ -145,6 +155,8 @@ const login = async () => {
              border-color: #cbcaca;
              margin: auto;
              "
+            :style="{backgroundColor: isLoginButtonActive ? '#409eff' : '#cbcaca'}"
+            :disabled="isButtonDisabled"
         >登录</el-button
         >
       </el-form-item>
