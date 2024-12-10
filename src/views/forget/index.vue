@@ -8,7 +8,7 @@ import { User, Lock } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCodeService,userEmailService } from '../../api/modules/user'
-import { useUserInfoStore } from '../../stores/modules/user.js'
+import { useUserInfoStore } from '@/stores/index.js'
 const useUser = useUserInfoStore()
 const router = useRouter()
 const form =ref(null)
@@ -50,9 +50,10 @@ const rules = {
 }
 
 //发送验证码
-const countdown = ref(60);
+const countdown = ref(30);
 const disabled = ref(false);
 const ButtonText = ref('发送验证码')
+
 //验证码按钮
 const startCountdown = () => {
   if (countdown.value > 0) {
@@ -71,9 +72,11 @@ const startCountdown = () => {
 
 const captch = async() =>{
   const res = await getCodeService(formModel.value.email)
-  console.log(res)
-  startCountdown()
-  alert('验证码发送成功！')
+  if(res.code===1){
+    alert('验证码发送成功！')
+    startCountdown()
+  }
+
 }
 
 const login = async () => {
