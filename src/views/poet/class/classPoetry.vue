@@ -3,8 +3,8 @@ import {ref, onMounted, onActivated} from "vue"
 import {defineExpose} from "vue"
 import Poetryitem from "../../../components/poetryitem/poetryitem.vue"
 import Search from "../../../components/search/search.vue"
-import {userSearchStore} from "../../../stores/modules/poepavilion"
-import {getpoemRandomData, getDynastyData, getClassData, getWriterPoemData} from "../../../api/modules/poePavilion"
+import {userSearchStore} from "@/stores/modules/search.js"
+import {getpoemRandomData, getDynastyData, getClassData, getWriterPoemData} from "@/api/modules/index.js"
 import {useRouter} from "vue-router"
 
 defineExpose({
@@ -17,15 +17,15 @@ const router = useRouter()
 const isopen = ref(false)
 const isopen2 = ref(false)
 const isopen3 = ref(false)
-const indicate = ref(false)
+
 const randomList = ref([])
-const dynastyname = ref('')
-const classname = ref('')
-const poetname = ref('')
+
 let pagenum = ref(1)
 let pagetotal = ref()
 const pagesize = ref(5)
+const dynasty = ref('唐代')
 //分页器重新获取一次朝代信息
+
 const useDynastyName = ref('')
 const useClassName = ref('')
 const usePoetName = ref('')
@@ -39,10 +39,9 @@ const getRandom = async () => {
 }
 
 //根据朝代来渲染数据
-const getDynasty = async (dynastyname, pagenum) => {
-  dynastyname = useDynastyName.value
-
-  const res = await getDynastyData(dynastyname, pagenum)
+const getDynasty = async (item = '唐代') => {
+  dynasty.value = item
+  const res = await getDynastyData(dynasty.value, pagenum.value)
   randomList.value = res.data.records
   pagetotal = res.data.total
   console.log(randomList.value)
@@ -106,7 +105,7 @@ const poemDetail = (data) => {
 }
 
 onMounted(() => {
-  getDynasty(charactersearch.searchname, pagenum);
+  getDynasty();
   getRandom();
 });
 //分类栏的展开和收缩

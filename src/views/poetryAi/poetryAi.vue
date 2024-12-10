@@ -83,7 +83,7 @@ const changeChat = (item)=>{
 
 <style scoped lang="scss">
 .bgc {
-  background: url('./pic/微信图片_20241016021536.jpg');
+  background: url('./pic/9a9e79bde1bccac83dc7413c3035a26.png');
   background-size: cover;
   height: calc(100vh - 85px);
 

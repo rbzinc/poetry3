@@ -6,11 +6,11 @@ export const  getpoemRandomData = (data) => {
 }
 
 //点击朝代搜索古诗，分页搜索
-export const getDynastyData = (data,pagenum) => instance({
+export const getDynastyData = (dynasty,pagenum) => instance({
   url: '/user/poetry/GetPoemBydynasty',
     params:{
-      dynasty:data,
-      pageNum:pagenum,
+      dynasty,
+      pagenum,
     }
 })
 

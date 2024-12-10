@@ -3,13 +3,14 @@
 import AiPoemAside from "@/components/AiPoetAside/index.vue";
 import {userAIDraowSdadwadwPostApi} from "@/api/modules/aiChat.js";
 import {ElMessage} from "element-plus";
-
+import {useUserInfoStore} from "@/stores/modules/user.js";
 // 初始化消息数组和输入消息的引用
 const messages = ref([
   {text: '发送我一段一首古诗，我将为你生成相应的图片哦', self: false, type: 'text'}
 ]);
 const inputMessage = ref('');
 const baseUrl = ref('')
+const userInfo = useUserInfoStore();
 const isModalVisible = ref(false);
 const currentImageUrl = ref('');
 
@@ -73,7 +74,7 @@ const toggleModal = (imageUrl) => {
           />
           <img
               v-if="message.self"
-              src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
+              :src="userInfo.userInfo.touxiang"
               alt=""
               class="avatar avatarMy"/>
         </div>

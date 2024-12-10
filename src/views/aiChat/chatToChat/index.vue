@@ -13,7 +13,7 @@ const route = useRoute();
 const userInfo = useUserInfoStore();
 const PoemImgStore = usePoemImgStore();
 const PoemImg = PoemImgStore.poemImg
-const imgUrl = PoemImg[Number(route.params.id) - 1].url
+const imgUrl = PoemImg[Number(route.params.id)].url
 const poetPoem = ref([])
 // 定义消息存储
 const messages = ref([
