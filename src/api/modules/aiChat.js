@@ -60,8 +60,8 @@ export const aiAudioGetAPi = (id) => instance({
 // TODO 更改到其他文件夹
 /**
  * 获取音频
- * @param {*} id 
- * @returns 
+ * @param {*} id
+ * @returns
  */
 export const aiAudioGetApi = (id) => instance({
   url: '/ai/audio',
@@ -73,8 +73,8 @@ export const aiAudioGetApi = (id) => instance({
 
 /**
  * id获取图片
- * @param {*} id 
- * @returns 
+ * @param {*} id
+ * @returns
  */
 export const userAIDraowGetApi = (id) => instance({
   url: '/user/AI/draow',
@@ -82,4 +82,15 @@ export const userAIDraowGetApi = (id) => instance({
   params: {
     id
   }
+})
+
+export const userForgetGetApi = (email,password,code) => instance({
+  url: '/user/forget',
+  method: 'GET',
+  data:{
+    email,
+    password,
+    code
+  }
+
 })

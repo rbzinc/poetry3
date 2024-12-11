@@ -31,7 +31,7 @@ const chartOption = ref({
   series: [{
     name: '作品数',
     type: 'bar',
-    data: [5, 20, 36, 10, 10, 20],
+    data: [3212, 3250, 2460, 2632, 6943, 423],
     axisLabel: {
       textStyle: {
         fontSize: 18

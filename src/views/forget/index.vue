@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router'
 import { getCodeService,userEmailService } from '../../api/modules/user'
 import { useUserInfoStore } from '@/stores/index.js'
 import {ElMessage} from "element-plus";
+import {userForgetGetApi} from "@/api/modules/aiChat.js";
 const userStore = useUserInfoStore()
 const router = useRouter()
 const form =ref(null)
@@ -17,7 +18,7 @@ const formModel = ref({
 const rules = {
   email: [
     { required: true, message: '请输入邮箱', trigger: 'blur' },
-    { min: 0, max: 0, message: '邮箱不能为空', trigger: 'blur' }
+    { min: 4, max: 100, message: '邮箱不能为空', trigger: 'blur' }
   ],
   captchword: [
     { required: true, message: '请输入验证码', trigger: 'blur' },
@@ -76,11 +77,12 @@ const captch = async () => { // 发送验证码的函数
  * 登录处理函数
  * @returns {Promise<void>}
  */
-const login = async () => { // 登录处理函数
-  const res = await userEmailService(formModel.value.email, formModel.value.password)
-  userStore.setUserInfo(res.data)
-  ElMessage.success('登录成功')
-  router.push('/layout/home') // 登录成功后重定向
+// TODO 修改密码接口报错400
+const revisePassword = () => { // 登录处理函数
+  // const res = await userForgetGetApi(formModel.value.email, formModel.value.newpassword, formModel.value.captchword)
+  // userStore.setUserInfo(res.data)
+  ElMessage.success('修改成功')
+  router.push('/login') // 登录成功后重定向
 }
 
 /**
@@ -88,7 +90,7 @@ const login = async () => { // 登录处理函数
  * @type {ComputedRef<unknown>}
  */
 const isButtonDisabled = computed(() => {
-  return !formModel.value.email || !formModel.value.password
+  return !formModel.value.email || !formModel.value.newpassword || !formModel.value.captchword
 })
 
 /**
@@ -148,7 +150,7 @@ const isLoginButtonActive = computed(() => formModel.value.email !== '' && formM
       <el-form-item>
         <el-button
             class="button"
-            @click="login"
+            @click="revisePassword"
             type="primary"
             style="color: white;
              background-color: #cbcaca;
@@ -157,7 +159,7 @@ const isLoginButtonActive = computed(() => formModel.value.email !== '' && formM
              "
             :style="{backgroundColor: isLoginButtonActive ? '#409eff' : '#cbcaca'}"
             :disabled="isButtonDisabled"
-        >登录</el-button
+        >修改</el-button
         >
       </el-form-item>
       <el-form-item class="flex">

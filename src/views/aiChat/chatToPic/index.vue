@@ -111,6 +111,7 @@ const toggleModal = (imageUrl) => {
   .messages-container {
     display: flex;
     flex-direction: column;
+    height: 540px;
     margin-bottom: 10px;
     margin-left: 10px;
     align-items: flex-start;

@@ -38,10 +38,7 @@ const getData = async () => {
   dynasty.value = dataList.value[0].dynasty;
   content.value = dataList.value[0].content;
 };
-//返回主页面
-const returnView = () => {
-  router.push("/poet/class");
-};
+
 
 // 添加音频播放相关的响应式变量
 const isPlaying = ref(false);
@@ -111,7 +108,6 @@ onMounted(() => {
 
 <template>
   <div class="bgc">
-    <div class="return" @click="returnView">返回</div>
     <div class="container">
       <div class="poem-header">
         <h1 class="poem-title">{{ poemtitle }}</h1>
@@ -136,7 +132,7 @@ onMounted(() => {
           class="but"
           :loading="loading"
         >
-          文生图
+          诗生意境
         </el-button>
       </div>
     </div>

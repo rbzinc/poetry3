@@ -27,9 +27,9 @@ const handleSuccess = (res) => {
 
 // 体裁相关的响应式数据
 const genre = ref([
-  {value: '人物情感', label: '人物情感'},
-  {value: '自然风光', label: '自然风光'},
-  {value: '政治讽喻', label: '政治讽喻'},
+  {value: '五言律诗', label: '五言律诗'},
+  {value: '七言绝句', label: '七言绝句'},
+  {value: '古风', label: '古风'},
 ]);
 const genreValue = ref('');
 const genreOptionName = ref('');
