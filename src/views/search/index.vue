@@ -113,6 +113,7 @@ const handleClick = (event) => {
       width: 1200px;
       height: 800px;
       background: none;
+      margin: 0 auto;
     }
 }
 </style>
