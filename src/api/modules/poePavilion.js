@@ -9,8 +9,8 @@ export const  getpoemRandomData = (data) => {
 export const getDynastyData = (dynasty,pagenum) => instance({
   url: '/user/poetry/GetPoemBydynasty',
     params:{
-      dynasty,
-      pagenum,
+      dynasty:dynasty,
+      pageNum:pagenum
     }
 })
 

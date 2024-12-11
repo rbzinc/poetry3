@@ -39,10 +39,11 @@ const getRandom = async () => {
 }
 
 //根据朝代来渲染数据
-const getDynasty = async (item = '唐代') => {
-  dynasty.value = item
-  const res = await getDynastyData(dynasty.value, pagenum.value)
-  randomList.value = res.data.records
+const getDynasty = async (dynastyname,pagenum) =>{
+  charactersearch.searchname = dynastyname
+  useDynastyName.value = dynastyname
+  const res = await getDynastyData(dynastyname,pagenum)
+  randomList.value=res.data.records
   pagetotal = res.data.total
   console.log(randomList.value)
 }
@@ -105,7 +106,6 @@ const poemDetail = (data) => {
 }
 
 onMounted(() => {
-  getDynasty();
   getRandom();
 });
 //分类栏的展开和收缩
