@@ -5,8 +5,8 @@ import { ref, computed } from 'vue';
 import { ElMessage } from "element-plus";
 import {fetchEventSource} from "@microsoft/fetch-event-source";
 import {useUserInfoStore} from "@/stores/index.js";
-import {aiChatRefinePostApi} from "@/api/modules/aiChat.js";
-
+import {aiChatGetApi} from "@/api/modules/aiChat.js";
+const userInfo = useUserInfoStore();
 // 定义messages变量，用于存储聊天记录
 const messages = ref([
   { text: '选择优化类型，并且输入您的古诗，我会帮您进行优化。', self: false },
@@ -18,11 +18,19 @@ const inputMessage = ref('');
 const typeIndex = ref(1);
 
 // 发送消息的函数
-const sendMessage = () => {
-  const trimmedInput = inputMessage.value.trim();
+const sendMessage = async() => {
+  const trimmedInput = ref('')
+  if(typeIndex.value === 1){
+    trimmedInput.value = '修改'+inputMessage.value.trim();
+  }else if(typeIndex.value === 2){
+    trimmedInput.value = '批改'+inputMessage.value.trim();
+  }else if(typeIndex.value === 3){
+    trimmedInput.value = '剖析'+inputMessage.value.trim();
+  }
+
   if (trimmedInput) {
-    messages.value.push({text: trimmedInput, self: true});
-    aiChatRefinePostApi(10086, trimmedInput).catch(err => {
+    messages.value.push({text: trimmedInput.value, self: true});
+    aiChatGetApi(10086, trimmedInput.value).catch(err => {
       console.error('API请求失败:', err);
     });
     inputMessage.value = '';
@@ -30,50 +38,6 @@ const sendMessage = () => {
     ElMessage.error('请输入内容');
   }
 };
-
-const controller = new AbortController();
-
-// 获取服务器发送事件的函数
-const GetSSE = () => {
-  const sseService = fetchEventSource('http://fuze1.nat300.top/ai/submita', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'token': useUserInfoStore().userInfo.token,
-    },
-    signal: controller.signal,
-    openWhenHidden: true,
-    onmessage(event) {
-      try {
-        const data = JSON.parse(event.data);
-        if (data) {
-          const lastMessage = messages.value[messages.value.length - 1];
-          if (lastMessage && !lastMessage.self) {
-            lastMessage.text += data;
-          } else {
-            messages.value.push({text: data, self: false});
-          }
-        }
-      } catch (error) {
-        console.error('消息解析失败:', error);
-        messages.value.push({text: '消息格式有误，请稍后再试。', self: false});
-      }
-    },
-    onerror(event) {
-      console.log('错误:', event);
-      messages.value.push({text: '连接出现问题，请稍后再试。', self: false});
-    },
-  });
-}
-
-onBeforeUnmount(() => {
-  controller.abort();
-});
-
-
-onMounted(() => {
-  // GetSSE()
-})
 
 // 定义改变消息类型的函数
 const changeType = (event) => {
@@ -90,6 +54,50 @@ const placeholderText = computed(() => {
   ];
   return placeholders[typeIndex.value] || placeholders[0];
 });
+
+const controller = new AbortController();
+
+// 获取服务器发送事件的函数
+const GetSSE = () => {
+  const sseService = fetchEventSource('http://fuze1.nat300.top/ai/submita', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'token': useUserInfoStore().userInfo.token,
+    },
+    signal: controller.signal,
+    openWhenHidden: true,
+    onmessage(event) {
+      const data = JSON.parse(event.data);
+      if(!event.data.includes('\\ndata')){
+        if (data) {
+          const lastMessage = messages.value[messages.value.length - 1];
+          if (lastMessage && !lastMessage.self) {
+            lastMessage.text += data;
+          } else {
+            messages.value.push({text: data, self: false});
+          }
+        }
+      }else{
+        console.log('我没有\\ndata数据')
+      }
+    },
+    onerror(event) {
+      console.log('错误:', event);
+      messages.value.push({text: '连接出现问题，请稍后再试。', self: false});
+    },
+  });
+}
+
+onBeforeUnmount(() => {
+  controller.abort();
+});
+
+
+onMounted(() => {
+  GetSSE()
+})
+
 
 
 </script>
@@ -115,7 +123,7 @@ const placeholderText = computed(() => {
           />
           <p>{{ message.text }}</p>
           <img
-            src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
+            :src="userInfo.userInfo.touxiang"
             alt=""
             class="avatar avatarMy"
             v-if="message.self"

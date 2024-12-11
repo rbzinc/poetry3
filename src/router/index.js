@@ -99,6 +99,15 @@ const router = createRouter({
         },
       ]
     },
+    {
+      path:'/vrExhibition',
+      component: () => import('../views/vrExhibition/index.vue')
+    },
+    {
+      path:'/vrExhibitionDetail/:id',
+      component: () => import('../views/vrExhibition/vrExhibitionDetail/index.vue')
+    },
+
 
     {
       path: '/writer',

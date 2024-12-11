@@ -37,6 +37,9 @@ const loyout = () => {
               <el-dropdown-item>
                 <router-link to="/game">游戏助学</router-link>
               </el-dropdown-item>
+              <el-dropdown-item>
+                <router-link to="/vrExhibition">vr助学</router-link>
+              </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>

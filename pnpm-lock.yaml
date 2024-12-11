@@ -77,6 +77,9 @@ importers:
       mavon-editor:
         specifier: ^3.0.1
         version: 3.0.1
+      photo-sphere-viewer:
+        specifier: ^4.8.1
+        version: 4.8.1
       pinia:
         specifier: ^2.2.4
         version: 2.2.4(vue@3.5.9)
@@ -1523,6 +1526,10 @@ packages:
   perfect-debounce@1.0.0:
     resolution: {integrity: sha512-xCy9V055GLEqoFaHoC1SoLIaLmWctgCUaBaWxDZ7/Zx4CTyX7cJQLJOok/orfjZAh9kEYpjJa4d0KcJmCbctZA==}
 
+  photo-sphere-viewer@4.8.1:
+    resolution: {integrity: sha512-Yl1KZq1adtrajCOrf8Y79Qi4A35DfEu8atL779YOdA9XHoH2l2+sYovejnZlGgUM0hEbTyenRDoyXSy/MtioYg==}
+    deprecated: Use @photo-sphere-viewer/core instead, see https://photo-sphere-viewer.js.org/guide/migration.html
+
   picocolors@1.1.0:
     resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
 
@@ -1707,6 +1714,9 @@ packages:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
 
+  three@0.147.0:
+    resolution: {integrity: sha512-LPTOslYQXFkmvceQjFTNnVVli2LaVF6C99Pv34fJypp8NbQLbTlu3KinZ0zURghS5zEehK+VQyvWuPZ/Sm8fzw==}
+
   tinyexec@0.3.0:
     resolution: {integrity: sha512-tVGE0mVJPGb0chKhqmsoosjsS+qUnJVGJpZgsHYQcGoPlG3B51R3PouqTgEGH2Dc9jjFyOqOpix6ZHNMXp1FZg==}
 
@@ -1736,6 +1746,9 @@ packages:
 
   uc.micro@2.1.0:
     resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
+
+  uevent@2.2.0:
+    resolution: {integrity: sha512-48s5LF/c6R1fUmctGib/dWKhZjZLd4aK/85dwVAbwgHNBSO0k0UNp0ZKZpkSbU6633qYhgykYQPakTSuOxZopA==}
 
   ufo@1.5.4:
     resolution: {integrity: sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ==}
@@ -3559,6 +3572,11 @@ snapshots:
 
   perfect-debounce@1.0.0: {}
 
+  photo-sphere-viewer@4.8.1:
+    dependencies:
+      three: 0.147.0
+      uevent: 2.2.0
+
   picocolors@1.1.0: {}
 
   picomatch@2.3.1: {}
@@ -3774,6 +3792,8 @@ snapshots:
       mkdirp: 1.0.4
       yallist: 4.0.0
 
+  three@0.147.0: {}
+
   tinyexec@0.3.0: {}
 
   tippy.js@6.3.7:
@@ -3795,6 +3815,8 @@ snapshots:
   tslib@2.3.0: {}
 
   uc.micro@2.1.0: {}
+
+  uevent@2.2.0: {}
 
   ufo@1.5.4: {}
 
