@@ -22,7 +22,6 @@ const collect =async()=>{
 <template>
  <div class="poetry-component">
     <div class="title" @click="writerDetails">
-      <div class="headimage"></div>
       {{ name }}
       <div class="author">（{{ dynasty }}）</div>
     </div>
@@ -65,13 +64,8 @@ const collect =async()=>{
       text-decoration: none;
       display: flex;
       line-height: 70px;
-      .headimage{
-        width: 60px;
-        height: 60px;
-        margin-right: 10px;
-        background-color: #d7f5c9;
-        border-radius: 100%;      
-        }
+      margin-right: 10px;
+
       }
       p {
         margin:0 10px;
