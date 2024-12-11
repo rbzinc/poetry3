@@ -70,3 +70,5 @@ export const getSentenceData = (data,pagenum) =>{
     }}
   )
 }
+
+//
