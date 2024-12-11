@@ -30,21 +30,15 @@ export const userAIDraowSdadwadwPostApi = (ai) => instance({
 
 /**
  * 图片生成文字
- * @param genre
- * @param emotion
- * @param theme
- * @param input
+ * @param msg
  * @param url
  * @returns {*}
  */
-export const aiPicturePostApi = (genre,emotion,theme,input,url) => instance({
+export const aiPicturePostApi = (msg,url) => instance({
   url: '/ai/picture',
   method: 'POST',
-  data: {
-    genre,
-    emotion,
-    theme,
-    input,
+  params: {
+    msg,
     url
   }
 })
@@ -62,17 +56,4 @@ export const aiAudioGetAPi = (id) => instance({
   }
 })
 
-/**
- * 古诗优化
- * @param id
- * @param message
- * @returns {*}
- */
-export const aiChatRefinePostApi = (id, message) => instance({
-  url: '/ai/chat',
-  method: 'POST',
-  params: {
-    id,
-    message
-  }
-})
+

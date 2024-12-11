@@ -13,7 +13,7 @@ const route = useRoute();
 const userInfo = useUserInfoStore();
 const PoemImgStore = usePoemImgStore();
 const PoemImg = PoemImgStore.poemImg
-const imgUrl = PoemImg[Number(route.params.id)].url
+const imgUrl = PoemImg[Number(route.params.id)-1].url
 const poetPoem = ref([])
 // 定义消息存储
 const messages = ref([
@@ -52,8 +52,6 @@ const GetSSE = () => {
     openWhenHidden: true,
     onmessage(event) {
       const data = JSON.parse(event.data);
-      console.log(event)
-      console.log(event.data)
       if(!event.data.includes('\\ndata')){
         if (data) {
           const lastMessage = messages.value[messages.value.length - 1];
@@ -85,7 +83,7 @@ onBeforeUnmount(() => {
 
 
 onMounted(() => {
-  // GetSSE()
+  GetSSE()
   getSentence()
 })
 </script>
