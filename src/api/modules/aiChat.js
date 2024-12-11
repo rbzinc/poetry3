@@ -57,3 +57,29 @@ export const aiAudioGetAPi = (id) => instance({
 })
 
 
+// TODO 更改到其他文件夹
+/**
+ * 获取音频
+ * @param {*} id 
+ * @returns 
+ */
+export const aiAudioGetApi = (id) => instance({
+  url: '/ai/audio',
+  method: 'GET',
+  params: {
+    id
+  }
+})
+
+/**
+ * id获取图片
+ * @param {*} id 
+ * @returns 
+ */
+export const userAIDraowGetApi = (id) => instance({
+  url: '/user/AI/draow',
+  method: 'POST',
+  params: {
+    id
+  }
+})
