@@ -4,35 +4,24 @@ import AiPoemAside from "@/components/AiPoetAside/index.vue";
 // 从 vue 引入 ref 方法
 import {ref} from 'vue';
 // 从 element-plus 引入 ElMessage 和 genFileId
-import {ElMessage, genFileId} from 'element-plus';
+import {ElMessage} from 'element-plus';
 import {useUserInfoStore} from "@/stores/index.js";
 import {aiPicturePostApi} from "@/api/modules/aiChat.js";
 import {fetchEventSource} from "@microsoft/fetch-event-source";
 
 // 定义消息的响应式数据
 const messages = ref([
-  {text: '你好，这里是古韵传习堂诗词网，有什么可以帮助您？', self: false},
+  {text: '发送你所需的情感类型，以及图片内容，我将为你生成古诗。', self: false},
 ]);
 const input = ref('');
-const url = ref('');
-
+const imgUrl = ref('');
+const msg = ref('')
+const url = ref('')
 
 // 处理图片上传的函数
 const handleSuccess = (res) => {
-  url.value = res.data
-};
-
-// 创建选项的函数
-const createOption = (optionName, options) => {
-  if (optionName.value) {
-    options.value.push({
-      label: optionName.value,
-      value: optionName.value,
-    });
-    optionName.value = '';
-  } else {
-    ElMessage.warning('请输入有效的内容');
-  }
+  imgUrl.value = res.data
+  console.log(imgUrl.value)
 };
 
 
@@ -108,8 +97,8 @@ const GetSSE = () => {
     signal: controller.signal,
     openWhenHidden: true,
     onmessage(event) {
-      try {
-        const data = JSON.parse(event.data);
+      const data = JSON.parse(event.data);
+      if (!event.data.includes('\\ndata')) {
         if (data) {
           const lastMessage = messages.value[messages.value.length - 1];
           if (lastMessage && !lastMessage.self) {
@@ -118,9 +107,8 @@ const GetSSE = () => {
             messages.value.push({text: data, self: false});
           }
         }
-      } catch (error) {
-        console.error('消息解析失败:', error);
-        messages.value.push({text: '消息格式有误，请稍后再试。', self: false});
+      } else {
+        console.log('我没有\\ndata数据')
       }
     },
     onerror(event) {
@@ -156,19 +144,15 @@ const offerPic = () => {
     ElMessage.error('请输入标题');
     return;
   }
-  if (url.value === '') {
+  if (imgUrl.value === '') {
     ElMessage.error('请上传图片');
     return;
   }
   messages.value.push({
-    text: `我要生成一个体裁为${genre.value}, 情感为${emotion.value}, 主题为${theme.value}的古诗词，标题为${input.value}的古诗，请帮我生成一首古诗`,
+    text: `我要生成一个体裁为${genreValue.value}, 情感为${emotionValue.value}, 主题为${themeValue.value}的古诗词，标题为${input.value}的古诗，请帮我生成一首古诗`,
     self: true
   });
-  genreValue.value = '';
-  emotionValue.value = '';
-  themeValue.value = '';
-  url.value = '';
-  input.value = '';
+
   aiPicture()
 
 };
@@ -179,8 +163,21 @@ const headers = ref({
 })
 
 const aiPicture = async () => {
-  const res = await aiPicturePostApi(genreValue.value, emotionValue.value, themeValue.value, input.value, url.value)
-  console.log(res)
+  msg.value = genreValue.value + emotionValue.value + themeValue.value + input.value
+  url.value = imgUrl.value
+  console.log(msg.value)
+  console.log(url.value)
+  const res = await aiPicturePostApi(msg.value, url.value)
+  console.log(res.data)
+  messages.value.push({
+    text: res.data,
+    self: false
+  })
+  genreValue.value = '';
+  emotionValue.value = '';
+  themeValue.value = '';
+  imgUrl.value = '';
+  input.value = '';
 }
 
 
@@ -205,7 +202,7 @@ const aiPicture = async () => {
               v-if="!message.self"/>
           <p>{{ message.text }}</p>
           <img
-              src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
+              :src="userStore.userInfo.touxiang"
               alt=""
               class="avatar avatarMy"
               v-if="message.self"/>
