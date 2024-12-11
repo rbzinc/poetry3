@@ -20,7 +20,6 @@ defineExpose({
   Poetryitem,
 })
 
-
 const getPoet = async (poetsearch, pagenum) => {
   usePoetName.value = poetsearch
   const res = await getPoetSearch(poetsearch, pagenum)

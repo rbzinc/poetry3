@@ -58,7 +58,7 @@ onMounted(() => {
 <style>
 .bgc {
   width: 100%;
-  height: 100%;
+  height: 2000px;
   background-image: url('./pic/微信图片_20241016230009.jpg');
   background-size: 100% 100%;
 
