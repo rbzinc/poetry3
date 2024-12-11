@@ -55,7 +55,7 @@ onMounted(() => {
       <div class="poem-content" v-html="content">
       </div>
       <div class="others">
-        <el-button type="info" class="but">播放</el-button>
+        <el-button type="info" class="but" >播放</el-button>
         <el-button type="info" plain @click="dialogFormVisible = true" class="but"
         >文生图
         </el-button>

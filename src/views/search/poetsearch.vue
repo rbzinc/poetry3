@@ -1,31 +1,26 @@
 <script setup>
-import {userSearchStore} from '../../stores/modules/search'
-import {getPoetSearch} from '../../api/modules/search.js'
-import {defineExpose, onMounted, watch} from "vue"
-import {useRouter} from "vue-router"
+import { userSearchStore } from '../../stores/modules/search'
+import { getPoetSearch } from '../../api/modules/search.js'
+import { defineExpose, ref, onMounted, watch } from "vue"
+import { useRouter } from "vue-router"
 import Poetryitem from "../../components/poetryitem/poetryitem.vue"
 
 const userSearch = userSearchStore()
 const usePoetName = ref('')
 const router = useRouter()
-let poetsearch = ref()
+let poetsearch = ref('')
 const randomList = ref([])
 const getList = ref([])
 let pagenum = ref(1)
 let pagetotal = ref(0)
 const pagesize = ref(4)
 let poemid = ref()
+
 defineExpose({
   Poetryitem,
 })
 
-watch(userSearch, async (newVal) => {
-  if (newVal) {
-    const res = await getPoetSearch(newVal, 1);
-    randomList.value = res.data.records;
-    pagetotal.value = res.data.total;
-  }
-})
+
 const getPoet = async (poetsearch, pagenum) => {
   usePoetName.value = poetsearch
   const res = await getPoetSearch(poetsearch, pagenum)
@@ -33,20 +28,27 @@ const getPoet = async (poetsearch, pagenum) => {
   randomList.value = res.data.records
   pagetotal.value = res.data.total
 }
+
+// 监听用户搜索输入的变化
+watch(() => userSearch.userinput, (newVal) => {
+  if (newVal) {
+    pagenum.value = 1; // 重置页码为1
+    getPoet(newVal, pagenum.value);
+  }
+}, { immediate: true }) // { immediate: true } 确保初始值也被处理
+
 //点击跳转诗的详情页面
 const poemDetail = (data) => {
-  poemid = data
-  router.push(`/poedetails?id=${poemid}`)
+  poemid.value = data
+  router.push(`/poedetails?id=${poemid.value}`)
 }
 
-const currentChange = (pagenum) => {
-  getPoet(usePoetName.value, pagenum)
+const currentChange = (newPageNum) => {
+  getPoet(usePoetName.value, newPageNum)
 }
 
 onMounted(() => {
-  pagenum = 1
   getPoet(userSearch.userinput, pagenum)
-  console.log(randomList.value)
 })
 </script>
 

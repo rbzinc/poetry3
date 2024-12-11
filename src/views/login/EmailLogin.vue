@@ -6,7 +6,6 @@ import {useRouter} from 'vue-router'
 import {getCodeService, userEmailService} from '../../api/modules/user'
 import {useUserInfoStore} from '@/stores/index.js'
 import {ElMessage} from "element-plus";
-
 const userStore = useUserInfoStore() // 获取用户信息状态管理
 const router = useRouter() // 获取路由对象
 const form = ref(null) // 表单引用
