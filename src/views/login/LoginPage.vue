@@ -1,63 +1,71 @@
 <script setup>
-// import { User, Lock } from '@element-plus/icons-vue'
-// import { ref } from 'vue'
-// import { useRouter } from 'vue-router'
-// const isRegister = ref(true)
-// import { ElForm, ElFormItem, ElInput, ElButton } from 'element-ui';
-import {User, Lock, Message} from '@element-plus/icons-vue'
-import {userLoginService} from '../../api/modules/user'
-import {ref, watch} from 'vue'
-import {useRouter} from 'vue-router'
-import {useUserInfoStore} from '@/stores/index.js'
-import {ElMessage} from "element-plus";
+import { User, Lock } from '@element-plus/icons-vue'
+import { userLoginService } from '../../api/modules/user'
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserInfoStore } from '@/stores/index.js'
+import { ElMessage } from "element-plus";
 
 const useUser = useUserInfoStore()
 const router = useRouter()
 const form = ref(null)
-const entry = ref(false)
 const formModel = ref({
   username: '',
-  password: '',
-  email: ''
+  password: ''
 })
+
+/**
+ * 登录规则
+ * @type {{password: [{trigger: string, message: string, required: boolean},{pattern: RegExp, trigger: string, message: string}], username: [{trigger: string, message: string, required: boolean},{min: number, max: number, trigger: string, message: string}]}}
+ */
 const rules = {
   username: [
-    {required: true, message: '请输入用户名或者邮箱', trigger: 'blur'},
-    {min: 3, max: 10, message: '用户名必须是 5-10位 的字符', trigger: 'blur'}
+    { required: true, message: '请输入用户名或者邮箱', trigger: 'blur' },
+    { min: 5, max: 10, message: '用户名必须是 5-10位 的字符', trigger: 'blur' }
   ],
   password: [
-    {required: true, message: '请输入密码', trigger: 'blur'},
+    { required: true, message: '请输入密码', trigger: 'blur' },
     {
       pattern: /^\S{6,15}$/,
       message: '密码必须是 6-15位 的非空字符',
       trigger: 'blur'
     }
-  ],
-  repassword: [
-    {required: true, message: '请输入密码', trigger: 'blur'},
-    {
-      pattern: /^\S{6,15}$/,
-      message: '密码必须是 6-15位 的非空字符',
-      trigger: 'blur'
-    },
   ]
 }
 
+/**
+ * 登录接口
+ * @returns {Promise<void>}
+ */
 const login = async () => {
+  if (!isLoginButtonActive.value) {
+    ElMessage.warning('请填写完整的登录信息')
+    return
+  }
   try {
-    const UserLogin = await userLoginService(formModel.value.username, formModel.value.password)
-    const userStore = useUserInfoStore()
-    userStore.setUserInfo(UserLogin.data)
+    const { data } = await userLoginService(formModel.value.username, formModel.value.password)
+    useUser.setUserInfo(data)
     ElMessage.success('登录成功')
     router.push('/layout/home')
-  }catch (error){
+  } catch (error) {
+    console.error(error) // 打印错误信息以方便调试
     ElMessage.error('用户名或密码错误')
   }
 }
-const isLoginButtonActive = computed(() => {
-  return formModel.value.username !== '' && formModel.value.password !== '';
-});
 
+/**
+ * 控制登录按钮颜色
+ * @type {ComputedRef<unknown>}
+ */
+const isLoginButtonActive = computed(() => formModel.value.username !== '' && formModel.value.password !== '');
+
+/**
+ * 是否禁用按钮
+ * @type {ComputedRef<unknown>}
+ */
+const isButtonDisabled = computed(() => {
+  return !formModel.value.username || !formModel.value.password
+})
 </script>
 
 <template>
@@ -97,22 +105,23 @@ const isLoginButtonActive = computed(() => {
             @click="login"
             class="button"
             type="primary"
-            auto-insert-space
             :style="{ backgroundColor: isLoginButtonActive ? 'skyblue' : '#cbcaca', borderColor: isLoginButtonActive ? 'skyblue' : '#cbcaca' }"
             style="margin: auto;"
+            :disabled="isButtonDisabled"
         >
         登录
         </el-button>
       </el-form-item>
-      <el-form-item class="flex">
+
+      <el-form-item style="width: 90%; padding-left: 20px">
         <el-link type="info" :underline="false">
-          <router-link to="/register" style="text-decoration: none">注册&nbsp&nbsp&nbsp&nbsp</router-link>
+          <router-link to="/register">注册&nbsp&nbsp&nbsp&nbsp</router-link>
         </el-link>
         <el-link type="info" :underline="false">
-          <router-link to="/email" style="text-decoration: none">邮箱登录</router-link>
+          <router-link to="/email" >邮箱登录</router-link>
         </el-link>
         <el-link type="info" :underline="false" style="margin-left: auto;">
-          <router-link to="/forget" style="text-decoration: none">忘记密码</router-link>
+          <router-link to="/forget" >忘记密码</router-link>
         </el-link>
       </el-form-item>
     </el-form>
@@ -127,7 +136,7 @@ const isLoginButtonActive = computed(() => {
   background: none;
   padding-top: 160px;
   display: flex;
-
+}
   .bg {
     width: 900px;
     height: 520px;
@@ -159,9 +168,6 @@ const isLoginButtonActive = computed(() => {
     .flex {
       width: 100%;
 
-      .right {
-        float: right;
-      }
     }
   }
 
@@ -170,6 +176,4 @@ const isLoginButtonActive = computed(() => {
     font-weight: bold;
     font-size: 32px;
   }
-}
-
 </style>

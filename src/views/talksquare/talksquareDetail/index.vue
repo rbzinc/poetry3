@@ -3,6 +3,7 @@ import {ref} from "vue";
 import common from './comment/index.vue';
 import Markdown from './markdown/index.vue'
 import {useRoute} from 'vue-router';
+import router from "@/router/index.js";
 import DayRecommend from '@/components/talksquare/DayRecommend/index.vue'
 import ArticleRecommentDation from '@/components/talksquare/ArticleRecommendation/index.vue'
 import {
@@ -14,7 +15,6 @@ import {
   userLuntanSelectxiangxiGetApi
 } from "@/api/modules/talkSquare.js";
 const pageContentMarkShow = ref(false); // 评论和内容展示状态
-// const momentId = ref(1); // 评论区的 momentId
 const postAddCommentForm = ref([]); // 评论区的表单
 const route = useRoute();
 const blogid = ref(route.params.id);
@@ -24,6 +24,7 @@ const userLuntanDianzanrankData = ref([]) // 论坛详情页面的点赞排行�
 const isFollowed = ref(false) // 关注状态
 const content = ref('') // 文章内容
 const comments = ref('') // 文章评论数量
+const poemId = ref('') // 诗词id
 /**
  * 更新关注状态
  * @returns {Promise<void>}
@@ -36,6 +37,7 @@ const updateFollow = async () => {
   } else if (res.data === '取消成功') {
     isFollowed.value = false
   }
+  userLuntanSelectxiangxi()
 }
 
 /**
@@ -44,6 +46,7 @@ const updateFollow = async () => {
  */
 const userLuntanSelectxiangxi = async () => {
   const res = await userLuntanSelectxiangxiGetApi(blogid.value)
+  poemId.value = res.data.poemId
   userId.value = res.data.userId
   userLuntanXiangxi.value = res.data
   content.value = res.data.content
@@ -59,7 +62,6 @@ const userLuntanSelectxiangxi = async () => {
  */
 const updateLike = async () => {
   const res = await userLuntanDianzanGetApi(blogid.value)
-  // console.log(res)
   await userLuntanDianzanrank();
   if (res.data === '点赞成功') {
     userLuntanXiangxi.value.blogLike = !userLuntanXiangxi.value.blogLike
@@ -70,6 +72,10 @@ const updateLike = async () => {
     userLuntanXiangxi.value.liked -= 1
   }
 
+}
+
+const jumpToPoemDetail = ()=>{
+  router.push(`/poedetails?id=${poemId.value}`)
 }
 
 /**
@@ -120,7 +126,7 @@ onMounted(() => {
           <h1 class="article-title">{{ userLuntanXiangxi.title }}</h1>
           <p class="article-meta">作者: {{ userLuntanXiangxi.username }} · {{ userLuntanXiangxi.createTime }} · 点赞量
             {{ userLuntanXiangxi.liked }}</p>
-          <p class="article-quote">{{ userLuntanXiangxi.poemWord }}</p>
+          <p class="article-quote" @click="jumpToPoemDetail">{{ userLuntanXiangxi.poemWord }}</p>
         </div>
         <div style="margin-top: 20px; padding: 0 20px; height: 100%;">
           <Markdown v-if="pageContentMarkShow" :content='content' />
@@ -205,6 +211,7 @@ onMounted(() => {
     .article-quote {
       display: flex;
       justify-content: center;
+      cursor: pointer;
     }
   }
 

@@ -6,13 +6,13 @@ export const  getpoemRandomData = (data) => {
 }
 
 //点击朝代搜索古诗，分页搜索
-export const getDynastyData = (data,pagenum) => {
-  return instance.get('/user/poetry/GetPoemBydynasty',
-    { params:{
-      dynasty:data,
-      pageNum:pagenum,
-    }})
-}
+export const getDynastyData = (dynasty,pagenum) => instance({
+  url: '/user/poetry/GetPoemBydynasty',
+    params:{
+      dynasty,
+      pagenum,
+    }
+})
 
 ///点击分类搜索古诗，分页搜索
 export const getClassData = (data,pagenum) => {
@@ -58,7 +58,7 @@ export const getWriterData = (data,pagenum) =>{
 
 //随机返回十句名句
 export const getsenRandomData = (data) =>{
-  return instance.get('/user/rhesis/GetRhesisDateRondom',data)          
+  return instance.get('/user/rhesis/GetRhesisDateRondom',data)
 }
 
 //根据诗人查询名句

@@ -50,6 +50,7 @@ try {
   background-color: #fff;
   color: black;
   opacity: 0.5;
+  margin-bottom: 80px;
 }
 
 .char {
