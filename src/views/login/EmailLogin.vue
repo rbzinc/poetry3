@@ -50,7 +50,7 @@ const startCountdown = () => { // 开始倒计时
       disabled.value = true;
       setTimeout(countdownTimer, 1000);
     } else {
-      countdown.value = 30; // 重置倒计时为60秒
+      countdown.value = 30; // 重置倒计时为30秒
       disabled.value = false; // 启用按钮
       ButtonText.value = '发送验证码'; // 重置按钮文本
     }

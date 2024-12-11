@@ -1,20 +1,26 @@
 <script setup>
 import Writercontent from '../../components/wriercontent/writercontent.vue'
-import {useRoute} from 'vue-router'
-import { userWriterService } from "../../api/modules/writer"
+import {useRoute, useRouter} from 'vue-router'
+import {userWriterService} from "../../api/modules/writer"
+
 const route = useRoute()
-let writerid =ref(0)
-const dataList =ref('')
-const writerList =ref('')
+const router = useRouter()
+let writerid = ref(0)
+const dataList = ref('')
+const writerList = ref('')
 const writertitle = ref('')
 const writercontent = ref('')
 //获取诗人详细信息
-const getData= async()=>{
+const getData = async () => {
   const res = await userWriterService(writerid)
-  dataList.value=res.data
+  dataList.value = res.data
   writertitle.value = dataList.value.name
   writercontent.value = dataList.value.simpleIntro
   writerList.value = res.data.detailIntro
+}
+
+const returnView = () => {
+  router.push('/poet/class')
 }
 
 onMounted(() => {
@@ -25,36 +31,42 @@ onMounted(() => {
 </script>
 
 <template>
- <div class="bgc">
-  <div class="container">
-  <div class="poem-header">
-    <h1 class="poem-title"> {{ writertitle }} </h1>
+  <div class="bgc">
+    <div class="return" @click="returnView">返回</div>
+    <div class="container">
+      <div class="poem-header">
+        <h1 class="poem-title"> {{ writertitle }} </h1>
+      </div>
+      <div class="poem-content">
+        <p>{{ writercontent }}</p>
+      </div>
+
+    </div>
+    <div v-for="item in writerList" :key="item?.id">
+      <Writercontent
+          :content=item.content
+          :title=item.title
+      >
+      </Writercontent>
+    </div>
+
+
   </div>
-  <div class="poem-content">
-    <p>{{ writercontent }}</p>
- </div>
-  
-</div>
-<div v-for="item in writerList" :key="item?.id">
-    <Writercontent
-    :content = item.content
-    
-    :title = item.title
-    >
-    </Writercontent>
-</div>
 
-
- </div>
- 
 </template>
 
 <style>
-.bgc{
+.bgc {
   width: 100%;
   height: 100%;
   background-image: url('./pic/微信图片_20241016230009.jpg');
   background-size: 100% 100%;
+
+  .return {
+    margin-left: 10px;
+    cursor: pointer;
+  }
+
   .container {
     max-width: 1000px;
     margin: 0 auto 30px;
@@ -65,38 +77,24 @@ onMounted(() => {
     opacity: 70%;
     border-radius: 10px;
   }
+
   .poem-header {
     margin-bottom: 20px;
     display: flex;
-    .headpic{
-      height: 60px;
-      width: 60px;
-      background-color: #f5c5f5;
-      margin-right: 20px;
-      border-radius: 100%;
-      float: left; 
-      margin-right: 10px; 
-    }
+
     .poem-title {
-    font-size: 25px;
-    margin: 0;
-    color: #333;
-    text-align: left;
-    line-height: 60px ;
-  }
+      font-size: 25px;
+      margin: 0;
+      color: #333;
+      text-align: left;
+      line-height: 60px;
+    }
   }
 
   .poem-header::after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-
-  .poem-author {
-    font-size: 1.2em;
-    color: #555;
-    margin: 10px 0;
+    content: "";
+    display: table;
+    clear: both;
   }
 
   .poem-content {

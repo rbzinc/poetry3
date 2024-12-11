@@ -34,7 +34,7 @@ onMounted(() => {
 <template>
  <div class="home">
    <div class="content">
-    <div class="dy" v-for="item in randomList" :key="item.id"> 
+    <div class="dy" v-for="item in randomList" :key="item.id">
       {{ item.name }}——{{ item.fromm }}</div>
    </div>
    <el-pagination
@@ -55,12 +55,13 @@ onMounted(() => {
     width: 1200px;
     height: 800px;
     background: none;
+    margin: 0 auto;
     .dy {
       margin: 0 auto 10px;
-      border: 1px solid #000; 
-      padding: 20px; 
-      width: 1000px; 
-      box-sizing: border-box; 
+      border: 1px solid #000;
+      padding: 20px;
+      width: 1000px;
+      box-sizing: border-box;
       background-color: #e5e6e4;
       border-radius: 10px;
       opacity: 50%;

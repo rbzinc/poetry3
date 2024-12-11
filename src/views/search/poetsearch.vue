@@ -76,6 +76,7 @@ onMounted(() => {
   height: 1000px;
   margin: 0 auto;
   .content{
+    margin: 0 auto;
     width: 1200px;
     height: 800px;
     background: none;

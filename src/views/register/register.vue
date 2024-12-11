@@ -127,6 +127,7 @@ const register = async () => {
   background: url('../pic/微信图片_20241015002509.jpg') no-repeat center center;
   padding-top: 100px;
   background-size: cover;
+  box-sizing: border-box;
   border-radius: 20px 0 0 20px;
 }
 

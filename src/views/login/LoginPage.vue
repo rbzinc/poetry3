@@ -136,7 +136,7 @@ const isButtonDisabled = computed(() => {
   background: none;
   padding-top: 160px;
   display: flex;
-
+}
   .bg {
     width: 900px;
     height: 520px;
@@ -176,5 +176,4 @@ const isButtonDisabled = computed(() => {
     font-weight: bold;
     font-size: 32px;
   }
-}
 </style>
