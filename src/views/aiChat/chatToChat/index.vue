@@ -85,7 +85,7 @@ onBeforeUnmount(() => {
 
 
 onMounted(() => {
-  GetSSE()
+  // GetSSE()
   getSentence()
 })
 </script>
