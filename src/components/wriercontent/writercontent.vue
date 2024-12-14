@@ -4,7 +4,7 @@ const props = defineProps({
   title:String,
   content:String
 })
-const isopen = ref(true) 
+const isopen = ref(true)
 const change = () => {
   isopen.value = !isopen.value;
 }
@@ -15,7 +15,7 @@ const change = () => {
   <div :class="[isopen ? 'before' : 'after']">
     <p v-html="title"></p>
     <div v-html="content"></div>
-  </div> 
+  </div>
   <div class="toggle" @click="change">
       {{ isopen ? '点击此处展开' : '点击此处收起' }}
   </div>
@@ -26,12 +26,12 @@ const change = () => {
   .content{
     width: 1000px;
     margin: 0 auto;
-    background: none ; 
+    background: none ;
     box-sizing: border-box;
     .before{
     border-radius: 10px 10px 0 0;
     transition: height 0.3s ease;
-    height: 200px; 
+    height: 200px;
     overflow: hidden;
     width: 1000px;
     margin: 0 auto;
@@ -39,7 +39,7 @@ const change = () => {
     box-sizing: border-box;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative; 
+    position: relative;
     opacity: 70%;
     p{
       margin: 0 ;
@@ -78,9 +78,5 @@ const change = () => {
       border-radius: 0 0 10px 10px;
     }
   }
-  
-  
- 
   </style>
 
-  
