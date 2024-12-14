@@ -239,6 +239,7 @@ onMounted(() => {
 
   .poem-title {
     font-size: 2em;
+    text-align: center;
     margin: 0;
     color: #333;
   }
