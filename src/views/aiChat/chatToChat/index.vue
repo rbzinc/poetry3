@@ -89,7 +89,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div style="display: flex;">
+  <div style="display: flex;  ">
     <div>
       <AiPoemAside/>
     </div>

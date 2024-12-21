@@ -1,4 +1,7 @@
 import {createRouter, createWebHistory} from 'vue-router'
+import { useUserInfoStore} from '@/stores/modules/user.js'
+
+
 import { ref } from 'vue';
 export const key = ref(0);
 const router = createRouter({
@@ -174,7 +177,15 @@ const router = createRouter({
 })
 
 
-
+router.beforeEach((to, from, next) => {
+  const userInfo = useUserInfoStore();
+  console.log(userInfo);
+  if(to.path !== '/login' && userInfo.userInfo === null){
+    next('/login');
+  }else{
+    next();
+  }
+})
 
 // 添加全局错误处理
 router.onError((error) => {
