@@ -15,7 +15,7 @@ const loyout = () => {
   <div class="tleader">
     <div class="leader">
       <div class="left">
-        <img src="./pic/微信图片_20241014231849.jpg" alt="" width="250px" height="80px">
+        <img src="@/assets/pic/home/logo.jpg" alt="" width="250px" height="80px">
       </div>
       <div class="right">
         <router-link to="/">首页</router-link>

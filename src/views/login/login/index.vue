@@ -1,11 +1,10 @@
 <script setup>
 import { User, Lock } from '@element-plus/icons-vue'
-import { userLoginService } from '../../api/modules/user'
+import { userLoginService } from '@/api/modules/user'
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserInfoStore } from '@/stores/index.js'
 import { ElMessage } from "element-plus";
-
 const useUser = useUserInfoStore()
 const router = useRouter()
 const form = ref(null)
@@ -46,7 +45,7 @@ const login = async () => {
     const { data } = await userLoginService(formModel.value.username, formModel.value.password)
     useUser.setUserInfo(data)
     ElMessage.success('登录成功')
-    router.push('/layout/home')
+    router.push('/')
   } catch (error) {
     console.error(error) // 打印错误信息以方便调试
     ElMessage.error('用户名或密码错误')
@@ -66,12 +65,14 @@ const isLoginButtonActive = computed(() => formModel.value.username !== '' && fo
 const isButtonDisabled = computed(() => {
   return !formModel.value.username || !formModel.value.password
 })
+const emit = defineEmits(['changePage'])
+const changePage = (event)=>{
+  emit('changePage',event)
+}
 </script>
 
 <template>
-  <div class="bgc">
-    <div class="bg"></div>
-    <el-form
+   <el-form
         :model="formModel"
         :rules="rules"
         ref="form"
@@ -99,7 +100,6 @@ const isButtonDisabled = computed(() => {
             placeholder="请输入密码"
         ></el-input>
       </el-form-item>
-
       <el-form-item>
         <el-button
             @click="login"
@@ -109,71 +109,49 @@ const isButtonDisabled = computed(() => {
             style="margin: auto;"
             :disabled="isButtonDisabled"
         >
-        登录
+          登录
         </el-button>
       </el-form-item>
 
-      <el-form-item style="width: 90%; padding-left: 20px">
-        <el-link type="info" :underline="false">
-          <router-link to="/register">注册&nbsp&nbsp&nbsp&nbsp</router-link>
-        </el-link>
-        <el-link type="info" :underline="false">
-          <router-link to="/email" >邮箱登录</router-link>
-        </el-link>
-        <el-link type="info" :underline="false" style="margin-left: auto;">
-          <router-link to="/forget" >忘记密码</router-link>
-        </el-link>
-      </el-form-item>
+      <div class="flex">
+        <div class="flex">
+          <p class="flex-item" @click="changePage(2)" style="margin-right: 20px;" >邮箱登录</p>
+          <p class="flex-item" @click="changePage(3)">注册</p>
+        </div>
+        <p  class="flex-item" @click="changePage(4)">忘记密码</p>
+      </div>
     </el-form>
-  </div>
 </template>
 
 <style lang="scss" scoped>
-.bgc {
+.form {
+  width: 400px;
+  height: 520px;
+  background-color: #fdfcf7;
   margin: 0 auto;
-  width: 1300px;
-  height: 800px;
-  background: none;
-  padding-top: 160px;
   display: flex;
-}
-  .bg {
-    width: 900px;
-    height: 520px;
-    background: url('../pic/微信图片_20241015002509.jpg') no-repeat center center;
-    padding-top: 100px;
-    background-size: cover;
-    box-sizing: border-box;
-    border-radius: 20px 0 0 20px;
-  }
-
-  .form {
-    width: 400px;
-    height: 520px;
-    background-color: #fdfcf7;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border-radius: 0 20px 20px 0;
-
-    .title {
-      margin: 0 auto;
-    }
-
-    .button {
-      width: 100px;
-    }
-
-    .flex {
-      width: 100%;
-
-    }
-  }
-
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 0 20px 20px 0;
   .title {
-    text-align: center;
-    font-weight: bold;
-    font-size: 32px;
+    margin: 0 auto;
   }
+
+  .button {
+    width: 100px;
+  }
+  .flex {
+    display: flex;
+    justify-content: space-between;
+    .flex-item {
+      cursor: pointer;
+    }
+  }
+}
+
+.title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 32px;
+}
 </style>

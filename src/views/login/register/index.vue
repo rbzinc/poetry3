@@ -1,6 +1,6 @@
 <script setup>
 import { User, Lock } from '@element-plus/icons-vue'
-import { userRegisterService } from '../../api/modules/user'
+import { userRegisterService } from '@/api/modules/user'
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from "element-plus";
@@ -58,78 +58,65 @@ const register = async () => {
     ElMessage.error("账号已存在，请重新输入")
   }
 }
+const emit = defineEmits(['changePage'])
+const changePage = (event)=>{
+  emit('changePage',event)
+}
 </script>
 
 <template>
-  <div class="bgc">
-    <div class="bg"></div>
-    <el-form
+  <el-form
       :model="formModel"
       :rules="rules"
       size="large"
       autocomplete="off"
       class="form"
-    >
-      <el-form-item>
-        <div class="title">注册</div>
-      </el-form-item>
+  >
+    <el-form-item>
+      <div class="title">注册</div>
+    </el-form-item>
 
-      <el-form-item prop="username">
-        <el-input
+    <el-form-item prop="username">
+      <el-input
           v-model="formModel.username"
           :prefix-icon="User"
           placeholder="请输入用户名"
-        ></el-input>
-      </el-form-item>
+      ></el-input>
+    </el-form-item>
 
-      <el-form-item prop="password">
-        <el-input
+    <el-form-item prop="password">
+      <el-input
           v-model="formModel.password"
           :prefix-icon="Lock"
           type="password"
           placeholder="请输入密码"
-        ></el-input>
-      </el-form-item>
+      ></el-input>
+    </el-form-item>
 
-      <el-form-item>
-        <el-button
+    <el-form-item>
+      <el-button
           @click="register"
           class="button"
           :type="isButtonDisabled ? 'default' : 'primary'"
           :style="buttonStyle"
           :disabled="isButtonDisabled"
-        >
-          注册
-        </el-button>
-      </el-form-item>
+      >
+        注册
+      </el-button>
+    </el-form-item>
 
-      <el-form-item class="flex">
-        <el-link type="info" :underline="false">
-          <router-link to="/login" style="text-decoration: none">登录</router-link>
-        </el-link>
-      </el-form-item>
-    </el-form>
-  </div>
+    <div class="flex">
+      <div class="flex">
+        <p class="flex-item" @click="changePage(1)" style="margin-right: 20px;" >登录</p>
+        <p class="flex-item" @click="changePage(2)">邮箱登录</p>
+      </div>
+      <p  class="flex-item" @click="changePage(4)">忘记密码</p>
+    </div>
+  </el-form>
 </template>
 
 <style lang="scss" scoped>
-.bgc {
-  margin: 0 auto;
-  width: 1300px;
-  height: 800px;
-  padding-top: 160px;
-  display: flex;
-}
 
-.bg {
-  width: 900px;
-  height: 520px;
-  background: url('../pic/微信图片_20241015002509.jpg') no-repeat center center;
-  padding-top: 100px;
-  background-size: cover;
-  box-sizing: border-box;
-  border-radius: 20px 0 0 20px;
-}
 
 .form {
   width: 400px;
@@ -146,9 +133,11 @@ const register = async () => {
   }
 
   .flex {
-    width: 100%;
     display: flex;
     justify-content: space-between;
+    .flex-item {
+      cursor: pointer;
+    }
   }
 
   .title {

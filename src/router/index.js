@@ -9,31 +9,13 @@ const router = createRouter({
   routes: [
     {
       path: '/login',
-      component: () => import('../views/login/LoginPage.vue')
-    },
-    {
-      path: '/register',
-      component: () => import('../views/register/register.vue')
-    },
-    {
-      path: '/email',
-      component: () => import('../views/login/EmailLogin.vue')
-    },
-    {
-      path: '/forget',
-      component: () => import('../views/forget/index.vue')
+      component: () => import('../views/login/index.vue')
     },
     //首页
     {
       path: '/',
       component: () => import('../Layout/index.vue'),
-      redirect: '/layout/home',
-      children: [
-        {
-          path: '/layout/home',
-          component: () => import('../Layout/home/home.vue')
-        }
-      ]
+
     },
     //书阁
     {
@@ -44,10 +26,6 @@ const router = createRouter({
         {
           path: '/poet/class',
           component: () => import('../views/poet/class/classPoetry.vue'),
-        },
-        {
-          path: '/poet/portry',
-          component: () => import('../views/poet/portry/poetryPage.vue'),
         },
         {
           path: '/poet/sentence',

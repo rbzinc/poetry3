@@ -1,18 +1,15 @@
 <script setup>
 import {RouterView} from 'vue-router';
-import {defineExpose} from 'vue';
-import Banner from '../../Layout/banner/banner.vue';
+import Banner from '@/views/poet/banner/banner.vue';
 
-defineExpose({
-  Banner,
-})
+
 </script>
 
 <template>
   <div class="bgc">
     <div class="home">
       <div class="ban">
-        <Banner></Banner>
+        <Banner />
       </div>
       <div class="book">
         <router-view></router-view>
@@ -27,7 +24,7 @@ defineExpose({
 .bgc {
   width: 100%;
   height: 100%;
-  background-image: url('./pic/微信图片_20241016040103.jpg');
+  background-image: url('../../assets/pic/poet/微信图片_20241016040103.jpg');
   background-size: 100% 100%;
 }
 
