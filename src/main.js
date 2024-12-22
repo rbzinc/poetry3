@@ -14,7 +14,7 @@ import "./assets/scss/highLight.scss"
 import 'highlight.js/scss/atom-one-dark.scss'
 import '@/iconfont/iconfont.css'
 //全局组件
-import Header from './components/header/header.vue'
+
 import Pagenation from './components/pagenation/pagenation.vue'
 const app = createApp(App)
 const pinia =createPinia()
@@ -23,7 +23,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 app.use(mavonEditor)
-app.component('Header',Header)
+
 app.component('Pagenation',Pagenation)
 app.config.globalProperties.$echarts = echarts
 app.component('v-chart', VChart);

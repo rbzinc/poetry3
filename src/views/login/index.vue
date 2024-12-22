@@ -43,8 +43,7 @@ const changePage = (page) => {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url("./pic/微信图片_20241015002509.jpg");
-
+    background-image: url("../../assets/pic/login/login-bg.jpg");
   }
 }
 

@@ -82,7 +82,7 @@ const revisePassword = () => { // 登录处理函数
                                // const res = await userForgetGetApi(formModel.value.email, formModel.value.newpassword, formModel.value.captchword)
                                // userStore.setUserInfo(res.data)
   ElMessage.success('修改成功')
-  router.push('/login') // 登录成功后重定向
+  changePage(1)
 }
 
 /**

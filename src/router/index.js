@@ -12,13 +12,7 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('../Layout/index.vue'),
-      redirect: '/layout/home',
-      children: [
-        {
-          path: '/layout/home',
-          component: () => import('../Layout/home/home.vue')
-        }
-      ]
+
     },
     //书阁
     {

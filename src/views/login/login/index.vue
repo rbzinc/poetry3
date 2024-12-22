@@ -45,7 +45,7 @@ const login = async () => {
     const { data } = await userLoginService(formModel.value.username, formModel.value.password)
     useUser.setUserInfo(data)
     ElMessage.success('登录成功')
-    router.push('/layout/home')
+    router.push('/')
   } catch (error) {
     console.error(error) // 打印错误信息以方便调试
     ElMessage.error('用户名或密码错误')
