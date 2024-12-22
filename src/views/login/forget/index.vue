@@ -3,7 +3,7 @@
 import {Lock, Message} from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getCodeService,userEmailService } from '../../api/modules/user'
+import { getCodeService,userEmailService } from '@/api/modules/user'
 import { useUserInfoStore } from '@/stores/index.js'
 import {ElMessage} from "element-plus";
 import {userForgetGetApi} from "@/api/modules/aiChat.js";
@@ -79,8 +79,8 @@ const captch = async () => { // 发送验证码的函数
  */
 // TODO 修改密码接口报错400
 const revisePassword = () => { // 登录处理函数
-  // const res = await userForgetGetApi(formModel.value.email, formModel.value.newpassword, formModel.value.captchword)
-  // userStore.setUserInfo(res.data)
+                               // const res = await userForgetGetApi(formModel.value.email, formModel.value.newpassword, formModel.value.captchword)
+                               // userStore.setUserInfo(res.data)
   ElMessage.success('修改成功')
   router.push('/login') // 登录成功后重定向
 }
@@ -99,98 +99,82 @@ const isButtonDisabled = computed(() => {
  */
 const isLoginButtonActive = computed(() => formModel.value.email !== '' && formModel.value.password !== '');
 
-
+const emit = defineEmits(['changePage'])
+const changePage = (event)=>{
+  emit('changePage',event)
+}
 </script>
 
 <template>
-  <div class="bgc">
-    <div class="bg"></div>
-    <el-form
-        :model="formModel"
-        :rules="rules"
-        ref="form"
-        size="large"
-        autocomplete="off"
-        class="form"
-    >
-      <el-form-item class="item">
-        <div class="title"></div>
-      </el-form-item>
-      <el-form-item prop="email" style="display: flex" class="item">
-        <el-input
-            v-model="formModel.email"
-            :prefix-icon="Message"
-            placeholder="请输入邮箱"
-            class="input"
-        ></el-input>
-        <el-button
-            class="button"
-            @click="captch"
-        >{{ ButtonText }}</el-button>
-      </el-form-item>
+  <el-form
+      :model="formModel"
+      :rules="rules"
+      ref="form"
+      size="large"
+      autocomplete="off"
+      class="form"
+  >
+    <el-form-item class="item">
+      <div class="title"></div>
+    </el-form-item>
+    <el-form-item prop="email" style="display: flex" class="item">
+      <el-input
+          v-model="formModel.email"
+          :prefix-icon="Message"
+          placeholder="请输入邮箱"
+          class="input"
+      ></el-input>
+      <el-button
+          class="button"
+          @click="captch"
+      >{{ ButtonText }}</el-button>
+    </el-form-item>
 
-      <el-form-item prop="captchword">
-        <el-input
-            v-model="formModel.captchword"
-            :prefix-icon="Lock"
-            type="password"
-            placeholder="请输入验证码"
+    <el-form-item prop="captchword">
+      <el-input
+          v-model="formModel.captchword"
+          :prefix-icon="Lock"
+          type="password"
+          placeholder="请输入验证码"
 
-        ></el-input>
-      </el-form-item>
-      <el-form-item prop="newpassword">
-        <el-input
-            v-model="formModel.newpassword"
-            :prefix-icon="Lock"
-            type="password"
-            placeholder="请输入新密码"
+      ></el-input>
+    </el-form-item>
+    <el-form-item prop="newpassword">
+      <el-input
+          v-model="formModel.newpassword"
+          :prefix-icon="Lock"
+          type="password"
+          placeholder="请输入新密码"
 
-        ></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-            class="button"
-            @click="revisePassword"
-            type="primary"
-            style="color: white;
+      ></el-input>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+          class="button"
+          @click="revisePassword"
+          type="primary"
+          style="color: white;
              background-color: #cbcaca;
              border-color: #cbcaca;
              margin: auto;
              "
-            :style="{backgroundColor: isLoginButtonActive ? '#409eff' : '#cbcaca'}"
-            :disabled="isButtonDisabled"
-        >修改</el-button
-        >
-      </el-form-item>
-      <el-form-item class="flex">
-        <el-link type="info" :underline="false">
-          <router-link to="/login" style="text-decoration: none"
-                       @focus.prevent @mousedown.prevent>返回</router-link>
-        </el-link>
-      </el-form-item>
+          :style="{backgroundColor: isLoginButtonActive ? '#409eff' : '#cbcaca'}"
+          :disabled="isButtonDisabled"
+      >修改</el-button
+      >
+    </el-form-item>
+    <div class="flex">
+      <div class="flex">
+        <p class="flex-item" @click="changePage(1)" style="margin-right: 20px;" >登录</p>
+        <p class="flex-item" @click="changePage(3)">注册</p>
+      </div>
+      <p  class="flex-item" @click="changePage(2)">邮箱注册</p>
+    </div>
 
-    </el-form>
-  </div>
+  </el-form>
 </template>
 
 <style lang="scss" scoped>
-.bgc{
-  margin: 0 auto;
-  width: 1300px;
-  height: 800px;
-  background: none;
-  padding-top:160px ;
-  display: flex;
-}
-.bg {
-  width: 900px;
-  height: 520px;
-  background: url('../pic/微信图片_20241015002509.jpg')  no-repeat center center;
-  padding-top: 100px;
-  background-size: cover;
-  box-sizing: border-box;
-  border-radius: 20px 0 0 20px;
-}
 .form {
   width: 400px;
   height: 520px;
@@ -212,17 +196,19 @@ const isLoginButtonActive = computed(() => formModel.value.email !== '' && formM
 
   }
   .flex {
-    width: 100%;
     display: flex;
     justify-content: space-between;
+    .flex-item {
+      cursor: pointer;
+    }
   }
   .input{
     width: 300px;
   }
- .title{
- text-align: center;
-   font-weight: bold;
-   font-size: 32px;
- }
+  .title{
+    text-align: center;
+    font-weight: bold;
+    font-size: 32px;
+  }
 }
 </style>

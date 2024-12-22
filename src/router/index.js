@@ -6,19 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: '/login',
-      component: () => import('../views/login/LoginPage.vue')
-    },
-    {
-      path: '/register',
-      component: () => import('../views/register/register.vue')
-    },
-    {
-      path: '/email',
-      component: () => import('../views/login/EmailLogin.vue')
-    },
-    {
-      path: '/forget',
-      component: () => import('../views/forget/index.vue')
+      component: () => import('../views/login/index.vue')
     },
     //首页
     {
