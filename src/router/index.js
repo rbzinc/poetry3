@@ -25,10 +25,6 @@ const router = createRouter({
           component: () => import('../views/poet/class/classPoetry.vue'),
         },
         {
-          path: '/poet/portry',
-          component: () => import('../views/poet/portry/poetryPage.vue'),
-        },
-        {
           path: '/poet/sentence',
           component: () => import('../views/poet/sentence/porSence.vue'),
         },

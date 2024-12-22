@@ -15,7 +15,6 @@ import 'highlight.js/scss/atom-one-dark.scss'
 import '@/iconfont/iconfont.css'
 //全局组件
 
-import Pagenation from './components/pagenation/pagenation.vue'
 const app = createApp(App)
 const pinia =createPinia()
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -24,7 +23,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 app.use(mavonEditor)
 
-app.component('Pagenation',Pagenation)
+
 app.config.globalProperties.$echarts = echarts
 app.component('v-chart', VChart);
 app.use(router)

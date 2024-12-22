@@ -1,25 +1,8 @@
 <script setup>
-import{ ref,onMounted} from "vue"
-// import { getDynastyData } from "../../../api/modules";
-// const dynasty =ref([])
-// const poeclass =ref([])
-// const getDynasty = async() =>{
-//   const res = await getDynastyData()
-//   console.log(res)
-//   dynasty.value = res.result
-//   console.log(dynasty.value);
-  
-// }
-// const getClass = async() =>{
-//   const res = await getDynastyData()
-//   console.log(res)
-//   poeclass.value = res.result
-// }
-// onMounted(() => getDynasty()
-// )
+
 import { storeToRefs } from "pinia"
 import { defineExpose } from "vue";
-import { userSearchStore } from "../../../stores/modules/poepavilion";
+import { userSearchStore } from "@/stores/index.js";
 import Poetryitem from "../../../components/poetryitem/poetryitem.vue";
 import Search from "../../../components/search/search.vue";
 const poetstore = userSearchStore()
@@ -37,7 +20,7 @@ console.log(dynastyList.value);
  <div class="book">
   <div class="box">
       <h2>朝代</h2>
-      <div class="dy" >  
+      <div class="dy" >
         <div class="dy-content" v-for="item in dynastyList" :key="item.id">
           {{ item.data }}
         </div>
@@ -51,7 +34,7 @@ console.log(dynastyList.value);
       <Poetryitem></Poetryitem>
   </div>
  </div>
- 
+
 </template>
 
 <style scoped>
@@ -67,10 +50,10 @@ console.log(dynastyList.value);
       box-sizing: border-box;
       .dy {
         margin: 0 auto;
-        border: 1px solid #000; 
-        padding: 20px; 
-        width: 840px; 
-        box-sizing: border-box; 
+        border: 1px solid #000;
+        padding: 20px;
+        width: 840px;
+        box-sizing: border-box;
         background-color: #dfefac;
         .content {
           font-size: 5px;
