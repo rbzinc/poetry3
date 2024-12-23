@@ -121,28 +121,7 @@ const routes = [
     component:
       () => import('@/views/study/index.vue'),
   },
-  {
-    path: '/search',
-    component:
-      () => import('@/views/search/index.vue'),
-    redirect:
-      '/poetsearch',
-    children:
-      [
-        {
-          path: '/poetsearch',
-          component: () => import('@/views/search/poetsearch.vue'),
-        },
-        {
-          path: '/writersearch',
-          component: () => import('@/views/search/writersearch.vue'),
-        },
-        {
-          path: '/sensearch',
-          component: () => import('@/views/search/sensearch.vue'),
-        },
-      ]
-  },
+
 ]
 
 export const rootRoute = {
