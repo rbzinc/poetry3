@@ -1,5 +1,5 @@
 <script setup>
-import Writercontent from '../../components/wriercontent/writercontent.vue'
+import Writercontent from '@/components/wriercontent/writercontent.vue'
 import {useRoute, useRouter} from 'vue-router'
 import {userWriterService} from "@/api/modules/writer"
 

@@ -80,14 +80,14 @@ const routes = [
       () => import('@/views/vrExhibition/vrExhibitionDetail/index.vue')
   },
   {
-    path: '/writer',
+    path: '/writerDetails',
     component:
-      () => import('@/views/writer/writer.vue')
+      () => import('@/views/poet/details/writerDetails/index.vue')
   },
   {
-    path: '/poedetails',
+    path: '/poetDetails',
     component:
-      () => import('@/views/poedetails/poedetails.vue')
+      () => import('@/views/poet/details/poetDetails/index.vue')
   },
   {
     path: '/user',

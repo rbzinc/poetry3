@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import Search from '@/components/search/search.vue'
+import Search from '@/components/search/index.vue'
 import { getsenRandomData, getSentenceData } from '@/api/modules/poePavilion.js'
 
 // 1. 提取配置常量
@@ -62,7 +62,7 @@ onMounted(async () => {
 
 <template>
   <div class="sentence-container">
-    <Search />
+
 
     <div class="filter-box">
       <div class="filter-section">
@@ -117,9 +117,6 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .sentence-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 40px;
 
   .filter-box {
     background: #f3f2f2;

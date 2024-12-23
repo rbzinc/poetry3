@@ -1,11 +1,10 @@
 <script setup>
 import {ref, onMounted} from 'vue'
-
-import Poetryitem from '@/components/poetryitem/poetryitem.vue'
-import Search from '@/components/search/search.vue'
+import Poetryitem from '@/components/poetryitem/index.vue'
 import {userSearchStore} from '@/stores/modules/search.js'
 import {getpoemRandomData, getDynastyData, getClassData, getWriterPoemData} from '@/api/modules/index.js'
-import {useRouter} from 'vue-router'
+const searchStore = userSearchStore()
+console.log(searchStore.userInput)
 
 // 1. 提取配置常量
 const FILTER_CONFIG = {
@@ -30,13 +29,13 @@ const state = ref({
     class: false,
     poet: false
   },
-  currentType: '',
-  currentName: '',
-  pageNum: 1,
-  pageSize: 6,
-  pageTotal: 0,
-  loading: false,
-  randomList: []
+  currentType: '', // 当前选择的类型
+  currentName: '', // 当前选择的名称
+  pageNum: 1, // 当前页
+  pageSize: 6, // 每页显示数量
+  pageTotal: 0, // 总页数
+  loading: false, // 加载状态
+  randomList: [] // 随机列表
 })
 
 // 3. 提取公共方法
@@ -50,7 +49,6 @@ const fetchData = async (type, name, page = 1) => {
     state.value.loading = true
     state.value.currentType = type
     state.value.currentName = name
-
     const apiMap = {
       dynasty: getDynastyData,
       class: getClassData,
@@ -83,12 +81,12 @@ onMounted(async () => {
     console.error('获取随机数据失败:', error)
   }
 })
+
+
 </script>
 
 <template>
   <div class="poetry-container">
-    <Search />
-
     <!-- 7. 过滤器部分优化 -->
     <div class="filter-box">
       <div v-for="(config, type) in FILTER_CONFIG"
@@ -115,20 +113,21 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-
     <!-- 8. 列表展示优化 -->
     <div class="poetry-list" v-loading="state.loading">
       <template v-if="state.randomList.length">
         <Poetryitem v-for="item in state.randomList"
                     :key="item?.id"
-                    v-bind="item"
-                    @click="$router.push(`/poedetails?id=${item.id}`)"/>
+                    v-bind="{
+                       ...item,
+                       id: String(item.id)
+                     }"
+                    @click="$router.push(`/poetDetails?id=${item.id}`)"/>
       </template>
       <div v-else class="empty-state">
         暂无数据
       </div>
     </div>
-
     <!-- 9. 分页器优化 -->
     <el-pagination v-if="state.pageTotal > 0"
                    :current-page="state.pageNum"
@@ -143,10 +142,6 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .poetry-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 40px;
-
   .filter-box {
     background: #f3f2f2;
     border-radius: 8px;

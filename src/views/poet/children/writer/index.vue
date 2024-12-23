@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { defineExpose } from 'vue'
 import Writeritem from '@/components/writeritem/writeitem.vue'
-import Search from '@/components/search/search.vue'
+import Search from '@/components/search/index.vue'
 import { getPoetRandomData, getWriterData } from '@/api/modules/poePavilion.js'
 import { useRouter } from 'vue-router'
 
@@ -66,7 +66,7 @@ const handlePageChange = (page) => {
 
 // 7. 跳转详情页
 const navigateToDetail = (id) => {
-  router.push(`/writer?id=${id}`)
+  router.push(`/writerDetails?id=${id}`)
 }
 
 onMounted(getRandom)
@@ -74,7 +74,6 @@ onMounted(getRandom)
 
 <template>
   <div class="writer-container">
-    <Search />
 
     <div class="filter-box">
       <div class="filter-section">
@@ -127,9 +126,7 @@ onMounted(getRandom)
 
 <style lang="scss" scoped>
 .writer-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 40px;
+
 
   .filter-box {
     background: #f3f2f2;

@@ -1,6 +1,7 @@
 <script setup>
-
 import Banner from '@/views/poet/banner/index.vue';
+import Search from "@/components/search/index.vue";
+
 </script>
 
 <template>
@@ -10,7 +11,8 @@ import Banner from '@/views/poet/banner/index.vue';
         <Banner />
       </aside>
       <main class="main-content">
-        <RouterView />
+        <Search />
+        <RouterView  />
       </main>
     </div>
   </div>
@@ -37,6 +39,7 @@ import Banner from '@/views/poet/banner/index.vue';
     .main-content {
       flex: 1;
       max-width: 1100px;
+      padding: 0 40px;
     }
   }
 }
