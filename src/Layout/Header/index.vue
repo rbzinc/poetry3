@@ -18,7 +18,7 @@ const loyout = () => {
         <img src="@/assets/pic/home/logo.jpg" alt="" width="250px" height="80px">
       </div>
       <div class="right">
-        <router-link to="/">首页</router-link>
+        <router-link to="/home">首页</router-link>
         <router-link to="/poet">书阁</router-link>
         <el-dropdown placement="bottom">
           <p>
@@ -35,7 +35,7 @@ const loyout = () => {
                 <router-link to="/poetryAi">AI助学</router-link>
               </el-dropdown-item>
               <el-dropdown-item>
-                <router-link to="/game">游戏助学</router-link>
+                <router-link to="/dictionary">游戏助学</router-link>
               </el-dropdown-item>
               <el-dropdown-item>
                 <router-link to="/vrExhibition">vr助学</router-link>

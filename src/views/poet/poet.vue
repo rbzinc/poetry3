@@ -6,50 +6,42 @@ import Banner from '@/views/poet/banner/banner.vue';
 </script>
 
 <template>
-  <div class="bgc">
-    <div class="home">
-      <div class="ban">
+  <div class="poet-container">
+    <div class="poet-content">
+      <aside class="sidebar">
         <Banner />
-      </div>
-      <div class="book">
-        <router-view></router-view>
-      </div>
-
+      </aside>
+      <main class="main-content">
+        <RouterView />
+      </main>
     </div>
   </div>
-
 </template>
 
-<style scoped>
-.bgc {
+<style scoped lang="scss">
+.poet-container {
+  min-height: 100vh;
   width: 100%;
-  height: 100%;
-  background-image: url('../../assets/pic/poet/微信图片_20241016040103.jpg');
-  background-size: 100% 100%;
-}
-
-.home {
-  width: 1300px;
-  height: 2000px;
-  background: none;
-  box-sizing: border-box;
-  margin: 0 auto;
-  display: flex;
-
-  .ban {
-    height: 900px;
-    width: 200px;
-    background: none;
-  }
-
-  .book {
-    width: 1100px;
-    height: 900px;
-    background: none;
-    box-sizing: border-box;
+  background: url('@/assets/pic/poet/微信图片_20241016040103.jpg') no-repeat center center;
+  background-size: cover;
+  .poet-content {
+    width: min(1300px, 90%);
     margin: 0 auto;
-  }
+    display: flex;
+    gap: 20px;
+    box-sizing: border-box;
 
+    .sidebar {
+      width: 200px;
+      flex-shrink: 0;
+    }
+
+    .main-content {
+      flex: 1;
+      max-width: 1100px;
+    }
+  }
 }
+
 
 </style>

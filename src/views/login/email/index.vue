@@ -75,7 +75,7 @@ const login = async () => { // 登录处理函数
   const res = await userEmailService(formModel.value.email, formModel.value.password)
   userStore.setUserInfo(res.data)
   ElMessage.success('登录成功')
-  router.push('/') // 登录成功后重定向
+  router.push('/home') // 登录成功后重定向
 }
 
 /**
