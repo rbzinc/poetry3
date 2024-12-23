@@ -3,10 +3,8 @@ import { ref } from "vue"
 
 
 export const userSearchStore = defineStore('search', () =>{
-    const userinput = ref('')
+    const userInput = ref('')
     return {
-      userinput
+      userInput
     }
-},{
-    persist: true,
 })
