@@ -24,23 +24,23 @@ const handleClick = (event) => {
 </script>
 
 <template>
- <div class="home">
-   <div class="header">
-    <div class="search">
-      <el-input v-model="input" 
-      class="el-input"
-      placeholder="回车进行搜索"
-      @keyup.enter="handleSearch" />
+  <div class="home">
+    <div class="header">
+      <div class="search">
+        <el-input v-model="input"
+                  class="el-input"
+                  placeholder="回车进行搜索"
+                  @keyup.enter="handleSearch" />
+      </div>
     </div>
-   </div>
-   <div class="nav">
-        <router-link to="/writersearch" @click="handleClick">诗人</router-link>
-        <router-link to="/poetsearch"@click="handleClick">古诗</router-link>
-        <router-link to="/sensearch"@click="handleClick">名句</router-link>
-   </div>
-   <div class="body">
-    <router-view></router-view>
-   </div>
+    <div class="nav">
+      <router-link to="/writersearch" @click="handleClick">诗人</router-link>
+      <router-link to="/poetsearch"@click="handleClick">古诗</router-link>
+      <router-link to="/sensearch"@click="handleClick">名句</router-link>
+    </div>
+    <div class="body">
+      <router-view></router-view>
+    </div>
 
   </div>
 </template>
@@ -49,7 +49,7 @@ const handleClick = (event) => {
 .home{
   height: 1000px;
   background: none;
-  margin: 10px auto 0; 
+  margin: 10px auto 0;
   .header{
     width: 100%;
     height: 160px;
@@ -65,14 +65,14 @@ const handleClick = (event) => {
       display: flex;
       background-color: rgb(194, 194, 194);
       opacity: 0.6;
-      box-sizing: border-box; 
+      box-sizing: border-box;
       text-align: center;
       align-items: center;
       border-radius: 10px;
     }
     .el-input{
       border: 2px #aca9a9 ;
-      border-radius: 50px; 
+      border-radius: 50px;
       width: 720px;
       height: 40px;
       margin: 0 auto;
@@ -98,21 +98,21 @@ const handleClick = (event) => {
       color: rgb(112, 112, 112);
       text-align: center;
       text-decoration: none;
-      border: 2px solid transparent; 
+      border: 2px solid transparent;
       cursor: pointer;
       transition: border-color 0.3s, transform 0.3s;
 
       &:active{
-      background-color: #dcdbdb;
-      transform: scale(0.98); 
+        background-color: #dcdbdb;
+        transform: scale(0.98);
+      }
     }
-    }
-    
+
   }
   .body{
-      width: 1200px;
-      background: none;
-      margin: 0 auto;
-    }
+    width: 1200px;
+    background: none;
+    margin: 0 auto;
+  }
 }
 </style>

@@ -2,15 +2,15 @@
 const main = [
   {
     path: '/poet/class',
-    component: () => import('@/views/poet/poet.vue'),
+    component: () => import('@/views/poet/index.vue'),
   },
   {
     path: '/poet/sentence',
-    component: () => import('@/views/poet/sentence/porSence.vue'),
+    component: () => import('@/views/poet/children/sentence/index.vue'),
   },
   {
     path: '/poet/writer',
-    component: () => import('@/views/poet/writer/poeWriter.vue'),
+    component: () => import('@/views/poet/children/writer/index.vue'),
   }
 ]
 

@@ -3,21 +3,21 @@ const routes = [
 //书阁
   {
     path: '/poet',
-    component: () => import('@/views/poet/poet.vue'),
+    component: () => import('@/views/poet/index.vue'),
     redirect: '/poet/class',
     children:
       [
         {
           path: '/poet/class',
-          component: () => import('@/views/poet/class/classPoetry.vue'),
+          component: () => import('@/views/poet/children/class/index.vue'),
         },
         {
           path: '/poet/sentence',
-          component: () => import('@/views/poet/sentence/porSence.vue'),
+          component: () => import('@/views/poet/children/sentence/index.vue'),
         },
         {
           path: '/poet/writer',
-          component: () => import('@/views/poet/writer/poeWriter.vue'),
+          component: () => import('@/views/poet/children/writer/index.vue'),
         }
       ]
   },

@@ -1,0 +1,304 @@
+<script setup>
+import {ref, onMounted} from 'vue'
+
+import Poetryitem from '@/components/poetryitem/poetryitem.vue'
+import Search from '@/components/search/search.vue'
+import {userSearchStore} from '@/stores/modules/search.js'
+import {getpoemRandomData, getDynastyData, getClassData, getWriterPoemData} from '@/api/modules/index.js'
+import {useRouter} from 'vue-router'
+
+// 1. 提取配置常量
+const FILTER_CONFIG = {
+  dynasty: {
+    title: '朝代',
+    options: ['唐代', '宋代', '明代', '清代', '元代', '当代', '两汉', '南北朝', '金朝', '现代', '先秦', '隋代', '五代', '未知']
+  },
+  class: {
+    title: '分类',
+    options: ['古诗三百首', '小学古诗', '早教古诗100首', '初中古诗', '初中文言文', '乐府', '民歌', '咏物', '叙事', '抱负', '赞美', '写景', '写人', '品格', '孤独', '爱情']
+  },
+  poet: {
+    title: '诗人',
+    options: ['李白', '杜甫', '李清照', '白居易', '苏轼', '李商隐', '刘禹锡', '高适', '孟浩然', '王安石', '欧阳修', '王勃', '曹植', '晏殊', '杨万里', '黄庭坚', '杜牧', '��贺', '元稹', '纳兰性德']
+  }
+}
+
+// 2. 状态管理优化
+const state = ref({
+  openStates: {
+    dynasty: false,
+    class: false,
+    poet: false
+  },
+  currentType: '',
+  currentName: '',
+  pageNum: 1,
+  pageSize: 6,
+  pageTotal: 0,
+  loading: false,
+  randomList: []
+})
+
+// 3. 提取公共方法
+const toggleSection = (section) => {
+  state.value.openStates[section] = !state.value.openStates[section]
+}
+
+// 4. 统一的数据获取方法
+const fetchData = async (type, name, page = 1) => {
+  try {
+    state.value.loading = true
+    state.value.currentType = type
+    state.value.currentName = name
+
+    const apiMap = {
+      dynasty: getDynastyData,
+      class: getClassData,
+      poet: getWriterPoemData
+    }
+
+    const res = await apiMap[type](name, page)
+    state.value.randomList = res.data.records
+    state.value.pageTotal = res.data.total
+  } catch (error) {
+    console.error('获取数据失败:', error)
+    // 可以添加错误提示
+  } finally {
+    state.value.loading = false
+  }
+}
+
+// 5. 分页处理优化
+const handlePageChange = (page) => {
+  state.value.pageNum = page
+  fetchData(state.value.currentType, state.value.currentName, page)
+}
+
+// 6. 初始化数据
+onMounted(async () => {
+  try {
+    const res = await getpoemRandomData()
+    state.value.randomList = res.data
+  } catch (error) {
+    console.error('获取随机数据失败:', error)
+  }
+})
+</script>
+
+<template>
+  <div class="poetry-container">
+    <Search />
+
+    <!-- 7. 过滤器部分优化 -->
+    <div class="filter-box">
+      <div v-for="(config, type) in FILTER_CONFIG"
+           :key="type"
+           class="filter-section">
+        <div class="filter-row">
+          <span class="filter-title">{{ config.title }}:</span>
+          <div class="filter-options" :class="{ 'expanded': state.openStates[type] }">
+            <button v-for="option in config.options"
+                    :key="option"
+                    class="option-btn"
+                    :class="{ 'active': state.currentName === option }"
+                    @click="fetchData(type, option)">
+              {{ option }}
+            </button>
+          </div>
+          <button class="toggle-btn" @click="toggleSection(type)">
+            <img :class="{ 'rotate-180': state.openStates[type] }"
+                 src="https://ziyuan.guwendao.net/siteimg/jianBtn.png"
+                 alt="toggle"
+                 width="13"
+                 height="13">
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. 列表展示优化 -->
+    <div class="poetry-list" v-loading="state.loading">
+      <template v-if="state.randomList.length">
+        <Poetryitem v-for="item in state.randomList"
+                    :key="item?.id"
+                    v-bind="item"
+                    @click="$router.push(`/poedetails?id=${item.id}`)"/>
+      </template>
+      <div v-else class="empty-state">
+        暂无数据
+      </div>
+    </div>
+
+    <!-- 9. 分页器优化 -->
+    <el-pagination v-if="state.pageTotal > 0"
+                   :current-page="state.pageNum"
+                   :page-size="state.pageSize"
+                   :total="state.pageTotal"
+                   :pager-count="7"
+                   background
+                   layout="prev, pager, next"
+                   @current-change="handlePageChange"/>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.poetry-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+
+  .filter-box {
+    background: #f3f2f2;
+    border-radius: 8px;
+    padding: 0 10px;
+
+    .filter-section {
+      border-bottom: 1px solid #b5b5b5;
+      padding: 10px 0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .filter-row {
+        display: flex;
+        align-items: center;
+        width: 100%;
+
+        .filter-title {
+          width: 60px;
+          font-size: 17px;
+          flex-shrink: 0;
+        }
+
+        .filter-options {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          height: 35px;
+          overflow: hidden;
+          transition: height 0.3s ease;
+
+          &.expanded {
+            height: auto;
+          }
+        }
+
+        .toggle-btn {
+          width: 30px;
+          border: none;
+          cursor: pointer;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+
+          img {
+            transition: transform 0.3s ease;
+
+            &.rotate-180 {
+              transform: scaleY(-1);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .poetry-list {
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+    }
+  }
+
+  .option-btn {
+    height: 35px;
+    padding: 0 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 15px;
+
+    &:hover {
+      color: #409EFF;
+    }
+
+    &.active {
+      color: #409EFF;
+      font-weight: bold;
+    }
+  }
+
+  // 响应式优化
+  @media (max-width: 768px) {
+    padding: 15px;
+
+    .filter-options {
+      height: auto;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+  }
+
+  // 分页器样式
+  :deep(.el-pagination) {
+    margin-top: 30px;
+    justify-content: center;
+
+    .btn-prev,
+    .btn-next {
+      background-color: #fff;
+      border: 1px solid #e0e0e0;
+      height: 32px;
+      line-height: 32px;
+      padding: 0 12px;
+      margin: 0 4px;
+      border-radius: 4px;
+
+      &:hover:not(.is-disabled) {
+        color: #409EFF;
+        border-color: #409EFF;
+      }
+
+      &.is-disabled {
+        color: #c0c4cc;
+        background-color: #f4f4f5;
+        border-color: #e0e0e0;
+        cursor: not-allowed;
+      }
+    }
+
+    .el-pager {
+      li {
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        height: 32px;
+        min-width: 32px;
+        line-height: 32px;
+        padding: 0 6px;
+        margin: 0 4px;
+        border-radius: 4px;
+        font-weight: normal;
+        color: #606266;
+
+        &:hover:not(.is-active) {
+          color: #409EFF;
+          border-color: #409EFF;
+        }
+
+        &.is-active {
+          background-color: #409EFF;
+          color: #fff !important;
+          border-color: #409EFF;
+          position: relative;
+          z-index: 1;
+        }
+      }
+    }
+  }
+}
+</style>
+

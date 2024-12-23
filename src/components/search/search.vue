@@ -14,7 +14,7 @@ const handleSearch = () => {
 
 <template>
  <div class="search">
-    <el-input v-model="input" 
+    <el-input v-model="input"
     class="el-input"
     placeholder="回车进行搜索"
     @keyup.enter="handleSearch" />
@@ -29,7 +29,7 @@ const handleSearch = () => {
   display: flex;
   background-color: rgb(194, 194, 194);
   opacity: 0.6;
-  box-sizing: border-box; 
+  box-sizing: border-box;
   text-align: center;
   align-items: center;
   border-radius: 10px;
@@ -37,7 +37,7 @@ const handleSearch = () => {
 
 .el-input{
   border: 2px #aca9a9 ;
-  border-radius: 50px; 
+  border-radius: 50px;
   width: 720px;
   height: 40px;
   margin: 0 auto;

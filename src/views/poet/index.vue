@@ -1,8 +1,6 @@
 <script setup>
-import {RouterView} from 'vue-router';
-import Banner from '@/views/poet/banner/banner.vue';
 
-
+import Banner from '@/views/poet/banner/index.vue';
 </script>
 
 <template>

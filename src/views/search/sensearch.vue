@@ -33,21 +33,21 @@ onMounted(() => {
 </script>
 
 <template>
- <div class="home">
-   <div class="sentence">
+<div class="home">
+  <div class="sentence">
     <div class="dy" v-for="item in randomList" :key="item.id">
       {{ item.name }}——{{ item.fromm }}</div>
-   </div>
-   <div class="el-pagination">
-     <el-pagination
-         :page-size="pagesize"
-         :pager-count="10"
-         layout="prev, pager, next"
-         :total="pagetotal"
-         @current-change="currentChange"
-     />
-   </div>
   </div>
+  <div class="el-pagination">
+    <el-pagination
+        :page-size="pagesize"
+        :pager-count="10"
+        layout="prev, pager, next"
+        :total="pagetotal"
+        @current-change="currentChange"
+    />
+  </div>
+</div>
 </template>
 
 <style scoped lang="scss">
