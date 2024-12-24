@@ -1,26 +1,24 @@
 <script setup>
-import {ref} from 'vue';
+import { ref } from 'vue';
 import {useRouter} from "vue-router";
-import { userGameStore } from "@/stores/modules/game.js";
-import {ElMessage} from "element-plus";
-const gameStore = userGameStore()
+import { ElMessage } from 'element-plus'
 const router = useRouter()
 let number = ref(0)
 let score = ref(0)
 const button = ref('下一题')
 const message = ref('请输入下一句')
-const active = ref(gameStore.poetstatus)
 let dialogFormVisible = ref(false)
 const poems = [
-  {question: '率妻子（ ）来此绝境', answer: '邑人'},
-  {question: '（ ）交通，鸡犬相闻', answer: '阡陌'},
-  {question: '黄发（ ），并怡然自乐', answer: '垂髫'},
-  {question: '便（ ）家，设酒杀鸡作食', answer: '要还'},
+  { question: '土地平旷', answer: '屋舍俨然' },
+  { question: '阡陌交通', answer: '鸡犬相闻' },
+  { question: '黄发垂髫', answer: '并怡然自乐' },
+  { question: '便要还家', answer: '设酒杀鸡作食' }
 ];
 const current = ref(0);
 const question = ref(poems[current.value].question);
 let answer = ref('');
 const correctAnswer = ref(poems[current.value].answer);
+const active = ref(0);
 //判断回答正误
 const checkAnswer = () => {
   if (answer.value === correctAnswer.value) {
@@ -53,8 +51,7 @@ const nextQuestion = () => {
   }
   else{
     dialogFormVisible.value = true;
-    active.value++;
-    gameStore.poetstatus = active
+    active.value++
   }
 };
 
@@ -77,28 +74,29 @@ const fillgameclick = () =>{
         返回
       </div>
     </template>
-  <div class="game">
-    <div class="inner">
-      <div class="poetry-quiz">
-        <div class="question">
-          <div class="ask">{{ question }}</div>
-          <el-input v-model="answer" style="width: 240px" :placeholder="message" />
-        </div>
-        <el-button @click="nextQuestion">{{ button }}</el-button>
-      </div>
-    <div class="progress-bar">
-      <el-steps
-          style="max-width: 600px"
-          :space="180"
-          :active="active"
-          finish-status="success"
-      >
-        <el-step title="古诗填句" />
-        <el-step title="挖词填空" @click="fillgameclick"/>
-      </el-steps>
-    </div>
-    </div>
-  </div>
+ <div class="game">
+   <div class="inner">
+     <div class="poetry-quiz">
+       <div class="question">
+         <div class="ask">{{ question }}</div>
+         <el-input v-model="answer" style="width: 240px" :placeholder="message" />
+       </div>
+       <el-button @click="nextQuestion">{{ button }}</el-button>
+     </div>
+     <div class="progress-bar">
+       <el-steps
+           style="max-width: 600px"
+           :space="180"
+           :active="active"
+           finish-status="success"
+       >
+         <el-step title="古诗填句" />
+         <el-step title="挖词填空" @click="fillgameclick"/>
+       </el-steps>
+     </div>
+   </div>
+ </div>
+
   <el-dialog v-model="dialogFormVisible" title="以下是您的得分" width="800px">
     <p>{{score}}</p>
     <template #footer>
@@ -112,7 +110,7 @@ const fillgameclick = () =>{
 
 <style scoped lang="scss">
 .el-card {
-  background-image: url('./pic/微信图片_20241201193836.jpg');
+  background-image: url('../../../../../../assets/pic/study/微信图片_20241201193836.jpg');
   background-size: cover; /* 覆盖整个元素 */
   background-position: center; /* 居中显示 */
   background-repeat: no-repeat; /* 不重复 */

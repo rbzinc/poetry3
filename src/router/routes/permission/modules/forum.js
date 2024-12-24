@@ -5,7 +5,7 @@ const main = [
     component: () => import('@/views/talksquare/editTalk/index.vue')
   },
   {
-    path:'forum/detail/:id',
+    path:'forum/detail',
     component: () => import('@/views/talksquare/talksquareDetail/index.vue')
   }
 ]

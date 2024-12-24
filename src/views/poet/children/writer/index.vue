@@ -1,19 +1,23 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { defineExpose } from 'vue'
 import Writeritem from '@/components/writeritem/writeitem.vue'
-import Search from '@/components/search/index.vue'
 import { getPoetRandomData, getWriterData } from '@/api/modules/poePavilion.js'
 import { useRouter } from 'vue-router'
+const router = useRouter()
 
-// 1. 提取配置常量
+/**
+ * 定义变量
+ * @type {string[]}
+ */
 const DYNASTY_OPTIONS = [
   '唐代', '宋代', '明代', '清代', '元代', '当代',
   '两汉', '南北朝', '金朝', '现代', '先秦', '隋代',
   '五代', '未知'
 ]
 
-// 2. 状态管理优化
+/**
+ * 定义数据
+ */
 const state = ref({
   isOpen: false,
   randomList: [],
@@ -23,8 +27,6 @@ const state = ref({
   pageTotal: 0,
   loading: false
 })
-
-const router = useRouter()
 
 // 3. 获取随机数据
 const getRandom = async () => {
@@ -106,7 +108,7 @@ onMounted(getRandom)
                     :name="item.name"
                     :content="item.simpleIntro"
                     :dynasty="item.dynasty"
-                    @click="navigateToDetail(item.id)" />
+                    @click="$router.push(`/writerDetails?id=${item.id}`)" />
       </template>
       <div v-else class="empty-state">
         暂无数据
@@ -117,7 +119,6 @@ onMounted(getRandom)
                    :current-page="state.pageNum"
                    :page-size="state.pageSize"
                    :total="state.pageTotal"
-                   :pager-count="7"
                    background
                    layout="prev, pager, next"
                    @current-change="handlePageChange" />
@@ -253,6 +254,15 @@ onMounted(getRandom)
         }
       }
     }
+  }
+}
+
+.writer-list {
+
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #999;
   }
 }
 </style>

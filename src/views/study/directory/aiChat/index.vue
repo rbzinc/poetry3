@@ -5,7 +5,7 @@ import AiPoetAside from '@/components/AiPoetAside/index.vue'
 import { useRouter } from 'vue-router';
 import {usePoemImgStore } from '@/stores/modules/poemImg.js'
 const PoemImg = usePoemImgStore();
- const router = useRouter();
+const router = useRouter();
 defineExpose(Textcartoon)
 
 const poetryAi = [
@@ -83,7 +83,7 @@ const changeChat = (item)=>{
 
 <style scoped lang="scss">
 .bgc {
-  background: url('./pic/9a9e79bde1bccac83dc7413c3035a26.png');
+  background: url('@/assets/pic/study/9a9e79bde1bccac83dc7413c3035a26.png');
   background-size: cover;
   height: calc(100vh);
 
@@ -109,8 +109,6 @@ const changeChat = (item)=>{
         margin-top: 4px;
       }
     }
-
-
   }
 }
 

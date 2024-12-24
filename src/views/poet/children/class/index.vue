@@ -6,7 +6,9 @@ import {getpoemRandomData, getDynastyData, getClassData, getWriterPoemData} from
 const searchStore = userSearchStore()
 console.log(searchStore.userInput)
 
-// 1. 提取配置常量
+/**
+ * 常量定义
+ */
 const FILTER_CONFIG = {
   dynasty: {
     title: '朝代',
@@ -18,16 +20,19 @@ const FILTER_CONFIG = {
   },
   poet: {
     title: '诗人',
-    options: ['李白', '杜甫', '李清照', '白居易', '苏轼', '李商隐', '刘禹锡', '高适', '孟浩然', '王安石', '欧阳修', '王勃', '曹植', '晏殊', '杨万里', '黄庭坚', '杜牧', '��贺', '元稹', '纳兰性德']
+    options: ['李白', '杜甫', '李清照', '白居易', '苏轼', '李商隐', '刘禹锡', '高适', '孟浩然', '王安石', '欧阳修', '王勃', '曹植', '晏殊', '杨万里', '黄庭坚', '杜牧', '元贺', '元稹', '纳兰性德']
   }
 }
 
-// 2. 状态管理优化
+/**
+ * 数据定义
+ */
 const state = ref({
+  // 打开状态
   openStates: {
-    dynasty: false,
-    class: false,
-    poet: false
+    dynasty: false, // 朝代
+    class: false, // 分类
+    poet: false // 诗人
   },
   currentType: '', // 当前选择的类型
   currentName: '', // 当前选择的名称
@@ -43,8 +48,15 @@ const toggleSection = (section) => {
   state.value.openStates[section] = !state.value.openStates[section]
 }
 
-// 4. 统一的数据获取方法
-const fetchData = async (type, name, page = 1) => {
+/**
+ * 将三个逻辑相同数据请求封装成函数
+ * @param type
+ * @param name
+ * @param page
+ * @param pageSize
+ * @returns {Promise<void>}
+ */
+const fetchData = async (type, name, page = 1, pageSize = state.value.pageSize) => {
   try {
     state.value.loading = true
     state.value.currentType = type
@@ -54,8 +66,7 @@ const fetchData = async (type, name, page = 1) => {
       class: getClassData,
       poet: getWriterPoemData
     }
-
-    const res = await apiMap[type](name, page)
+    const res = await apiMap[type](name, page, pageSize)
     state.value.randomList = res.data.records
     state.value.pageTotal = res.data.total
   } catch (error) {
@@ -66,13 +77,19 @@ const fetchData = async (type, name, page = 1) => {
   }
 }
 
-// 5. 分页处理优化
+/**
+ * 根据不同类型获取数据分页处理
+ * @param page
+ */
 const handlePageChange = (page) => {
   state.value.pageNum = page
-  fetchData(state.value.currentType, state.value.currentName, page)
+  fetchData(state.value.currentType, state.value.currentName, page, state.value.pageSize)
 }
 
-// 6. 初始化数据
+/**
+ * 随机获取数据
+ */
+// TODO: 优化随机数据获取 优化分页器相关逻辑
 onMounted(async () => {
   try {
     const res = await getpoemRandomData()
@@ -87,7 +104,6 @@ onMounted(async () => {
 
 <template>
   <div class="poetry-container">
-    <!-- 7. 过滤器部分优化 -->
     <div class="filter-box">
       <div v-for="(config, type) in FILTER_CONFIG"
            :key="type"
@@ -113,7 +129,8 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <!-- 8. 列表展示优化 -->
+
+
     <div class="poetry-list" v-loading="state.loading">
       <template v-if="state.randomList.length">
         <Poetryitem v-for="item in state.randomList"
@@ -133,7 +150,6 @@ onMounted(async () => {
                    :current-page="state.pageNum"
                    :page-size="state.pageSize"
                    :total="state.pageTotal"
-                   :pager-count="7"
                    background
                    layout="prev, pager, next"
                    @current-change="handlePageChange"/>

@@ -29,55 +29,55 @@ const routes = [
   {
     path: '/chattochat/:id',
     component:
-      () => import('@/views/aiChat/chatToChat/index.vue')
+      () => import('@/views/study/directory/aiChat/chatToChat/index.vue')
   },
   {
     path: '/chattopic',
     component:
-      () => import('@/views/aiChat/chatToPic/index.vue')
+      () => import('@/views/study/directory/aiChat/chatToPic/index.vue')
   },
   {
     path: '/pictochat',
     component:
-      () => import('@/views/aiChat/picToChat/index.vue')
+      () => import('@/views/study/directory/aiChat/picToChat/index.vue')
   },
   {
     path: '/poemrefine',
     component:
-      () => import('@/views/aiChat/poemRefine/index.vue')
+      () => import('@/views/study/directory/aiChat/poemRefine/index.vue')
   },
   {
     path: '/dictionary',
-    component: () => import('@/views/game/index.vue'),
+    component: () => import('@/views/study/directory/gameStudy/index.vue'),
     children:
       [
         {
           path: '/dictionary',
-          component: () => import('@/views/game/dictionary.vue'),
+          component: () => import('@/views/study/directory/gameStudy/ProgressPage/dictionary/index.vue.vue'),
         },
         {
           path: '/textlist',
-          component: () => import('@/views/game/textlist.vue'),
+          component: () => import('@/views/study/directory/gameStudy/ProgressPage/textList/index.vue'),
         },
         {
           path: '/poetgame',
-          component: () => import('@/views/game/poetgame.vue'),
+          component: () => import('@/views/study/directory/gameStudy/ProgressPage/poetGame/index.vue'),
         },
         {
           path: '/fillpoetgame',
-          component: () => import('@/views/game/fillpoetgame.vue'),
+          component: () => import('@/views/study/directory/gameStudy/ProgressPage/fillPoetGame/index.vue'),
         },
       ]
   },
   {
     path: '/vrExhibition',
     component:
-      () => import('@/views/vrExhibition/index.vue')
+      () => import('@/views/study/directory/vrExhibition/index.vue')
   },
   {
     path: '/vrExhibitionDetail/:id',
     component:
-      () => import('@/views/vrExhibition/vrExhibitionDetail/index.vue')
+      () => import('@/views/study/directory/vrExhibition/vrExhibitionDetail/index.vue')
   },
   {
     path: '/writerDetails',
@@ -121,7 +121,6 @@ const routes = [
     component:
       () => import('@/views/study/index.vue'),
   },
-
 ]
 
 export const rootRoute = {
