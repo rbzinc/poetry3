@@ -1,6 +1,6 @@
 <script setup>
 // 导入依赖组件和模块
-import AiPoemAside from "@/components/AiPoetAside/index.vue";
+import AiPoemAside from "@/components/study/directory/AiStudy/AiPoetAside/index.vue";
 import {userAIDraowSdadwadwPostApi} from "@/api/modules/aiChat.js";
 import {ElMessage} from "element-plus";
 import {useUserInfoStore} from "@/stores/modules/user.js";
@@ -48,9 +48,6 @@ const toggleModal = (imageUrl) => {
 </script>
 
 <template>
-  <div>
-    <AiPoemAside/>
-  </div>
   <div class="chat-container">
     <el-scrollbar>
       <div class="messages-container">
@@ -106,7 +103,7 @@ const toggleModal = (imageUrl) => {
 .chat-container {
   width: 80%;
   height: 560px;
-  margin: 30px auto;
+  margin: 0 auto;
 
   .messages-container {
     display: flex;

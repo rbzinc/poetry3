@@ -1,6 +1,6 @@
 <script setup>
 // 导入AiPoemAside组件和vue相关的库
-import AiPoemAside from "@/components/AiPoetAside/index.vue";
+import AiPoemAside from "@/components/study/directory/AiStudy/AiPoetAside/index.vue";
 import { ref, computed } from 'vue';
 import { ElMessage } from "element-plus";
 import {fetchEventSource} from "@microsoft/fetch-event-source";
@@ -103,9 +103,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <AiPoemAside />
-  </div>
+
   <div class="chat-container">
     <el-scrollbar>
       <div class="messages-container">
@@ -157,7 +155,7 @@ onMounted(() => {
 .chat-container {
   width: 80%;
   height: 560px;
-  margin: 30px auto;
+  margin: 0 auto;
 
   .messages-container {
     display: flex;

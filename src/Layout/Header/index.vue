@@ -22,7 +22,7 @@ const loyout = () => {
         <router-link to="/poet">书阁</router-link>
         <el-dropdown placement="bottom">
           <p>
-            <router-link to="/poetryAi">
+            <router-link to="/study">
               学习
               <el-icon style="margin-top: 10px;">
                 <arrow-down/>
@@ -32,13 +32,13 @@ const loyout = () => {
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item>
-                <router-link to="/poetryAi">AI助学</router-link>
+                <router-link to="/study/poetryAi">AI助学</router-link>
               </el-dropdown-item>
               <el-dropdown-item>
-                <router-link to="/dictionary">游戏助学</router-link>
+                <router-link to="/study/dictionary">游戏助学</router-link>
               </el-dropdown-item>
               <el-dropdown-item>
-                <router-link to="/vrExhibition">vr助学</router-link>
+                <router-link to="/study/vrExhibition">vr助学</router-link>
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>
