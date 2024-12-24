@@ -22,60 +22,66 @@ const routes = [
       ]
   },
   {
-    path: '/poetryAi',
-    component:
-      () => import('@/views/study/index.vue')
+    path: '/study',
+    component: () => import('@/views/study/index.vue'),
+    redirect: '/study/poetryAi',
+    children: [
+      {
+        path:'/study/poetryAi',
+        component: ()=> import('@/views/study/directory/aiChat/studyHome/index.vue')
+      },
+      {
+        path: '/study/chattochat/:id',
+        component:
+          () => import('@/views/study/directory/aiChat/chatToChat/index.vue')
+      },
+      {
+        path: '/study/chattopic',
+        component:
+          () => import('@/views/study/directory/aiChat/chatToPic/index.vue')
+      },
+      {
+        path: '/study/pictochat',
+        component:
+          () => import('@/views/study/directory/aiChat/picToChat/index.vue')
+      },
+      {
+        path: '/study/poemrefine',
+        component:
+          () => import('@/views/study/directory/aiChat/poemRefine/index.vue')
+      },
+    ]
   },
   {
-    path: '/chattochat/:id',
-    component:
-      () => import('@/views/study/directory/aiChat/chatToChat/index.vue')
-  },
-  {
-    path: '/chattopic',
-    component:
-      () => import('@/views/study/directory/aiChat/chatToPic/index.vue')
-  },
-  {
-    path: '/pictochat',
-    component:
-      () => import('@/views/study/directory/aiChat/picToChat/index.vue')
-  },
-  {
-    path: '/poemrefine',
-    component:
-      () => import('@/views/study/directory/aiChat/poemRefine/index.vue')
-  },
-  {
-    path: '/dictionary',
+    path: '/study/dictionary',
     component: () => import('@/views/study/directory/gameStudy/index.vue'),
     children:
       [
         {
-          path: '/dictionary',
+          path: '/study/dictionary',
           component: () => import('@/views/study/directory/gameStudy/ProgressPage/dictionary/index.vue.vue'),
         },
         {
-          path: '/textlist',
+          path: '/study/textlist',
           component: () => import('@/views/study/directory/gameStudy/ProgressPage/textList/index.vue'),
         },
         {
-          path: '/poetgame',
+          path: '/study/poetgame',
           component: () => import('@/views/study/directory/gameStudy/ProgressPage/poetGame/index.vue'),
         },
         {
-          path: '/fillpoetgame',
+          path: '/study/fillpoetgame',
           component: () => import('@/views/study/directory/gameStudy/ProgressPage/fillPoetGame/index.vue'),
         },
       ]
   },
   {
-    path: '/vrExhibition',
+    path: '/study/vrExhibition',
     component:
       () => import('@/views/study/directory/vrExhibition/index.vue')
   },
   {
-    path: '/vrExhibitionDetail/:id',
+    path: '/study/vrExhibitionDetail/:id',
     component:
       () => import('@/views/study/directory/vrExhibition/vrExhibitionDetail/index.vue')
   },

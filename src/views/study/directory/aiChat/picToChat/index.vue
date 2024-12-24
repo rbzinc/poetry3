@@ -1,6 +1,6 @@
 <script setup>
 // 引入 AiPoemAside 组件
-import AiPoemAside from "@/components/AiPoetAside/index.vue";
+import AiPoemAside from "@/components/study/directory/AiStudy/AiPoetAside/index.vue";
 // 从 vue 引入 ref 方法
 import {ref} from 'vue';
 // 从 element-plus 引入 ElMessage 和 genFileId
@@ -184,10 +184,6 @@ const aiPicture = async () => {
 </script>
 
 <template>
-  <div>
-    <!-- 渲染 AiPoemAside 组件 -->
-    <AiPoemAside/>
-  </div>
   <div class="chat-container">
     <el-scrollbar>
       <div class="messages-container">
@@ -318,7 +314,7 @@ const aiPicture = async () => {
 .chat-container {
   width: 80%;
   height: 560px;
-  margin: 30px auto;
+  margin: 0 auto;
 
   .messages-container {
     display: flex;
