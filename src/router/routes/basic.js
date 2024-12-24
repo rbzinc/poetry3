@@ -24,7 +24,7 @@ const routes = [
   {
     path: '/poetryAi',
     component:
-      () => import('@/views/poetryAi/poetryAi.vue')
+      () => import('@/views/study/index.vue')
   },
   {
     path: '/chattochat/:id',

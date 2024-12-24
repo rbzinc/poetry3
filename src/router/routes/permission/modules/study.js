@@ -43,7 +43,7 @@ const vrExhibitionMain = {
 const main = [
   {
     path: '/study/poetryAi',
-    component: () => import('@/views/poetryAi/poetryAi.vue'),
+    component: () => import('@/views/study/index.vue'),
     children: [...studyMain]
   },
   {
