@@ -67,8 +67,6 @@ const loyout = () => {
         <span v-else>
           <router-link to="/login">登录<el-icon class="user"><User/></el-icon></router-link>
         </span>
-
-
       </div>
     </div>
   </div>

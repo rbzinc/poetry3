@@ -3,7 +3,10 @@ import { ref, onMounted } from 'vue'
 import Search from '@/components/search/index.vue'
 import { getsenRandomData, getSentenceData } from '@/api/modules/poePavilion.js'
 
-// 1. 提取配置常量
+/**
+ * 常量定义
+ * @type {{options: string[], title: string}}
+ */
 const POET_CONFIG = {
   title: '诗人',
   options: ['李白', '杜甫', '李清照', '白居易', '苏轼', '李商隐', '刘禹锡', '高适',
@@ -11,7 +14,9 @@ const POET_CONFIG = {
     '杜牧', '岑参', '李贺', '元稹', '纳兰性德']
 }
 
-// 2. 状态管理优化
+/**
+ * 定义数据
+ */
 const state = ref({
   isOpen: false,
   currentPoet: '',
@@ -27,7 +32,6 @@ const fetchData = async (poetName, page = 1) => {
   try {
     state.value.loading = true
     state.value.currentPoet = poetName
-
     const res = await getSentenceData(poetName, page)
     state.value.sentenceList = res.data.records
     state.value.pageTotal = res.data.total
@@ -88,7 +92,6 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- 名句列表 -->
     <div class="sentence-list" v-loading="state.loading">
       <template v-if="state.sentenceList.length">
         <div v-for="item in state.sentenceList"
@@ -103,12 +106,10 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- 分页器 -->
     <el-pagination v-if="state.pageTotal > 0"
                    :current-page="state.pageNum"
                    :page-size="state.pageSize"
                    :total="state.pageTotal"
-                   :pager-count="7"
                    background
                    layout="prev, pager, next"
                    @current-change="handlePageChange" />

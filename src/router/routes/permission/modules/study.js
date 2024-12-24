@@ -2,58 +2,58 @@
 const studyMain = [
   {
     path: '/study/poetryAi/chattochat/:id',
-    component: () => import('@/views/aiChat/chatToChat/index.vue')
+    component: () => import('@/views/study/directory/aiChat/chatToChat/index.vue')
   },
   {
     path: '/study/poetryAi/chattopic',
-    component: () => import('@/views/aiChat/chatToPic/index.vue')
+    component: () => import('@/views/study/directory/aiChat/chatToPic/index.vue')
   },
   {
     path: '/study/poetryAi/pictochat',
-    component: () => import('@/views/aiChat/picToChat/index.vue')
+    component: () => import('@/views/study/directory/aiChat/picToChat/index.vue')
   },
   {
     path: '/study/poetryAi/poemrefine',
-    component: () => import('@/views/aiChat/poemRefine/index.vue')
+    component: () => import('@/views/study/directory/aiChat/poemRefine/index.vue')
   }
 ]
 const dictionaryMain = [
   {
     path: '/study/dictionary',
-    component: () => import('@/views/game/dictionary.vue'),
+    component: () => import('@/views/study/directory/gameStudy/ProgressPage/dictionary/index.vue.vue'),
   },
   {
     path: '/study/dictionary/textlist',
-    component: () => import('@/views/game/textlist.vue'),
+    component: () => import('@/views/study/directory/gameStudy/ProgressPage/textList/index.vue'),
   },
   {
     path: '/study/dictionary/poetgame',
-    component: () => import('@/views/game/poetgame.vue'),
+    component: () => import('@/views/study/directory/gameStudy/ProgressPage/poetGame/index.vue'),
   },
   {
     path: '/study/dictionary/fillpoetgame',
-    component: () => import('@/views/game/fillpoetgame.vue'),
+    component: () => import('@/views/study/directory/gameStudy/ProgressPage/fillPoetGame/index.vue'),
   },
 ]
 const vrExhibitionMain = {
   path: '/study/vrExhibition/vrExhibitionDetail/:id',
-  component: () => import('@/views/vrExhibition/vrExhibitionDetail/index.vue')
+  component: () => import('@/views/study/directory/vrExhibition/vrExhibitionDetail/index.vue')
 }
 
 const main = [
   {
     path: '/study/poetryAi',
-    component: () => import('@/views/poetryAi/poetryAi.vue'),
+    component: () => import('@/views/study/index.vue'),
     children: [...studyMain]
   },
   {
     path: '/study/dictionary',
-    component: () => import('@/views/game/dictionary.vue'),
+    component: () => import('@/views/study/directory/gameStudy/ProgressPage/dictionary/index.vue.vue'),
     children: [...dictionaryMain]
   },
   {
     path: '/study/vrExhibition',
-    component: () => import('@/views/vrExhibition/index.vue'),
+    component: () => import('@/views/study/directory/vrExhibition/index.vue'),
     children: [vrExhibitionMain]
   }
 ]

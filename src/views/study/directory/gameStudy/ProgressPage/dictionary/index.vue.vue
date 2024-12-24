@@ -1,5 +1,5 @@
 <script setup>
-import  Textcard from  '@/components/game/textcard/index.vue'
+import  Textcard from '@/components/game/textcard/index.vue'
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 const router = useRouter()
@@ -46,7 +46,7 @@ const textlist = () => {
   height: 560px;
   display: flex;
   overflow-y: auto;
-  background-image: url('./pic/2e9520938fcd4da8d130e9bdd3b18bf.jpg');
+  background-image: url('../../../../../../assets/pic/study/2e9520938fcd4da8d130e9bdd3b18bf.jpg');
   background-size: cover; /* 覆盖整个元素 */
   background-position: center; /* 居中显示 */
   background-repeat: no-repeat; /* 不重复 */

@@ -1,6 +1,6 @@
 <script setup>
 import DayCommon from '@/components/talksquare/DayRecommend/index.vue'
-import Ranking from '@/components/game/Ranking/index.vue'
+import Ranking from '@/components/game/ranking/index.vue'
 import Forget from '@/components/game/forget/index.vue'
 import { Plus } from '@element-plus/icons-vue';
 </script>
