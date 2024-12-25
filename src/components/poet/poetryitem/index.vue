@@ -45,7 +45,7 @@ const collect =async()=>{
     .poetry-component {
       width: 970px;
       margin: 20px auto 0;
-      padding: 10px; 
+      padding: 10px;
       background-color: #f3f2f2;
       border: 1px solid #ddd;
       border-radius: 8px;
@@ -71,7 +71,6 @@ const collect =async()=>{
       }
     .author {
       font-style: italic;
-      text-align: center;
       color: #777;
       text-align: left;
       text-decoration: none;
@@ -96,7 +95,7 @@ const collect =async()=>{
       height: 40px;
      }
 
-    
+
     }
   }
 </style>
