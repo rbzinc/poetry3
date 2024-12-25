@@ -76,9 +76,7 @@ const initViewer = (panoramaUrl) => {
 };
 
 // 页面挂载后调用数据获取函数
-url.value = fictitiousList.value[route.params.id - 1].url;
-
-
+url.value = fictitiousList.value[route.query.id].url;
 </script>
 
 <style scoped>

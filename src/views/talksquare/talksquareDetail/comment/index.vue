@@ -26,7 +26,7 @@ const postAddCommentForm = ref([])
 const router = useRoute()
 const showChildComments = reactive({});
 
-blogid.value = router.params.id
+blogid.value = router.query.id
 const props = defineProps({
   comments: {
     required: true

@@ -59,7 +59,7 @@ const handleMenuClick = (item) => {
   userLuntanSelecttiezTypes()
 }
 const goToDetail = (item) => {
-  router.push(`/forum/detail/${item.id}`);
+  router.push(`/forum/detail?id=${item.id}`);
 }
 const EditPublic = () => {
   router.push('/forum/edit');
@@ -164,7 +164,7 @@ onMounted(()=>{
 .bgc {
   width: 100%;
   height: 1000px;
-  background-image: url('./pic/c0b5d3eab10bd3a732987c09aff12b7.jpg');
+  background-image: url('@/assets/pic/forum/c0b5d3eab10bd3a732987c09aff12b7.jpg');
   background-size: 100% 100%;
 
   .article-container {

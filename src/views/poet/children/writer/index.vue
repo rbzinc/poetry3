@@ -66,10 +66,6 @@ const handlePageChange = (page) => {
   getData(state.value.currentDynasty, page)
 }
 
-// 7. 跳转详情页
-const navigateToDetail = (id) => {
-  router.push(`/writerDetails?id=${id}`)
-}
 
 onMounted(getRandom)
 </script>
@@ -108,7 +104,7 @@ onMounted(getRandom)
                     :name="item.name"
                     :content="item.simpleIntro"
                     :dynasty="item.dynasty"
-                    @click="$router.push(`/writerDetails?id=${item.id}`)" />
+                    @click="$router.push(`/poet/writer/writer?id=${item.id}`)" />
       </template>
       <div v-else class="empty-state">
         暂无数据

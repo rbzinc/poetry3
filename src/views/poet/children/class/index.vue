@@ -139,7 +139,7 @@ onMounted(async () => {
                        ...item,
                        id: String(item.id)
                      }"
-                    @click="$router.push(`/poetDetails?id=${item.id}`)"/>
+                    @click="$router.push(`/poet/class/poet?id=${item.id}`)"/>
       </template>
       <div v-else class="empty-state">
         暂无数据

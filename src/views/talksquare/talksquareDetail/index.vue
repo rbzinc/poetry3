@@ -17,7 +17,7 @@ import {
 const pageContentMarkShow = ref(false); // 评论和内容展示状态
 const postAddCommentForm = ref([]); // 评论区的表单
 const route = useRoute();
-const blogid = ref(route.params.id);
+const blogid = ref(route.query.id);
 const userId = ref('') // 论坛详情页面的用户id
 const userLuntanXiangxi = ref({}) // 论坛详情页面的用户信息
 const userLuntanDianzanrankData = ref([]) // 论坛详情页面的点赞排行榜

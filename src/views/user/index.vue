@@ -47,7 +47,7 @@ if (!userStore.userInfo) {
   router.push({name: 'login'})
 }
 const goToUserInfo = () => {
-  router.push('/editUserInfo')
+  router.push('/user/editUserInfo')
 }
 
 const interest = ref([
@@ -232,7 +232,7 @@ console.log(scrollbarRef.value)
 .bgc {
   width: 100%;
   height: 1000px;
-  background-image: url('./pic/bee34c20e167d7862d96afdf465b4d8.jpg');
+  background-image: url('@/assets/pic/home/bee34c20e167d7862d96afdf465b4d8.jpg');
   background-size: 100% 100%;
 
   .container {
