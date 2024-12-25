@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import Search from '@/components/search/index.vue'
+import Search from '@/components/poet/search/index.vue'
 import { getsenRandomData, getSentenceData } from '@/api/modules/poePavilion.js'
 
 /**

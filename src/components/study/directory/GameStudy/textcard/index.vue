@@ -22,7 +22,7 @@ const textlist = () => {
 
 <style scoped lang="scss">
 .box{
-  background-image: url('../../../assets/pic/study/f18e59c7edb7edc404e6f3301fd5112.jpg');
+  background-image: url('../../../../../assets/pic/study/f18e59c7edb7edc404e6f3301fd5112.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -49,7 +49,7 @@ const textlist = () => {
     font-family: '汉仪尚巍手书', cursive;
     font-weight: bold;
     writing-mode: vertical-rl;
-    background-image: url('../../../assets/pic/study/65a0c2be7443a0a865c684d6c6ac023.jpg');
+    background-image: url('../../../../../assets/pic/study/65a0c2be7443a0a865c684d6c6ac023.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

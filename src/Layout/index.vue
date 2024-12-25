@@ -1,6 +1,6 @@
 <script setup>
 import {defineExpose, ref} from 'vue'
-import Cartoon from '@/components/cartoon/cartoon.vue'
+import Cartoon from '@/components/home/cartoon/index.vue'
 
 defineExpose(Cartoon)
 import bg1 from '../assets/pic/home/1.jpg'
@@ -130,7 +130,6 @@ const pieChartion = ref({
 <style scoped>
 .bgc {
   width: 100%;
-  height: 100%;
   background-image: url('@/assets/pic/home/6.jpg');
 }
 
@@ -138,7 +137,7 @@ const pieChartion = ref({
   width: 1200px;
   height: 1400px;
   background: none;
-  margin: 20px auto;
+  margin: 0 auto;
 
   .headtitle {
     font-size: 24px;

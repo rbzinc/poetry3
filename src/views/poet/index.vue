@@ -1,6 +1,6 @@
 <script setup>
 import Banner from '@/views/poet/banner/index.vue';
-import Search from "@/components/search/index.vue";
+import Search from "@/components/poet/search/index.vue";
 
 </script>
 

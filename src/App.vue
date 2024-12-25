@@ -1,8 +1,6 @@
 <script setup>
 
 import Header from '@/Layout/Header/index.vue';
-
-
 </script>
 
 <template>

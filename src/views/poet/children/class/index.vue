@@ -1,6 +1,6 @@
 <script setup>
 import {ref, onMounted} from 'vue'
-import Poetryitem from '@/components/poetryitem/index.vue'
+import Poetryitem from '@/components/poet/poetryitem/index.vue'
 import {userSearchStore} from '@/stores/modules/search.js'
 import {getpoemRandomData, getDynastyData, getClassData, getWriterPoemData} from '@/api/modules/index.js'
 const searchStore = userSearchStore()

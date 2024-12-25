@@ -1,5 +1,5 @@
 <script setup>
-import TextCartoon from "@/components/textcartoon/textcartoon.vue";
+import TextCartoon from "@/components/study/directory/AiStudy/textcartoon/index.vue";
 import { useRouter } from 'vue-router';
 import {usePoemImgStore } from '@/stores/modules/poemImg.js'
 const PoemImg = usePoemImgStore();
@@ -58,7 +58,7 @@ const poetryAi = [
 ]
 PoemImg.setPoemImg(poetryAi)
 const changeChat = (item)=>{
-  router.push(`/chattochat/${item.id}`)
+  router.push(`/study/chattochat/${item.id}`)
 }
 </script>
 

@@ -84,12 +84,11 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .fictitious-container {
-  background-image: url("../../../../assets/pic/study/799d4d5991388a52874f6b3b602989d.png");
+  background-image: url("@/assets/pic/study/799d4d5991388a52874f6b3b602989d.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 100%;
-  padding: 20px 0;
+
 
   .header-title {
     text-align: center;

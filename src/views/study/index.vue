@@ -1,12 +1,11 @@
 <script setup>
 import AiPoetAside from '@/components/study/directory/AiStudy/AiPoetAside/index.vue'
-
 </script>
 
 <template>
 
   <div class="bgc">
-    <AiPoetAside/>
+    <AiPoetAside />
     <router-view />
   </div>
 
@@ -16,8 +15,6 @@ import AiPoetAside from '@/components/study/directory/AiStudy/AiPoetAside/index.
 .bgc {
   background: url('@/assets/pic/study/9a9e79bde1bccac83dc7413c3035a26.png');
   background-size: cover;
-  height: 100vh;
-
+  height: calc(100vh - 85px);
 }
-
 </style>

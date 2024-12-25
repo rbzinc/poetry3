@@ -1,6 +1,6 @@
 <script setup>
 // 导入组件和库
-import AiPoemAside from "@/components/AiPoetAside/index.vue";
+import AiPoemAside from "@/components/study/directory/AiStudy/AiPoetAside/index.vue";
 import {fetchEventSource} from "@microsoft/fetch-event-source";
 import {useUserInfoStore} from "@/stores/index.js";
 import {usePoemImgStore} from "@/stores/index.js";
@@ -83,16 +83,13 @@ onBeforeUnmount(() => {
 
 
 onMounted(() => {
-  GetSSE()
+  // GetSSE()
   getSentence()
 })
 </script>
 
 <template>
   <div style="display: flex;  ">
-    <div>
-      <AiPoemAside/>
-    </div>
     <div class="ai-chat-title">
       <div class="chat-container">
         <el-scrollbar>

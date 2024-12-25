@@ -1,5 +1,5 @@
 <script setup>
-import  Textcard from '@/components/game/textcard/index.vue'
+import  Textcard from '@/components/study/directory/GameStudy/textcard/index.vue'
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 const router = useRouter()

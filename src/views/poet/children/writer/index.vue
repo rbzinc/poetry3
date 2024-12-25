@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import Writeritem from '@/components/writeritem/writeitem.vue'
+import Writeritem from '@/components/poet/writeritem/index.vue'
 import { getPoetRandomData, getWriterData } from '@/api/modules/poePavilion.js'
 import { useRouter } from 'vue-router'
 const router = useRouter()

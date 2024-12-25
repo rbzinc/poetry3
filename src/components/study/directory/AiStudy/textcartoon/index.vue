@@ -27,6 +27,9 @@ const typewriterEffect = () => {
       displayedChars.value.push({ value: char, opacity: 1 });
     }, (index + 1) * 200); // 每个字符显示的时间间隔（毫秒）
   });
+  setTimeout(() => {
+    typewriterEffect();
+  }, (chars.length + 1) * 400);
 };
 
 // 增加错误处理机制
@@ -43,14 +46,9 @@ try {
 .typewriter-container {
   font-size: 35px;
   font-weight: bold;
-  width: 100%;
   height: 120px;
   text-align: center;
-  margin: 0 auto;
-  background-color: #fff;
-  color: black;
   opacity: 0.5;
-  margin-bottom: 80px;
 }
 
 .char {

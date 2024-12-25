@@ -1,6 +1,6 @@
 <script setup>
 import {defineExpose} from 'vue';
-import Textcartoon from '@/components/textcartoon/textcartoon.vue';
+import Textcartoon from '@/components/study/directory/AiStudy/textcartoon/index.vue';
 import AiPoetAside from '@/components/study/directory/AiStudy/AiPoetAside/index.vue'
 import { useRouter } from 'vue-router';
 import {usePoemImgStore } from '@/stores/modules/poemImg.js'
@@ -85,7 +85,7 @@ const changeChat = (item)=>{
 .bgc {
   background: url('@/assets/pic/study/9a9e79bde1bccac83dc7413c3035a26.png');
   background-size: cover;
-  height: calc(100vh);
+  height: calc(100vh-80px);
 
   .home {
     display: flex;
