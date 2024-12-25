@@ -55,13 +55,12 @@ const nextQuestion = () => {
   }
 };
 
-
 const returnclick = () =>{
-  router.push('/textlist')
+  router.push('/dictionary')
 }
 
 const fillgameclick = () =>{
-  router.push('/fillpoetgame')
+  router.push('/dictionary/fillpoetgame')
 }
 
 </script>
@@ -110,7 +109,7 @@ const fillgameclick = () =>{
 
 <style scoped lang="scss">
 .el-card {
-  background-image: url('../../../../../../assets/pic/study/微信图片_20241201193836.jpg');
+  background-image: url('@/assets/pic/study/微信图片_20241201193836.jpg');
   background-size: cover; /* 覆盖整个元素 */
   background-position: center; /* 居中显示 */
   background-repeat: no-repeat; /* 不重复 */

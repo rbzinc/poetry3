@@ -11,6 +11,7 @@ const button = ref('下一题')
 const message = ref('请输入下一句')
 const active = ref(gameStore.poetstatus)
 let dialogFormVisible = ref(false)
+
 const poems = [
   {question: '率妻子（ ）来此绝境', answer: '邑人'},
   {question: '（ ）交通，鸡犬相闻', answer: '阡陌'},
@@ -60,11 +61,11 @@ const nextQuestion = () => {
 
 
 const returnclick = () =>{
-  router.push('/textlist')
+  router.push('/dictionary/textlist')
 }
 
 const fillgameclick = () =>{
-  router.push('/fillpoetgame')
+  router.push('/dictionary/fillpoetgame')
 }
 
 </script>
@@ -112,7 +113,7 @@ const fillgameclick = () =>{
 
 <style scoped lang="scss">
 .el-card {
-  background-image: url('../../../../../../assets/pic/study/微信图片_20241201193836.jpg');
+  background-image: url('@/assets/pic/study/微信图片_20241201193836.jpg');
   background-size: cover; /* 覆盖整个元素 */
   background-position: center; /* 居中显示 */
   background-repeat: no-repeat; /* 不重复 */

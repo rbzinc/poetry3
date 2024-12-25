@@ -48,12 +48,12 @@ const title = ref([
 const status = ref()
 let checked = ref(false)
 const returnclick = () =>{
-  router.push('/dictronary')
+  router.push('/dictionary')
 }
 
 const entergame = () =>{
   const checked1 = ref(false)
-  router.push('/poetgame')
+  router.push('/dictionary/poetgame')
 }
 
 const recitestatus = () => {
@@ -98,10 +98,10 @@ onMounted(()=> {
 
 <style scoped lang="scss">
 .el-card {
-  background-image: url('../../../../../../assets/pic/study/7754bcfc0e4b6ca416b0c0435aac38f.jpg');
-  background-size: cover; /* 覆盖整个元素 */
-  background-position: center; /* 居中显示 */
-  background-repeat: no-repeat; /* 不重复 */
+  background-image: url('@/assets/pic/study/7754bcfc0e4b6ca416b0c0435aac38f.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 .return{
   display: flex;

@@ -7,11 +7,12 @@ const writerMain = {
   path: '/poet/writer/writerDetails',
   component: ()=> import ('@/views/poet/details/writerDetails/index.vue')
 }
+
 const main = [
   {
     path: '/poet/class',
-    component: () => import('@/views/poet/index.vue'),
-    children: [poetMain]
+    component: () => import('@/views/poet/children/class/index.vue'),
+    children: [ poetMain ]
   },
   {
     path: '/poet/sentence',
@@ -26,6 +27,7 @@ const main = [
 
 const poet = {
   path: '/poet',
+  component:() => import('@/views/poet/index.vue'),
   redirect: '/poet/class',
   children: [...main]
 }

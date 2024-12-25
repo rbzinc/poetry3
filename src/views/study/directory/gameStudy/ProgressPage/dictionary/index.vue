@@ -1,7 +1,8 @@
 <script setup>
-import  Textcard from '@/components/study/directory/GameStudy/textcard/index.vue'
+import Textcard from '@/components/study/directory/GameStudy/textcard/index.vue'
 import {ref} from "vue";
 import {useRouter} from "vue-router";
+
 const router = useRouter()
 const dictionaty = ref([
   {
@@ -20,25 +21,28 @@ const dictionaty = ref([
     content: '有300首诗'
   }])
 const textlist = () => {
-  router.push('/textlist')
+  console.log('textlist')
+  // router.push('/dictionary/textlist')
 }
 </script>
 
 <template>
   <el-card style="max-width: 100%;max-height: 560px;" class="el-card">
-  <div class="dictbox">
-    <div v-for="item in dictionaty" :key="item.id" :index="item.id" >
-      <Textcard
-          :title="item.name"
-          :content="item.content"
-          @click = "textlist"
-      ></Textcard>
+    <div class="dictbox">
+      <div v-for="item in dictionaty" :key="item.id" :index="item.id">
+        <Textcard
+            :title="item.name"
+            :content="item.content"
+            @click="textlist"
+        ></Textcard>
+      </div>
+      <div class="add">
+        <el-icon size='60' class="icon">
+          <Plus/>
+        </el-icon>
+      </div>
     </div>
-    <div class="add">
-      <el-icon size ='60' class="icon"><Plus /></el-icon>
-    </div>
-  </div>
-    </el-card>
+  </el-card>
 </template>
 
 <style scoped lang="scss">
@@ -46,7 +50,7 @@ const textlist = () => {
   height: 560px;
   display: flex;
   overflow-y: auto;
-  background-image: url('../../../../../../assets/pic/study/2e9520938fcd4da8d130e9bdd3b18bf.jpg');
+  background-image: url('@/assets/pic/study/2e9520938fcd4da8d130e9bdd3b18bf.jpg');
   background-size: cover; /* 覆盖整个元素 */
   background-position: center; /* 居中显示 */
   background-repeat: no-repeat; /* 不重复 */
@@ -60,7 +64,7 @@ const textlist = () => {
       margin: 10px;
       width: 170px;
       height: 220px;
-      background:none;
+      background: none;
       border-radius: 5px;
       border: 1px #797878 solid;
 

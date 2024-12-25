@@ -6,10 +6,10 @@ import { useUserInfoStore } from '@/stores/modules/user.js';
 const userInfo = useUserInfoStore();
 const router = useRouter();
 const menuItems = ref([
-  { label: '1', icon: 'iconfont icon-liaotianduihua', route: '/study/chattochat/1', tooltip: '诗人对话' },
-  { label: '2', icon: 'iconfont icon-shengchengtupian', route: '/study/chattopic', tooltip: '生成图片' },
-  { label: '3', icon: 'iconfont icon-tupianzhuanwenzi', route: '/study/pictochat', tooltip: '图片转古诗' },
-  { label: '4', icon: 'iconfont icon-gudaishici', route: '/study/poemrefine', tooltip: '诗句优化' }
+  { label: '1', icon: 'iconfont icon-liaotianduihua', route: '/ai/chattochat/1', tooltip: '诗人对话' },
+  { label: '2', icon: 'iconfont icon-shengchengtupian', route: '/ai/chattopic', tooltip: '生成图片' },
+  { label: '3', icon: 'iconfont icon-tupianzhuanwenzi', route: '/ai/pictochat', tooltip: '图片转古诗' },
+  { label: '4', icon: 'iconfont icon-gudaishici', route: '/ai/poemrefine', tooltip: '诗句优化' }
 ]);
 
 const navigate = (route) => {
@@ -26,7 +26,7 @@ const navigate = (route) => {
   <div class="sidebar">
     <ul class="sidebar-menu">
       <li class="sidebar-item">
-        <img :src="userInfo.userInfo.touxiang" alt="" class="avatar" @click="navigate('/study')" />
+        <img :src="userInfo.userInfo.touxiang" alt="" class="avatar" @click="navigate('/ai')" />
       </li>
       <el-divider style="margin: 5px 0;" />
       <li v-for="(item, index) in menuItems" :key="index" class="sidebar-item">

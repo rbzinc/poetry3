@@ -59,10 +59,10 @@ const handleMenuClick = (item) => {
   userLuntanSelecttiezTypes()
 }
 const goToDetail = (item) => {
-  router.push(`/talksquareDetail/${item.id}`);
+  router.push(`/forum/detail/${item.id}`);
 }
 const EditPublic = () => {
-  router.push('/editTalk');
+  router.push('/forum/edit');
 }
 const userLuntanSelecttiezTypes = async() => {
   const res = await userLuntanSelecttiezTypesGetApi(currentPage.value, pageSize.value, nowMenuData.value)
