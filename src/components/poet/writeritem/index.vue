@@ -1,22 +1,22 @@
 <script setup>
-import { defineProps } from 'vue';
-import { Star,VideoPlay } from '@element-plus/icons-vue';
+import { defineProps, ref } from "vue";
+import { Star, VideoPlay } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
-import {userCollectPoem} from "@/api/modules/index.js";
-const router =useRouter()
+import { userCollectPoem } from "@/api/modules/index.js";
+const router = useRouter();
 const props = defineProps({
-  name:String,
-  content:String,
-  dynasty:String
-})
-const bgcActive = ref(false)
-const writerDetails =()=>{
-  router.push(`/writer${item.id}`)
-}
-const collect =async()=>{
-  const res  =  await userCollectPoem(item.id)
-  bgcActive.value = !bgcActive.value
-}
+  name: String,
+  content: String,
+  dynasty: String,
+});
+const bgcActive = ref(false);
+const writerDetails = () => {
+  router.push(`/writer${item.id}`);
+};
+const collect = async () => {
+  const res = await userCollectPoem(item.id);
+  bgcActive.value = !bgcActive.value;
+};
 </script>
 
 <template>
@@ -32,15 +32,13 @@ const collect =async()=>{
       </p>
     </div>
     <div class="footer">
-      <el-icon  size ='24'  class="icon"
-                @click="collect"><Star /> </el-icon>
-      <el-icon size ='24' class="icon"><VideoPlay /> </el-icon>
+      <el-icon size="24" class="icon" @click="collect"><Star /> </el-icon>
+      <el-icon size="24" class="icon"><VideoPlay /> </el-icon>
     </div>
   </div>
 </template>
 
 <style scoped>
-
 .poetry-component {
   width: 970px;
   margin: 20px auto 0;
@@ -49,25 +47,25 @@ const collect =async()=>{
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
   color: #333;
   line-height: 1.6;
-  &:hover{
+  &:hover {
     color: rgb(133, 133, 133);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
-    cursor: pointer
+    cursor: pointer;
   }
-  .title{
+  .title {
     height: 70px;
     font-size: 30px;
     color: #5c5c5c;
     text-decoration: none;
     display: flex;
     line-height: 70px;
-    margin:0 10px;
+    margin: 0 10px;
   }
   p {
-    margin:0 10px;
+    margin: 0 10px;
     text-decoration: none;
     color: #5c5c5c;
   }
@@ -88,24 +86,21 @@ const collect =async()=>{
   .line {
     margin: 10px 0;
     text-align: left;
-
   }
-  .footer{
+  .footer {
     width: 970px;
     height: 40px;
     background: none;
     display: flex;
-    .active{
+    .active {
       width: 40px;
       height: 40px;
       background-color: #f6a4a4;
     }
-    .icon{
+    .icon {
       width: 40px;
       height: 40px;
     }
-
-
   }
 }
 </style>
