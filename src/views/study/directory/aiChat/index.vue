@@ -1,12 +1,10 @@
 <script setup>
-import {defineExpose} from 'vue';
 import Textcartoon from '@/components/study/directory/AiStudy/textcartoon/index.vue';
 import AiPoetAside from '@/components/study/directory/AiStudy/AiPoetAside/index.vue'
 import { useRouter } from 'vue-router';
 import {usePoemImgStore } from '@/stores/modules/poemImg.js'
 const PoemImg = usePoemImgStore();
 const router = useRouter();
-defineExpose(Textcartoon)
 
 const poetryAi = [
   {
