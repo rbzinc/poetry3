@@ -1,5 +1,8 @@
-import basicRoutes from './basic'
+// 改进后
+import { rootRoute, loginRoute, notFoundRoutes } from "./basic";
+import permissionRoutes from "./permission";
 
-const routes = [...basicRoutes]
+// 扁平化处理所有路由
+const routes = [rootRoute, loginRoute, ...permissionRoutes, ...notFoundRoutes];
 
-export default routes
+export default routes;

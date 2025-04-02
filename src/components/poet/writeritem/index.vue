@@ -2,7 +2,7 @@
 import { defineProps, ref } from "vue";
 import { Star, VideoPlay } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
-import { userCollectPoem } from "@/api/modules/index.js";
+import { userCollectPoem } from "@/api/index.js";
 const router = useRouter();
 const props = defineProps({
   name: String,

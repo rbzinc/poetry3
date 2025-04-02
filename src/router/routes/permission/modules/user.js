@@ -1,8 +1,6 @@
-
-
 const user = {
-  path:'/user',
-  component: () => import('@/views/user/index.vue'),
-}
+  path: "/user",
+  component: () => import("@/views/user/index.vue"),
+};
 
-export default user
+export default user;

@@ -1,139 +1,138 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ref, onMounted, computed } from "vue";
+import { useRoute } from "vue-router";
+import { ElMessage } from "element-plus";
 import {
   VideoPlay,
   VideoPause,
   Picture,
   Document,
   Reading,
-  ChatDotRound
-} from '@element-plus/icons-vue'
-import { aiAudioGetApi, userAIDraowGetApi } from '@/api/modules/aiChat.js'
-import { getPoemDetatils } from '@/api/modules/index.js'
+  ChatDotRound,
+} from "@element-plus/icons-vue";
+import { aiAudioGetApi, userAIDraowGetApi } from "@/api/modules/aiChat.js";
+import { getPoemDetatils } from "@/api/index.js";
 
 // 基础状态
-const poemtitle = ref('')
-const writer = ref('')
-const dynasty = ref('')
-const content = ref('')
-const translation = ref('')
-const shangxi = ref('')
-const remarks = ref('')
-const routerPathId = ref('')
+const poemtitle = ref("");
+const writer = ref("");
+const dynasty = ref("");
+const content = ref("");
+const translation = ref("");
+const shangxi = ref("");
+const remarks = ref("");
+const routerPathId = ref("");
 
 // UI 状态
-const isLoading = ref(false)
-const isPlaying = ref(false)
-const dialogFormVisible = ref(false)
-const isopen = ref(true)
+const isLoading = ref(false);
+const isPlaying = ref(false);
+const dialogFormVisible = ref(false);
+const isopen = ref(true);
 
 // 媒体相关
-const audioPlayer = ref(null)
-const audioUrl = ref('')
-const imageUrl = ref('')
+const audioPlayer = ref(null);
+const audioUrl = ref("");
+const imageUrl = ref("");
 
 // 获取诗词详情
 const fetchPoemDetails = async (id) => {
   try {
-    isLoading.value = true
-    const { data } = await getPoemDetatils(id)
+    isLoading.value = true;
+    const { data } = await getPoemDetatils(id);
     if (!data || !data.length) {
-      throw new Error('未找到诗词数据')
+      throw new Error("未找到诗词数据");
     }
 
-    const poemData = data[0]
-    routerPathId.value = poemData.id
-    poemtitle.value = poemData.title
-    writer.value = poemData.writer
-    dynasty.value = poemData.dynasty
-    content.value = poemData.content
-    translation.value = poemData.translation
-    shangxi.value = poemData.shangxi
-    remarks.value = poemData.remarks
-
+    const poemData = data[0];
+    routerPathId.value = poemData.id;
+    poemtitle.value = poemData.title;
+    writer.value = poemData.writer;
+    dynasty.value = poemData.dynasty;
+    content.value = poemData.content;
+    translation.value = poemData.translation;
+    shangxi.value = poemData.shangxi;
+    remarks.value = poemData.remarks;
   } catch (error) {
-    ElMessage.error('获取诗词详情失败：' + error.message)
-    console.error('获取诗词详情失败：', error)
+    ElMessage.error("获取诗词详情失败：" + error.message);
+    console.error("获取诗词详情失败：", error);
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 // 音频控制
 const handlePlayClick = async () => {
-  if (!audioPlayer.value) return
+  if (!audioPlayer.value) return;
 
   try {
     if (!audioUrl.value) {
-      isLoading.value = true
-      const { data } = await aiAudioGetApi(routerPathId.value)
-      if (!data) throw new Error('获取音频失败')
-      audioUrl.value = data
+      isLoading.value = true;
+      const { data } = await aiAudioGetApi(routerPathId.value);
+      if (!data) throw new Error("获取音频失败");
+      audioUrl.value = data;
     }
 
     if (isPlaying.value) {
-      await audioPlayer.value.pause()
+      await audioPlayer.value.pause();
     } else {
-      await audioPlayer.value.load()
-      await audioPlayer.value.play()
+      await audioPlayer.value.load();
+      await audioPlayer.value.play();
     }
-    isPlaying.value = !isPlaying.value
+    isPlaying.value = !isPlaying.value;
   } catch (error) {
-    ElMessage.error('音频播放失败：' + error.message)
-    console.error('音频播放失败：', error)
-    isPlaying.value = false
+    ElMessage.error("音频播放失败：" + error.message);
+    console.error("音频播放失败：", error);
+    isPlaying.value = false;
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 // 图片处理
 const showImageDialog = async () => {
   if (imageUrl.value) {
-    dialogFormVisible.value = true
-    return
+    dialogFormVisible.value = true;
+    return;
   }
 
   try {
-    isLoading.value = true
-    dialogFormVisible.value = true
-    const { data } = await userAIDraowGetApi(routerPathId.value)
-    if (!data) throw new Error('生成图片失败')
-    imageUrl.value = data
+    isLoading.value = true;
+    dialogFormVisible.value = true;
+    const { data } = await userAIDraowGetApi(routerPathId.value);
+    if (!data) throw new Error("生成图片失败");
+    imageUrl.value = data;
   } catch (error) {
-    ElMessage.error('生成图片失败：' + error.message)
-    console.error('生成图片失败：', error)
+    ElMessage.error("生成图片失败：" + error.message);
+    console.error("生成图片失败：", error);
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 // 内容展开/收起
 const change = () => {
-  isopen.value = !isopen.value
-}
+  isopen.value = !isopen.value;
+};
 
 // 生命周期
 onMounted(async () => {
-  const route = useRoute()
-  const poemId = route.query.id
+  const route = useRoute();
+  const poemId = route.query.id;
   if (!poemId) {
-    ElMessage.error('未找到诗词ID')
-    return
+    ElMessage.error("未找到诗词ID");
+    return;
   }
-  await fetchPoemDetails(poemId)
-})
+  await fetchPoemDetails(poemId);
+});
 
 // 音频播放结束处理
 onMounted(() => {
   if (audioPlayer.value) {
-    audioPlayer.value.addEventListener('ended', () => {
-      isPlaying.value = false
-    })
+    audioPlayer.value.addEventListener("ended", () => {
+      isPlaying.value = false;
+    });
   }
-})
+});
 </script>
 
 <template>
@@ -150,11 +149,7 @@ onMounted(() => {
 
         <div class="action-buttons">
           <audio ref="audioPlayer" :src="audioUrl" class="hidden"></audio>
-          <el-button
-              class="action-btn"
-              type="primary"
-              @click="handlePlayClick"
-          >
+          <el-button class="action-btn" type="primary" @click="handlePlayClick">
             <el-icon>
               <component :is="isPlaying ? 'VideoPause' : 'VideoPlay'" />
             </el-icon>
@@ -162,10 +157,10 @@ onMounted(() => {
           </el-button>
 
           <el-button
-              class="action-btn"
-              type="success"
-              @click="showImageDialog"
-              :loading="isLoading"
+            class="action-btn"
+            type="success"
+            @click="showImageDialog"
+            :loading="isLoading"
           >
             <el-icon><Picture /></el-icon>
             <span>AI意境图</span>
@@ -208,11 +203,11 @@ onMounted(() => {
 
     <!-- AI图片对话框 -->
     <el-dialog
-        v-model="dialogFormVisible"
-        title="AI意境图"
-        width="800px"
-        destroy-on-close
-        class="image-dialog"
+      v-model="dialogFormVisible"
+      title="AI意境图"
+      width="800px"
+      destroy-on-close
+      class="image-dialog"
     >
       <div class="image-container" v-loading="isLoading">
         <img :src="imageUrl" alt="AI生成的意境图" />
@@ -220,7 +215,11 @@ onMounted(() => {
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogFormVisible = false">关闭</el-button>
-          <el-button type="primary" @click="showImageDialog" :loading="isLoading">
+          <el-button
+            type="primary"
+            @click="showImageDialog"
+            :loading="isLoading"
+          >
             重新生成
           </el-button>
         </div>
@@ -347,9 +346,9 @@ onMounted(() => {
       padding: 15px;
       text-align: center;
       background: linear-gradient(
-              to bottom,
-              rgba(255, 255, 255, 0.9),
-              rgba(238, 238, 238, 0.9)
+        to bottom,
+        rgba(255, 255, 255, 0.9),
+        rgba(238, 238, 238, 0.9)
       );
       cursor: pointer;
       font-size: 1.1em;
@@ -358,9 +357,9 @@ onMounted(() => {
 
       &:hover {
         background: linear-gradient(
-                to bottom,
-                rgba(255, 255, 255, 1),
-                rgba(238, 238, 238, 1)
+          to bottom,
+          rgba(255, 255, 255, 1),
+          rgba(238, 238, 238, 1)
         );
       }
     }
