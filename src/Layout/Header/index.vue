@@ -1,146 +1,171 @@
 <script setup>
-import { ArrowDown, User } from "@element-plus/icons-vue";
-import { useUserInfoStore } from "@/stores/index.js";
-import router from "@/router/index.js";
+import { User } from '@element-plus/icons-vue'
+import { useUserInfoStore } from '@/stores/index.js'
+import router from '@/router/index.js'
+import { ref, watch, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
-const useUser = useUserInfoStore();
+const useUser = useUserInfoStore()
+const route = useRoute()
+const activeIndex = ref('/home')
 
-const loyout = () => {
-  useUser.clearUserInfo();
-  router.push("/login");
-};
+// 监听路由变化，更新激活菜单
+onMounted(() => {
+  activeIndex.value = route.path
+})
+
+watch(
+  () => route.path,
+  (newPath) => {
+    activeIndex.value = newPath
+  },
+)
+
+// 退出登录
+const logout = () => {
+  useUser.clearUserInfo()
+  router.push('/login')
+}
+
+// 处理菜单点击事件
+const handleSelect = (key) => {
+  router.push(key)
+}
 </script>
 
 <template>
-  <div class="tleader">
-    <div class="leader">
-      <div class="left">
-        <img
-          src="@/assets/pic/home/logo.jpg"
-          alt=""
-          width="250px"
-          height="80px"
-        />
-      </div>
-      <div class="right">
-        <router-link to="/home">首页</router-link>
-        <router-link to="/poet">书阁</router-link>
-        <el-dropdown placement="bottom">
-          <p>
-            <router-link to="/ai">
-              学习
-              <el-icon style="margin-top: 10px">
-                <arrow-down />
-              </el-icon>
-            </router-link>
-          </p>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item>
-                <router-link to="/ai">AI助学</router-link>
-              </el-dropdown-item>
-              <el-dropdown-item>
-                <router-link to="/dictionary">游戏助学</router-link>
-              </el-dropdown-item>
-              <el-dropdown-item>
-                <router-link to="/ai/vrExhibition">vr助学</router-link>
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-        <router-link to="/forum">论坛</router-link>
+  <div class="leader">
+    <div class="left">
+      <img src="@/assets/pic/home/logo.jpg" alt="" width="250px" height="80px" />
+    </div>
+    <div class="right">
+      <el-menu
+        :default-active="activeIndex"
+        class="header-menu"
+        mode="horizontal"
+        @select="handleSelect"
+        :ellipsis="false"
+        router
+      >
+        <el-menu-item index="/home">首页</el-menu-item>
+        <el-menu-item index="/poet">书阁</el-menu-item>
 
-        <span v-if="useUser.userInfo">
-          <el-dropdown placement="bottom">
-            <p>
-              <router-link to="/user">
-                我的
-                <el-icon class="user"><User /></el-icon>
-              </router-link>
-            </p>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item>
-                  <p @click="loyout">退出登录</p>
-                </el-dropdown-item>
-              </el-dropdown-menu>
+        <el-sub-menu index="/ai" popper-class="custom-dropdown">
+          <template #title>
+            <span class="submenu-title">学习</span>
+          </template>
+          <el-menu-item index="/ai">AI助学</el-menu-item>
+          <el-menu-item index="/dictionary">游戏助学</el-menu-item>
+          <el-menu-item index="/vrExhibition">vr助学</el-menu-item>
+        </el-sub-menu>
+
+        <el-menu-item index="/forum">论坛</el-menu-item>
+
+        <template v-if="useUser.userInfo">
+          <el-sub-menu index="/user" popper-class="custom-dropdown">
+            <template #title>
+              我的
+              <el-icon class="user-icon"><User /></el-icon>
             </template>
-          </el-dropdown>
-        </span>
-        <span v-else>
-          <router-link to="/login"
-            >登录<el-icon class="user"><User /></el-icon
-          ></router-link>
-        </span>
-      </div>
+            <el-menu-item index="/user">个人主页</el-menu-item>
+
+            <el-menu-item index="/logout" @click="logout">退出登录</el-menu-item>
+          </el-sub-menu>
+        </template>
+        <template v-else>
+          <el-menu-item index="/login">
+            登录
+            <el-icon class="user-icon"><User /></el-icon>
+          </el-menu-item>
+        </template>
+      </el-menu>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.tleader {
-  width: 100%;
-  height: 80px;
-  background-color: #f6f6f6;
-  color: black;
-  box-shadow: 0 4px 8px rgba(218, 217, 217, 0.568);
-  margin: 0 auto 5px;
-}
-
-.user {
-  width: 30px;
-  height: 30px;
-  border-radius: 100%;
-  background-color: #fff;
+.user-icon {
+  width: 20px;
+  height: 20px;
   margin-left: 5px;
+  
 }
 
 .leader {
   display: flex;
-  width: 1200px;
+  width: 100%;
   height: 80px;
-  justify-content: space-between;
+  justify-content: space-evenly;
   margin: 0 auto;
 
-  .left {
-    width: 250px;
+}
+
+:deep(.header-menu) {
+  background-color: transparent;
+  border-bottom: none;
+  height: 80px;
+
+  .el-menu-item {
     height: 80px;
-    color: #aca9a9;
-    text-align: center;
-    line-height: 90px;
-    font-size: 35px;
+    line-height: 80px;
+    font-size: 18px;
+    color: #8d8c8c;
+    padding: 0 40px;
+
+    &:hover,
+    &.is-active {
+      color: rgb(137, 137, 137);
+      border-bottom: 4px solid rgb(137, 137, 137);
+      background-color: transparent;
+    }
   }
 
-  .right {
-    width: 860px;
+  .el-sub-menu {
     height: 80px;
-    display: flex;
+    line-height: 80px;
 
-    a {
-      text-align: center;
-      line-height: 80px;
-      text-decoration: none;
-      color: #8d8c8c;
-      display: block;
-      width: 200px;
+    .el-sub-menu__title {
       height: 80px;
-      border-bottom: 2px solid transparent;
+      line-height: 80px;
       font-size: 18px;
+      color: #8d8c8c;
+      padding: 0 40px;
 
       &:hover {
-        text-decoration: none;
-        border-bottom: 4px solid rgb(137, 137, 137);
         color: rgb(137, 137, 137);
+        background-color: transparent;
       }
+    }
+
+    &:hover > .el-sub-menu__title,
+    &.is-active > .el-sub-menu__title {
+      color: rgb(137, 137, 137);
+      border-bottom: 4px solid rgb(137, 137, 137);
     }
   }
 }
+.submenu-title {
+  margin-right: 15px; 
+}
+/* 添加全局样式，控制下拉菜单宽度 */
+:global(.custom-dropdown) {
+  min-width: 150px !important; /* 设置下拉菜单的最小宽度 */
+  width: auto !important; /* 允许宽度自适应内容 */
+}
 
-// 针对学习下拉菜单样式
-a {
+:global(.custom-dropdown .el-menu--popup) {
+  min-width: 150px !important;
+}
+
+:global(.custom-dropdown .el-menu-item) {
+  justify-content: center;
+  padding: 0 15px !important;
+  min-width: 150px !important;
   text-align: center;
-  color: #8d8c8c;
-  width: 120px;
-  font-size: 14px;
+}
+
+:global(.el-menu--horizontal .el-sub-menu.is-active .el-sub-menu__title) {
+  border-bottom: 4px solid rgb(137, 137, 137) !important;
+  color: rgb(137, 137, 137) !important;
 }
 </style>
