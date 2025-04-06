@@ -1,21 +1,26 @@
 <script setup>
-import {ArrowDown, User} from '@element-plus/icons-vue'
-import {useUserInfoStore} from '@/stores/index.js'
+import { ArrowDown, User } from "@element-plus/icons-vue";
+import { useUserInfoStore } from "@/stores/index.js";
 import router from "@/router/index.js";
 
-const useUser = useUserInfoStore()
+const useUser = useUserInfoStore();
 
 const loyout = () => {
-  useUser.clearUserInfo()
-  router.push('/login')
-}
+  useUser.clearUserInfo();
+  router.push("/login");
+};
 </script>
 
 <template>
   <div class="tleader">
     <div class="leader">
       <div class="left">
-        <img src="@/assets/pic/home/logo.jpg" alt="" width="250px" height="80px">
+        <img
+          src="@/assets/pic/home/logo.jpg"
+          alt=""
+          width="250px"
+          height="80px"
+        />
       </div>
       <div class="right">
         <router-link to="/home">首页</router-link>
@@ -24,8 +29,8 @@ const loyout = () => {
           <p>
             <router-link to="/ai">
               学习
-              <el-icon style="margin-top: 10px;">
-                <arrow-down/>
+              <el-icon style="margin-top: 10px">
+                <arrow-down />
               </el-icon>
             </router-link>
           </p>
@@ -38,7 +43,7 @@ const loyout = () => {
                 <router-link to="/dictionary">游戏助学</router-link>
               </el-dropdown-item>
               <el-dropdown-item>
-                <router-link to="/vrExhibition">vr助学</router-link>
+                <router-link to="/ai/vrExhibition">vr助学</router-link>
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -47,30 +52,29 @@ const loyout = () => {
 
         <span v-if="useUser.userInfo">
           <el-dropdown placement="bottom">
-          <p>
-            <router-link to="/user">
-              我的
-              <el-icon class="user"><User/></el-icon>
-
-            </router-link>
-          </p>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item>
-                <p @click="loyout">退出登录</p>
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-
+            <p>
+              <router-link to="/user">
+                我的
+                <el-icon class="user"><User /></el-icon>
+              </router-link>
+            </p>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item>
+                  <p @click="loyout">退出登录</p>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </span>
         <span v-else>
-          <router-link to="/login">登录<el-icon class="user"><User/></el-icon></router-link>
+          <router-link to="/login"
+            >登录<el-icon class="user"><User /></el-icon
+          ></router-link>
         </span>
       </div>
     </div>
   </div>
-
 </template>
 
 <style scoped lang="scss">
@@ -126,7 +130,7 @@ const loyout = () => {
       &:hover {
         text-decoration: none;
         border-bottom: 4px solid rgb(137, 137, 137);
-        color: rgb(137, 137, 137)
+        color: rgb(137, 137, 137);
       }
     }
   }

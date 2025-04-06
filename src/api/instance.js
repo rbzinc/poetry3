@@ -3,7 +3,7 @@ import { useUserInfoStore } from "@/stores/index.js";
 const userStore = useUserInfoStore();
 
 const instance = axios.create({
-  baseURL: "http://fuze1.nat300.top", // 确保这里的URL是正确的，没有多余的字符
+  baseURL: "http://120.27.234.36:8080", // 确保这里的URL是正确的，没有多余的字符
   headers: {
     "Content-Type": "application/json",
     token: userStore.userInfo?.token,

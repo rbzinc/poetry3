@@ -42,7 +42,7 @@ const fictitiousList = ref([
 // 点击跳转到景点详情页
 function goToDetail(item) {
   console.log(item);
-  router.push(`/vrExhibitionDetail?id=${item.id}`);
+  router.push(`/ai/vrExhibitionDetail?id=${item.id}`);
 }
 
 onMounted(() => {});
