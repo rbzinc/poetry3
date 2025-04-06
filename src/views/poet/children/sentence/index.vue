@@ -1,18 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import Search from '@/components/poet/search/index.vue'
+import { usePoetDataStore } from "@/stores/modules/poetData.js";
 import { getsenRandomData, getSentenceData } from '@/api/modules/poePavilion.js'
 
-/**
- * 常量定义
- * @type {{options: string[], title: string}}
- */
-const POET_CONFIG = {
-  title: '诗人',
-  options: ['李白', '杜甫', '李清照', '白居易', '苏轼', '李商隐', '刘禹锡', '高适',
-    '孟浩然', '王安石', '欧阳修', '王勃', '曹植', '晏殊', '杨万里', '黄庭坚',
-    '杜牧', '岑参', '李贺', '元稹', '纳兰性德']
-}
+const poetDataStore = usePoetDataStore();
+const POET_CONFIG = poetDataStore.getPoetConfig;
 
 /**
  * 定义数据
@@ -27,7 +19,7 @@ const state = ref({
   sentenceList: []
 })
 
-// 3. 数据获取方法
+// 数据获取方法
 const fetchData = async (poetName, page = 1) => {
   try {
     state.value.loading = true
@@ -42,18 +34,18 @@ const fetchData = async (poetName, page = 1) => {
   }
 }
 
-// 4. 分页处理
+// 分页处理
 const handlePageChange = (page) => {
   state.value.pageNum = page
   fetchData(state.value.currentPoet, page)
 }
 
-// 5. 切换展开/收起
+// 切换展开/收起
 const toggleSection = () => {
   state.value.isOpen = !state.value.isOpen
 }
 
-// 6. 初始化数据
+// 初始化数据
 onMounted(async () => {
   try {
     const res = await getsenRandomData()
@@ -65,9 +57,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="sentence-container">
-
-
+  <div class="content-container">
     <div class="filter-box">
       <div class="filter-section">
         <div class="filter-row">
@@ -92,7 +82,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="sentence-list" v-loading="state.loading">
+    <div class="content-list" v-loading="state.loading">
       <template v-if="state.sentenceList.length">
         <div v-for="item in state.sentenceList"
              :key="item.id"
@@ -117,8 +107,7 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
-.sentence-container {
-
+.content-container {
   .filter-box {
     background: #f3f2f2;
     border-radius: 8px;
@@ -132,10 +121,10 @@ onMounted(async () => {
         display: flex;
         align-items: center;
 
-
         .filter-title {
           width: 60px;
-          font-size: 17px;
+          font-size: 16px;
+          font-weight: 500;
           flex-shrink: 0;
         }
 
@@ -143,7 +132,7 @@ onMounted(async () => {
           display: flex;
           flex-wrap: wrap;
           gap: 10px;
-          height: 35px;
+          height: 40px;
           overflow: hidden;
           transition: height 0.3s ease;
 
@@ -153,7 +142,8 @@ onMounted(async () => {
         }
 
         .toggle-btn {
-          width: 30px;
+          width: 40px;
+          height: 40px;
           border: none;
           cursor: pointer;
           background: none;
@@ -174,7 +164,7 @@ onMounted(async () => {
     }
   }
 
-  .sentence-list {
+  .content-list {
     .sentence-item {
       margin-bottom: 10px;
       padding: 20px;
@@ -205,13 +195,14 @@ onMounted(async () => {
   }
 
   .option-btn {
-    height: 35px;
+    height: 40px;
     padding: 0 15px;
     background: none;
     border: none;
     cursor: pointer;
     white-space: nowrap;
     font-size: 15px;
+    transition: all 0.2s ease;
 
     &:hover {
       color: #409EFF;
@@ -223,7 +214,7 @@ onMounted(async () => {
     }
   }
 
-  // 添加分页器样式
+  // 分页器样式
   :deep(.el-pagination) {
     margin-top: 30px;
     justify-content: center;

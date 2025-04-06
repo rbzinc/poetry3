@@ -12,7 +12,7 @@ import Search from "@/components/poet/search/index.vue";
       </aside>
       <main class="main-content">
         <Search />
-        <RouterView  />
+        <router-view />
       </main>
     </div>
   </div>
@@ -38,7 +38,6 @@ import Search from "@/components/poet/search/index.vue";
 
     .main-content {
       flex: 1;
-      max-width: 1100px;
       padding: 0 40px;
     }
   }

@@ -1,19 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import Writeritem from '@/components/poet/writeritem/index.vue'
+import { usePoetDataStore } from "@/stores/modules/poetData.js";
 import { getPoetRandomData, getWriterData } from '@/api/modules/poePavilion.js'
-import { useRouter } from 'vue-router'
-const router = useRouter()
 
-/**
- * 定义变量
- * @type {string[]}
- */
-const DYNASTY_OPTIONS = [
-  '唐代', '宋代', '明代', '清代', '元代', '当代',
-  '两汉', '南北朝', '金朝', '现代', '先秦', '隋代',
-  '五代', '未知'
-]
+const poetDataStore = usePoetDataStore();
+const DYNASTY_CONFIG = poetDataStore.getDynastyConfig;
 
 /**
  * 定义数据
@@ -28,7 +20,7 @@ const state = ref({
   loading: false
 })
 
-// 3. 获取随机数据
+// 获取随机数据
 const getRandom = async () => {
   try {
     state.value.loading = true
@@ -41,8 +33,8 @@ const getRandom = async () => {
   }
 }
 
-// 4. 获取朝代数据
-const getData = async (dynastyName, page = 1) => {
+// 获取朝代数据
+const fetchData = async (dynastyName, page = 1) => {
   try {
     state.value.loading = true
     state.value.currentDynasty = dynastyName
@@ -56,37 +48,35 @@ const getData = async (dynastyName, page = 1) => {
   }
 }
 
-// 5. 切换展开/收起
-const toggleOpened = () => {
+// 切换展开/收起
+const toggleSection = () => {
   state.value.isOpen = !state.value.isOpen
 }
 
-// 6. 分页处理
+// 分页处理
 const handlePageChange = (page) => {
-  getData(state.value.currentDynasty, page)
+  fetchData(state.value.currentDynasty, page)
 }
-
 
 onMounted(getRandom)
 </script>
 
 <template>
-  <div class="writer-container">
-
+  <div class="content-container">
     <div class="filter-box">
       <div class="filter-section">
         <div class="filter-row">
-          <span class="filter-title">朝代:</span>
+          <span class="filter-title">{{ DYNASTY_CONFIG.title }}:</span>
           <div class="filter-options" :class="{ 'expanded': state.isOpen }">
-            <button v-for="dynasty in DYNASTY_OPTIONS"
-                    :key="dynasty"
+            <button v-for="option in DYNASTY_CONFIG.options"
+                    :key="option"
                     class="option-btn"
-                    :class="{ 'active': state.currentDynasty === dynasty }"
-                    @click="getData(dynasty)">
-              {{ dynasty }}
+                    :class="{ 'active': state.currentDynasty === option }"
+                    @click="fetchData(option)">
+              {{ option }}
             </button>
           </div>
-          <button class="toggle-btn" @click="toggleOpened">
+          <button class="toggle-btn" @click="toggleSection">
             <img :class="{ 'rotate-180': state.isOpen }"
                  src="https://ziyuan.guwendao.net/siteimg/jianBtn.png"
                  alt="toggle"
@@ -97,7 +87,7 @@ onMounted(getRandom)
       </div>
     </div>
 
-    <div class="writer-list" v-loading="state.loading">
+    <div class="content-list" v-loading="state.loading">
       <template v-if="state.randomList.length">
         <Writeritem v-for="item in state.randomList"
                     :key="item?.id"
@@ -122,16 +112,15 @@ onMounted(getRandom)
 </template>
 
 <style lang="scss" scoped>
-.writer-container {
-
-
+.content-container {
   .filter-box {
     background: #f3f2f2;
     border-radius: 8px;
-    padding:0 10px;
+    padding: 0 10px;
     margin-bottom: 20px;
 
     .filter-section {
+      padding: 10px 0;
 
       .filter-row {
         display: flex;
@@ -139,7 +128,8 @@ onMounted(getRandom)
 
         .filter-title {
           width: 60px;
-          font-size: 17px;
+          font-size: 16px;
+          font-weight: 500;
           flex-shrink: 0;
         }
 
@@ -147,7 +137,7 @@ onMounted(getRandom)
           display: flex;
           flex-wrap: wrap;
           gap: 10px;
-          height: 50px;
+          height: 40px;
           overflow: hidden;
           transition: height 0.3s ease;
 
@@ -155,18 +145,47 @@ onMounted(getRandom)
             height: auto;
           }
         }
+
+        .toggle-btn {
+          width: 40px;
+          height: 40px;
+          border: none;
+          cursor: pointer;
+          background: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+
+          img {
+            transition: transform 0.3s ease;
+
+            &.rotate-180 {
+              transform: scaleY(-1);
+            }
+          }
+        }
       }
     }
   }
 
+  .content-list {
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+    }
+  }
+
   .option-btn {
-    height: 50px;
+    height: 40px;
     padding: 0 15px;
     background: none;
     border: none;
     cursor: pointer;
     white-space: nowrap;
     font-size: 15px;
+    transition: all 0.2s ease;
 
     &:hover {
       color: #409EFF;
@@ -178,24 +197,7 @@ onMounted(getRandom)
     }
   }
 
-  .toggle-btn {
-    width: 60px;
-    height: 50px;
-    border: none;
-    background: none;
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-
-    img {
-      transition: transform 0.3s ease;
-      &.rotate-180 {
-        transform: scaleY(-1);
-      }
-    }
-  }
-
-  // 添加分页器样式
+  // 分页器样式
   :deep(.el-pagination) {
     margin-top: 30px;
     justify-content: center;
@@ -250,15 +252,6 @@ onMounted(getRandom)
         }
       }
     }
-  }
-}
-
-.writer-list {
-
-  .empty-state {
-    text-align: center;
-    padding: 40px;
-    color: #999;
   }
 }
 </style>
