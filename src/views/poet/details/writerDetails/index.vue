@@ -1,131 +1,172 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import Writercontent from '@/components/poet/wriercontent/index.vue'
-import {useRoute, useRouter} from 'vue-router'
-import {userWriterService} from "@/api/modules/writer"
+import { useRoute } from 'vue-router'
+import { userWriterService } from "@/api/modules/writer"
+import { ElMessage } from 'element-plus'
 
 const route = useRoute()
-const router = useRouter()
-let writerid = ref(0)
-const dataList = ref('')
-const writerList = ref('')
+const writerid = ref('')
+const isLoading = ref(false)
+const dataList = ref(null)
+const writerList = ref([])
 const writertitle = ref('')
 const writercontent = ref('')
-//获取诗人详细信息
-const getData = async () => {
-  const res = await userWriterService(writerid)
-  dataList.value = res.data
-  writertitle.value = dataList.value.name
-  writercontent.value = dataList.value.simpleIntro
-  writerList.value = res.data.detailIntro
-}
 
-const returnView = () => {
-  router.push('/poet/class')
+// 获取诗人详细信息
+const getData = async () => {
+  if (!writerid.value) {
+    ElMessage.error('未找到诗人ID')
+    return
+  }
+  
+  try {
+    isLoading.value = true
+    const res = await userWriterService(writerid.value)
+    
+    if (!res.data) {
+      throw new Error('获取诗人数据失败')
+    }
+    
+    dataList.value = res.data
+    writertitle.value = dataList.value.name || '未知诗人'
+    writercontent.value = dataList.value.simpleIntro || '暂无简介'
+    writerList.value = res.data.detailIntro || []
+    
+    // 设置页面标题
+    document.title = `${writertitle.value} - 诗人详情 | 诗词书阁`
+  } catch (error) {
+    console.error('获取诗人详情失败:', error)
+    ElMessage.error('获取诗人详情失败: ' + error.message)
+  } finally {
+    isLoading.value = false
+  }
 }
 
 onMounted(() => {
-  writerid = route.query.id;
+  writerid.value = route.query.id
   getData()
 })
-
 </script>
 
 <template>
-  <div class="bgc">
-    <div class="return" @click="returnView">返回</div>
-    <div class="container">
-      <div class="poem-header">
-        <h1 class="poem-title"> {{ writertitle }} </h1>
+  <div class="writer-details" v-loading="isLoading">
+    <div class="writer-container">
+      <div class="writer-header">
+        <h1 class="writer-title">{{ writertitle }}</h1>
       </div>
-      <div class="poem-content">
+      
+      <div class="writer-intro">
         <p>{{ writercontent }}</p>
       </div>
-
+      
+      <div class="writer-content-list">
+        <template v-if="writerList && writerList.length">
+          <Writercontent
+            v-for="item in writerList"
+            :key="item?.id"
+            :content="item.content"
+            :title="item.title"
+          />
+        </template>
+        <div v-else class="empty-content">
+          暂无详细介绍
+        </div>
+      </div>
     </div>
-    <div v-for="item in writerList" :key="item?.id">
-      <Writercontent
-          :content=item.content
-          :title=item.title
-      >
-      </Writercontent>
-    </div>
-
-
   </div>
-
 </template>
 
-<style>
-.bgc {
+<style lang="scss" scoped>
+.writer-details {
   width: 100%;
-  height: 2000px;
-  background-image: url('@/assets/pic/poet/微信图片_20241016230009.jpg');
-  background-size: 100% 100%;
-
-  .return {
-    margin-left: 10px;
-    cursor: pointer;
-  }
-
-  .container {
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 30px 0;
+  
+  .writer-container {
     max-width: 1000px;
-    margin: 0 auto 30px;
-    padding: 20px;
-    background-color: #fff;
-    box-sizing: border-box;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    opacity: 70%;
-    border-radius: 10px;
-  }
-
-  .poem-header {
-    margin-bottom: 20px;
+    margin: 0 auto;
     display: flex;
-
-    .poem-title {
-      font-size: 25px;
-      margin: 0;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .return-button {
+    margin-bottom: 10px;
+    padding: 0 20px;
+  }
+  
+  .writer-header {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 10px;
+    padding: 20px 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    .writer-title {
+      font-size: 28px;
       color: #333;
-      text-align: left;
-      line-height: 60px;
+      margin: 0;
+      text-align: center;
+      font-weight: 600;
     }
   }
-
-  .poem-header::after {
-    content: "";
-    display: table;
-    clear: both;
+  
+  .writer-intro {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 10px;
+    padding: 25px 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #333;
+      margin: 0;
+      text-indent: 2em;
+      white-space: pre-wrap;
+    }
   }
-
-  .poem-content {
-    font-size: 15px;
-    margin: 20px 0;
-    padding-left: 15px;
-    color: #333;
-    white-space: pre-wrap;
+  
+  .writer-content-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    
+    .empty-content {
+      background-color: rgba(255, 255, 255, 0.85);
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      color: #999;
+      font-size: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
   }
+}
 
-  .poem-content p {
-    margin: 0;
-    margin-bottom: 10px;
-  }
-
-  .poem-notes {
-    font-size: 1em;
-    color: #666;
-    margin-top: 20px;
-  }
-
-  .poem-notes h3 {
-    font-size: 1.1em;
-    margin: 0;
-    margin-bottom: 5px;
-    color: #444;
-  }
-
-  .poem-notes p {
-    margin: 0;
-    margin-bottom: 10px;
+// 响应式设计
+@media screen and (max-width: 768px) {
+  .writer-details {
+    padding: 20px 15px;
+    
+    .writer-header {
+      padding: 15px 20px;
+      
+      .writer-title {
+        font-size: 24px;
+      }
+    }
+    
+    .writer-intro {
+      padding: 20px;
+      
+      p {
+        font-size: 15px;
+      }
+    }
   }
 }
 </style>
