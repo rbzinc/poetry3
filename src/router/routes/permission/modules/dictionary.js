@@ -1,29 +1,27 @@
 // 游戏助学栏目
-const dictionaryMain = [
+const dictionaryRoutes = [
   {
-    path: '/dictionary',
+    path: '/study/dictionary',
     component: () => import('@/views/study/directory/gameStudy/ProgressPage/dictionary/index.vue'),
   },
   {
-    path: '/dictionary/textlist',
+    path: '/study/dictionary/textlist',
     component: () => import('@/views/study/directory/gameStudy/ProgressPage/textList/index.vue'),
   },
   {
-    path: '/dictionary/poetgame',
+    path: '/study/dictionary/poetgame',
     component: () => import('@/views/study/directory/gameStudy/ProgressPage/poetGame/index.vue'),
   },
   {
-    path: '/dictionary/fillpoetgame',
+    path: '/study/dictionary/fillpoetgame',
     component: () => import('@/views/study/directory/gameStudy/ProgressPage/fillPoetGame/index.vue'),
   },
 ]
 
 const dictionary = {
-  path: '/dictionary',
-  component: () => import('@/views/study/directory/gameStudy/index.vue'),
-  children: [...dictionaryMain]
+  path: '/study',
+  component: () => import('@/views/study/index.vue'),
+  children: [...dictionaryRoutes],
 }
+
 export default dictionary
-
-
-

@@ -6,10 +6,10 @@ import { useUserInfoStore } from '@/stores/modules/user.js';
 const userInfo = useUserInfoStore();
 const router = useRouter();
 const menuItems = ref([
-  { label: '1', icon: 'iconfont icon-liaotianduihua', route: '/ai/chattochat/1', tooltip: '诗人对话' },
-  { label: '2', icon: 'iconfont icon-shengchengtupian', route: '/ai/chattopic', tooltip: '生成图片' },
-  { label: '3', icon: 'iconfont icon-tupianzhuanwenzi', route: '/ai/pictochat', tooltip: '图片转古诗' },
-  { label: '4', icon: 'iconfont icon-gudaishici', route: '/ai/poemrefine', tooltip: '诗句优化' }
+  { label: '1', icon: 'iconfont icon-liaotianduihua', route: '/study/ai/chattochat/1', tooltip: '诗人对话' },
+  { label: '2', icon: 'iconfont icon-shengchengtupian', route: '/study/ai/chattopic', tooltip: '生成图片' },
+  { label: '3', icon: 'iconfont icon-tupianzhuanwenzi', route: '/study/ai/pictochat', tooltip: '图片转古诗' },
+  { label: '4', icon: 'iconfont icon-gudaishici', route: '/study/ai/poemrefine', tooltip: '诗句优化' }
 ]);
 
 const navigate = (route) => {
@@ -25,10 +25,12 @@ const navigate = (route) => {
 <template>
   <div class="sidebar">
     <ul class="sidebar-menu">
-      <li class="sidebar-item">
-        <img :src="userInfo.userInfo.touxiang" alt="" class="avatar" @click="navigate('/ai')" />
+      <li class="sidebar-item home-item">
+        <el-tooltip content="返回AI学习首页" placement="right">
+          <img :src="userInfo.userInfo.touxiang" alt="用户头像" class="avatar" @click="navigate('/study/ai')" />
+        </el-tooltip>
       </li>
-      <el-divider style="margin: 5px 0;" />
+      <el-divider style="margin: 8px 0; border-color: rgba(255, 255, 255, 0.2);" />
       <li v-for="(item, index) in menuItems" :key="index" class="sidebar-item">
         <el-tooltip :content="item.tooltip" placement="right">
           <i :class="item.icon" @click="navigate(item.route)"></i>
@@ -40,58 +42,72 @@ const navigate = (route) => {
 
 <style lang="scss" scoped>
 .sidebar {
-  width: 50px;
-  background-color: #000000;
-  opacity: 0.4;
-  position: fixed;
-  height: 70%;
-  margin-top: 60px;
+  width: 60px;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: sticky;
+  height: 80vh;
   margin-left: 20px;
-  z-index: 9999;
-  border-radius: 20px;
+  margin-top: 20px;
+  z-index: 100;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+  backdrop-filter: blur(5px);
 
   .sidebar-menu {
     list-style: none;
-    padding: 0;
-    margin: 0;
+    padding: 10px 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   .sidebar-item {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 50px;
+    height: 60px;
     color: #fff;
     cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 5px 0;
+    
+    &.home-item {
+      margin-bottom: 5px;
+    }
 
     .avatar {
       width: 40px;
       height: 40px;
       border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        border-color: #fff;
+        transform: scale(1.05);
+      }
     }
 
     &:hover {
-      background-color: #6f5842;
-      opacity: 0.8;
-      border-radius: 20px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
     }
 
     i {
       width: 24px;
       height: 24px;
-      margin: 0 20px;
-      font-size: 20px;
+      font-size: 22px;
+      color: #fff;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.1);
+      }
     }
   }
 }
 
-@media (min-width: 768px) {
-  .sidebar-item span {
-    display: inline;
-  }
-}
 
-.el-divider--horizontal {
-  margin: 6px 0;
-}
 </style>

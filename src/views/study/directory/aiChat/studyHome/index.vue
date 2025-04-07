@@ -58,7 +58,7 @@ const poetryAi = [
 ]
 PoemImg.setPoemImg(poetryAi)
 const changeChat = (item)=>{
-  router.push(`/study/chattochat/${item.id}`)
+  router.push(`/study/ai/chattochat/${item.id}`)
 }
 </script>
 
@@ -82,7 +82,8 @@ const changeChat = (item)=>{
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;margin-bottom: 20px;
+    justify-content: center;
+    margin-bottom: 20px;
     .img {
       width: 200px;
       height: 200px;

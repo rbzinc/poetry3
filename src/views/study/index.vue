@@ -3,18 +3,27 @@ import AiPoetAside from '@/components/study/directory/AiStudy/AiPoetAside/index.
 </script>
 
 <template>
-
-  <div class="bgc">
+  <div class="study-container">
     <AiPoetAside />
-    <router-view />
+    <div class="content-area">
+      <router-view />
+    </div>
   </div>
-
 </template>
 
 <style scoped lang="scss">
-.bgc {
+.study-container {
+  display: flex;
+  min-height: calc(100vh - 80px);
   background: url('@/assets/pic/study/9a9e79bde1bccac83dc7413c3035a26.png');
   background-size: cover;
-  height: calc(100vh - 85px);
+  background-position: center;
+  background-attachment: fixed;
+  position: relative;
+
+  .content-area {
+    flex: 1;
+    display: flex;
+  }
 }
 </style>

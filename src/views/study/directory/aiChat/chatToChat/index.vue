@@ -1,254 +1,226 @@
 <script setup>
-// 导入组件和库
-import AiPoemAside from "@/components/study/directory/AiStudy/AiPoetAside/index.vue";
-import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useRoute } from "vue-router";
+import { ElMessage } from "element-plus";
 import { useUserInfoStore } from "@/stores/index.js";
 import { usePoemImgStore } from "@/stores/index.js";
 import { aiChatGetApi } from "@/api/modules/aiChat.js";
-import { ElMessage } from "element-plus";
-import { useRoute } from "vue-router";
 import { getSentenceData } from "@/api/index.js";
+// import { fetchEventSource } from "@microsoft/fetch-event-source";
+import ChatContainer from "@/components/study/directory/AiStudy/ChatContainer/index.vue";
 
+// 获取路由和存储
 const route = useRoute();
 const userInfo = useUserInfoStore();
 const PoemImgStore = usePoemImgStore();
 const PoemImg = PoemImgStore.poemImg;
-const imgUrl = PoemImg[Number(route.params.id) - 1].url;
-const poetPoem = ref([]);
-// 定义消息存储
+const poetId = Number(route.params.id) - 1;
+
+// 初始化状态
 const messages = ref([
-  { text: PoemImg[Number(route.params.id) - 1].content, self: false },
+  { text: PoemImg[poetId].content, self: false },
 ]);
+const loading = ref(false);
+const poetPoem = ref([]);
+const controller = new AbortController();
 
-// 定义输入内容
-const inputMessage = ref("");
-
-// 发送消息的函数
-const sendMessage = () => {
-  const trimmedInput = inputMessage.value.trim();
-  if (trimmedInput) {
-    messages.value.push({ text: trimmedInput, self: true });
-    aiChatGetApi(route.params.id, trimmedInput).catch((err) => {
-      console.error("API请求失败:", err);
-    });
-
-    inputMessage.value = "";
-  } else {
-    ElMessage.error("请输入内容");
+// 处理发送消息
+const handleSend = async (message) => {
+  if (!message) return;
+  
+  try {
+    loading.value = true;
+    // 添加用户消息
+    messages.value.push({ text: message, self: true });
+    
+    // 调用API发送消息
+    await aiChatGetApi(route.params.id, message);
+  } catch (error) {
+    console.error('发送消息失败:', error);
+    ElMessage.error('发送失败，请稍后重试');
+    messages.value.push({ text: '发送失败，请稍后重试', self: false });
+  } finally {
+    loading.value = false;
   }
 };
 
-const controller = new AbortController();
+// 获取服务器发送事件
+// const startSSEConnection = () => {
+//   fetchEventSource("http://120.27.234.36/ai/submita", {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//       token: userInfo.userInfo.token,
+//     },
+//     signal: controller.signal,
+//     openWhenHidden: true,
+//     onmessage(event) {
+//       try {
+//         const data = JSON.parse(event.data);
+//         if (!event.data.includes("\\ndata")) {
+//           if (data) {
+//             const lastMessage = messages.value[messages.value.length - 1];
+//             if (lastMessage && !lastMessage.self) {
+//               lastMessage.text += data;
+//             } else {
+//               messages.value.push({ text: data, self: false });
+//             }
+//           }
+//         }
+//       } catch (error) {
+//         console.error('处理SSE消息失败:', error);
+//       }
+//     },
+//     onerror(error) {
+//       console.error('SSE连接错误:', error);
+//       // messages.value.push({ text: "连接出现问题，请稍后再试。", self: false });
+//     },
+//   });
+// };
 
-// 获取服务器发送事件的函数
-const GetSSE = () => {
-  const sseService = fetchEventSource("http://fuze1.nat300.top/ai/submita", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      token: useUserInfoStore().userInfo.token,
-    },
-    signal: controller.signal,
-    openWhenHidden: true,
-    onmessage(event) {
-      const data = JSON.parse(event.data);
-      if (!event.data.includes("\\ndata")) {
-        if (data) {
-          const lastMessage = messages.value[messages.value.length - 1];
-          if (lastMessage && !lastMessage.self) {
-            lastMessage.text += data;
-          } else {
-            messages.value.push({ text: data, self: false });
-          }
-        }
-      } else {
-        console.log("我没有\\ndata数据");
-      }
-    },
-    onerror(event) {
-      console.log("错误:", event);
-      messages.value.push({ text: "连接出现问题，请稍后再试。", self: false });
-    },
-  });
-};
-
+// 获取诗人经典名句
 const getSentence = async () => {
-  const res = await getSentenceData(
-    PoemImg[Number(route.params.id) - 1].title,
-    1,
-  );
-  poetPoem.value = res.data.records;
+  try {
+    const res = await getSentenceData(PoemImg[poetId].title, 1);
+    poetPoem.value = res.data.records;
+  } catch (error) {
+    console.error('获取名句失败:', error);
+  }
 };
+
+// 生命周期钩子
+onMounted(() => {
+  // startSSEConnection();
+  getSentence();
+});
 
 onBeforeUnmount(() => {
   controller.abort();
 });
-
-onMounted(() => {
-  // GetSSE()
-  getSentence();
-});
 </script>
 
 <template>
-  <div style="display: flex">
-    <div class="ai-chat-title">
-      <div class="chat-container">
-        <el-scrollbar>
-          <div class="messages-container">
-            <div
-              v-for="(message, index) in messages"
-              :key="index"
-              class="message"
-              :class="{
-                'my-message': message.self,
-                'ai-message': !message.self,
-              }"
-            >
-              <img
-                :src="imgUrl"
-                alt=""
-                class="avatar avatarAi"
-                v-if="!message.self"
-              />
-              <p>{{ message.text }}</p>
-              <img
-                :src="userInfo.userInfo.touxiang"
-                alt=""
-                class="avatar avatarMy"
-                v-if="message.self"
-              />
-            </div>
-          </div>
-        </el-scrollbar>
-
-        <div class="dialog-input">
-          <el-input
-            v-model="inputMessage"
-            placeholder="有什么想问的你都可以畅所欲言！"
-            @keyup.enter="sendMessage"
-            size="large"
-            style="width: 70%; margin-left: 10px"
-          />
-          <el-button size="large" style="margin-left: 20px" @click="sendMessage"
-            >发送</el-button
-          >
-        </div>
-      </div>
+  <div class="chat-to-chat-container">
+    <div class="main-content">
+      <!-- 使用通用聊天容器组件 -->
+      <ChatContainer
+        :messages="messages"
+        :loading="loading"
+        :user-avatar="userInfo.userInfo.touxiang"
+        :ai-avatar="PoemImg[poetId].url"
+        placeholder="有什么想问的你都可以畅所欲言！"
+        @send="handleSend"
+      />
     </div>
-    <div>
-      <el-card class="introduce-card">
+    
+    <!-- 诗人名句侧边栏 -->
+     <el-scrollbar>
+    <div class="sidebar">
+
+      <el-card class="poem-card">
         <template #header>
           <div class="card-header">
-            <span
-              >{{ PoemImg[Number(route.params.id) - 1].title }} --
-              经典名句</span
-            >
+            <span>{{ PoemImg[poetId].title }} -- 经典名句</span>
           </div>
         </template>
-        <div
-          v-for="item in poetPoem"
-          :key="item.id"
-          style="margin-bottom: 10px"
-        >
-          <p style="font-size: 16px; font-weight: 550; margin-bottom: 15px">
-            {{ item.fromm }}
-          </p>
-          <p>
-            {{ item.name }}
-          </p>
+        
+        <div v-if="poetPoem.length > 0" class="poem-list">
+          <div v-for="item in poetPoem" :key="item.id" class="poem-item">
+            <p class="poem-title">{{ item.fromm }}</p>
+            <p class="poem-content">{{ item.name }}</p>
+          </div>
+        </div>
+        
+        <div v-else class="no-poems">
+          <p>暂无经典名句</p>
         </div>
       </el-card>
+    
     </div>
+  
+  </el-scrollbar>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.ai-chat-title {
-  margin-top: 30px;
-  margin-left: 100px;
-  width: 70%;
-
-  .title-card {
-    text-indent: 2em;
-    font-size: 14px;
+.chat-to-chat-container {
+  display: flex;
+  width: 95%;
+  height: 80vh;
+  margin: 20px auto;
+  gap: 10px;
+  
+  .main-content {
+    flex: 1;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
-
-  .chat-container {
-    width: 100%;
-    height: 480px;
-    margin-top: 20px;
-    margin-bottom: 40px;
-
-    .messages-container {
-      display: flex;
-      flex-direction: column;
-      height: 440px;
-      margin-bottom: 10px;
-      margin-left: 10px;
-
-      .message {
-        padding: 10px;
-        border-radius: 4px;
-        max-width: 75%;
-        word-wrap: break-word;
+  
+  .sidebar {
+    width: 300px;
+    
+    .poem-card {
+      height: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      
+      .card-header {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+      }
+      
+      .poem-list {
+        overflow-y: auto;
+        
+        .poem-item {
+          margin-bottom: 20px;
+          padding-bottom: 15px;
+          border-bottom: 1px dashed #eee;
+          
+          &:last-child {
+            border-bottom: none;
+          }
+          
+          .poem-title {
+            font-size: 16px;
+            font-weight: 550;
+            margin-bottom: 10px;
+            color: #333;
+          }
+          
+          .poem-content {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+          }
+        }
+      }
+      
+      .no-poems {
         display: flex;
+        justify-content: center;
         align-items: center;
-        margin-top: 10px;
-        margin-right: 10px;
+        height: 100%;
+        color: #999;
       }
-
-      .avatar {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-      }
-
-      .avatarAi {
-        margin-right: 15px;
-      }
-
-      .avatarMy {
-        margin-left: 15px;
-      }
-
-      .my-message {
-        align-self: flex-end;
-        background: linear-gradient(
-          to left,
-          transparent 0%,
-          transparent 50px,
-          #e6f7ff 50px,
-          #e6f7ff 100%
-        );
-      }
-
-      .ai-message {
-        align-self: flex-start;
-        background: linear-gradient(
-          to right,
-          transparent 0%,
-          transparent 50px,
-          #e6f7ff 50px,
-          #e6f7ff 100%
-        );
-      }
-    }
-
-    .dialog-input {
-      display: flex;
-      align-items: center;
-      position: fixed;
-      bottom: 4vh;
-      left: 7vw;
-      width: 90vw;
     }
   }
 }
 
-.introduce-card {
-  margin-top: 30px;
-  margin-left: 30px;
-  width: 300px;
+@media (max-width: 992px) {
+  .chat-to-chat-container {
+    flex-direction: column;
+    
+    .sidebar {
+      width: 100%;
+      height: auto;
+      max-height: 300px;
+    }
+  }
 }
+
+
 </style>

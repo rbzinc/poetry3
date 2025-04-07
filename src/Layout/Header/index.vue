@@ -50,11 +50,11 @@ const handleSelect = (key) => {
         <el-menu-item index="/home">首页</el-menu-item>
         <el-menu-item index="/poet">书阁</el-menu-item>
 
-        <el-sub-menu index="/ai" popper-class="custom-dropdown">
+        <el-sub-menu index="/study" popper-class="custom-dropdown">
           <template #title>
             <span class="submenu-title">学习</span>
           </template>
-          <el-menu-item index="/ai">AI助学</el-menu-item>
+          <el-menu-item index="/study/ai">AI助学</el-menu-item>
           <el-menu-item index="/dictionary">游戏助学</el-menu-item>
           <el-menu-item index="/vrExhibition">vr助学</el-menu-item>
         </el-sub-menu>
@@ -88,7 +88,6 @@ const handleSelect = (key) => {
   width: 20px;
   height: 20px;
   margin-left: 5px;
-  
 }
 
 .leader {
@@ -97,7 +96,6 @@ const handleSelect = (key) => {
   height: 80px;
   justify-content: space-evenly;
   margin: 0 auto;
-
 }
 
 :deep(.header-menu) {
@@ -145,7 +143,7 @@ const handleSelect = (key) => {
   }
 }
 .submenu-title {
-  margin-right: 15px; 
+  margin-right: 15px;
 }
 /* 添加全局样式，控制下拉菜单宽度 */
 :global(.custom-dropdown) {
