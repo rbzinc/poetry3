@@ -7,44 +7,14 @@ import { aiChatGetApi } from '@/api/modules/aiChat.js'
 import ChatContainer from '@/components/study/directory/AiStudy/ChatContainer/index.vue'
 
 const userInfo = useUserInfoStore()
-const messages = ref([{ text: '选择优化类型，并且输入您的古诗，我会帮您进行优化。', self: false }])
-const inputMessage = ref('')
-const typeIndex = ref(1)
+const messages = ref([{ text: '选择优化类型，并且输入您的古诗，我会帮您进行优化。', self: false, type: 'text' }])
 const loading = ref(false)
-const controller = new AbortController()
+const typeIndex = ref(1)
 
-const sendMessage = async () => {
-  const trimmedInput = ref('')
-  if (typeIndex.value === 1) {
-    trimmedInput.value = '修改' + inputMessage.value.trim()
-  } else if (typeIndex.value === 2) {
-    trimmedInput.value = '批改' + inputMessage.value.trim()
-  } else if (typeIndex.value === 3) {
-    trimmedInput.value = '剖析' + inputMessage.value.trim()
-  }
+const inputMessage = ref('') // 在父组件中定义输入内容
 
-  if (trimmedInput.value) {
-    messages.value.push({ text: trimmedInput.value, self: true })
-    loading.value = true
-    try {
-      await aiChatGetApi(10086, trimmedInput.value)
-    } catch (err) {
-      console.error('API请求失败:', err)
-      ElMessage.error('请求失败')
-    } finally {
-      loading.value = false
-    }
-    inputMessage.value = ''
-  } else {
-    ElMessage.error('请输入内容')
-  }
-}
-
-const changeType = (event) => {
-  typeIndex.value = event
-}
-
-const placeholderText = computed(() => {
+// 计算占位符文本
+const placeholder = computed(() => {
   const placeholders = [
     '请选择类型',
     '请输入您的古诗，我会帮你修改',
@@ -54,8 +24,49 @@ const placeholderText = computed(() => {
   return placeholders[typeIndex.value] || placeholders[0]
 })
 
+// 处理发送消息
+const handleSend = async (message) => {
+  if (!message) return
+
+  try {
+    loading.value = true
+    let trimmedInput = ''
+
+    // 根据类型添加前缀
+    if (typeIndex.value === 1) {
+      trimmedInput = '修改' + message.trim()
+    } else if (typeIndex.value === 2) {
+      trimmedInput = '批改' + message.trim()
+    } else if (typeIndex.value === 3) {
+      trimmedInput = '剖析' + message.trim()
+    }
+
+    // 添加用户消息
+    messages.value.push({ text: trimmedInput, self: true, type: 'text' })
+
+    // 调用API
+    await aiChatGetApi(10086, trimmedInput)
+  } catch (error) {
+    console.error('API请求失败:', error)
+    ElMessage.error('发送失败，请稍后重试')
+    messages.value.push({ text: '发送失败，请稍后重试', self: false, type: 'text' })
+  } finally {
+    loading.value = false
+  }
+}
+
+// 处理类型改变
+const handleTypeChange = (type) => {
+  typeIndex.value = type
+}
+
+const controller = new AbortController()
+const handleDropdownClick = () => {
+  handleSend(inputMessage.value)
+   inputMessage.value = ''
+}
 const GetSSE = () => {
-  const sseService = fetchEventSource('http://fuze1.nat300.top/ai/submita', {
+  fetchEventSource('http://120.27.234.36:8080/ai/submita', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -71,14 +82,16 @@ const GetSSE = () => {
           if (lastMessage && !lastMessage.self) {
             lastMessage.text += data
           } else {
-            messages.value.push({ text: data, self: false })
+            messages.value.push({ text: data, self: false, type: 'text' })
           }
         }
+      } else {
+        console.log('我没有\\ndata数据')
       }
     },
     onerror(event) {
       console.log('错误:', event)
-      messages.value.push({ text: '连接出现问题，请稍后再试。', self: false })
+      messages.value.push({ text: '连接出现问题，请稍后再试。', self: false, type: 'text' })
     },
   })
 }
@@ -88,28 +101,33 @@ onBeforeUnmount(() => {
 })
 
 onMounted(() => {
-  // GetSSE()
+  GetSSE()
 })
 </script>
 
 <template>
   <div class="poem-refine-container">
     <ChatContainer
-      :messages="messages"
+    :messages="messages"
       :loading="loading"
       :user-avatar="userInfo.userInfo.touxiang"
-      :placeholder="placeholderText"
-      @send="sendMessage"
+      :placeholder="placeholder"
+      v-model="inputMessage"
+      @send="handleSend"
     >
-      <template #input-prefix>
-        <el-dropdown split-button type="primary" size="large">
+    <template #send-button>
+        <el-dropdown 
+          split-button 
+          type="primary" 
+          size="default"
+          @click="handleDropdownClick"
+        >
           发送
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="sendMessage">发送</el-dropdown-item>
-              <el-dropdown-item @click="changeType(1)">修改</el-dropdown-item>
-              <el-dropdown-item @click="changeType(2)">批改</el-dropdown-item>
-              <el-dropdown-item @click="changeType(3)">剖析</el-dropdown-item>
+              <el-dropdown-item @click="handleTypeChange(1)">修改</el-dropdown-item>
+              <el-dropdown-item @click="handleTypeChange(2)">批改</el-dropdown-item>
+              <el-dropdown-item @click="handleTypeChange(3)">剖析</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -117,6 +135,7 @@ onMounted(() => {
     </ChatContainer>
   </div>
 </template>
+
 <style lang="scss" scoped>
 .poem-refine-container {
   width: 90%;
@@ -128,16 +147,6 @@ onMounted(() => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   background-color: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
-
-  :deep(.input-area) {
-    .el-dropdown {
-      margin-right: 12px;
-    }
-
-    .el-input {
-      flex: 1;
-    }
-  }
 }
 
 @media (max-width: 768px) {

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, nextTick, defineProps, defineEmits } from 'vue'
+import { ref, watch, nextTick, defineProps, defineEmits, computed } from 'vue'
 import ChatMessage from '../ChatMessage/index.vue'
 
 const props = defineProps({
@@ -33,12 +33,18 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  modelValue: {
+    type: String,
+    default: ''
+  }
 })
 
-const emit = defineEmits(['send', 'image-click'])
-
+const emit = defineEmits(['send', 'image-click', 'update:modelValue'])
 // 输入消息
-const inputMessage = ref('')
+const inputMessage = computed({
+  get: () => props.modelValue,
+  set: (value) => emit('update:modelValue', value),
+})
 // 消息容器引用
 const messagesContainer = ref(null)
 
@@ -47,7 +53,7 @@ const sendMessage = () => {
   const trimmedInput = inputMessage.value.trim()
   if (trimmedInput) {
     emit('send', trimmedInput)
-    inputMessage.value = ''
+    emit('update:modelValue', '') // 清空输入框
   }
 }
 
@@ -108,11 +114,12 @@ const handleImageClick = (imageUrl) => {
         :disabled="loading"
       />
 
-      <el-button type="primary" @click="sendMessage" :loading="loading" :disabled="!inputMessage.trim()">
-        发送
-      </el-button>
-
-      <slot name="input-suffix"></slot>
+      <!-- 添加默认发送按钮插槽 -->
+      <slot name="send-button">
+        <el-button type="primary" @click="sendMessage" :loading="loading" :disabled="!inputMessage.trim()">
+          发送
+        </el-button>
+      </slot>
     </div>
 
     <!-- 自定义输入区域 -->

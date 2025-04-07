@@ -63,27 +63,36 @@ const changeChat = (item)=>{
 </script>
 
 <template>
-  <TextCartoon></TextCartoon>
-  <div class="home">
-    <el-row :gutter="20">
-      <el-col :span="6" v-for="item in poetryAi" :key="item.id" class="item-row">
-        <img :src="item.url" alt="" class="img" @click="changeChat(item)">
-        <p class="title">{{item.title}}</p>
-      </el-col>
-    </el-row>
+  <div class="container">
+    <TextCartoon></TextCartoon>
+    <div class="home">
+      <el-row :gutter="20">
+        <el-col :span="6" v-for="item in poetryAi" :key="item.id" class="item-row">
+          <img :src="item.url" alt="" class="img" @click="changeChat(item)">
+          <p class="title">{{item.title}}</p>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.home {
+.container {
   display: flex;
+  flex-direction: column;
+}
+
+.home {
+  flex: 1;
   padding: 0 200px;
-  .item-row{
+  
+  .item-row {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-bottom: 20px;
+    
     .img {
       width: 200px;
       height: 200px;
@@ -92,10 +101,17 @@ const changeChat = (item)=>{
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      transition: transform 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
     }
-    .title{
+    
+    .title {
       font-size: 20px;
-      margin-top: 4px;
+      margin-top: 10px;
+      font-weight: 500;
     }
   }
 }
