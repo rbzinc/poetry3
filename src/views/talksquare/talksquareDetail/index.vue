@@ -1,9 +1,8 @@
 <script setup>
-import {ref} from "vue";
-import common from './comment/index.vue';
+import { ref, onMounted } from 'vue'
+import common from './comment/index.vue'
 import Markdown from './markdown/index.vue'
-import {useRoute} from 'vue-router';
-import router from "@/router/index.js";
+import { useRoute } from 'vue-router'
 import DayRecommend from '@/components/talksquare/DayRecommend/index.vue'
 import ArticleRecommentDation from '@/components/talksquare/ArticleRecommendation/index.vue'
 import {
@@ -12,12 +11,12 @@ import {
   userLuntanGuanzhuGetApi,
   userLuntanIsguanzhuGetApi,
   userLuntanSelectConmmetsGetApi,
-  userLuntanSelectxiangxiGetApi
-} from "@/api/modules/talkSquare.js";
-const pageContentMarkShow = ref(false); // 评论和内容展示状态
-const postAddCommentForm = ref([]); // 评论区的表单
-const route = useRoute();
-const blogid = ref(route.query.id);
+  userLuntanSelectxiangxiGetApi,
+} from '@/api/modules/talkSquare.js'
+const pageContentMarkShow = ref(false) // 评论和内容展示状态
+const postAddCommentForm = ref([]) // 评论区的表单
+const route = useRoute()
+const blogid = ref(route.query.id)
 const userId = ref('') // 论坛详情页面的用户id
 const userLuntanXiangxi = ref({}) // 论坛详情页面的用户信息
 const userLuntanDianzanrankData = ref([]) // 论坛详情页面的点赞排行榜
@@ -30,14 +29,14 @@ const poemId = ref('') // 诗词id
  * @returns {Promise<void>}
  */
 const updateFollow = async () => {
-  isFollowed.value =!isFollowed.value
+  isFollowed.value = !isFollowed.value
   const res = await userLuntanGuanzhuGetApi(userId.value, isFollowed.value)
   if (res.data === '关注成功') {
     isFollowed.value = true
   } else if (res.data === '取消成功') {
     isFollowed.value = false
   }
-  userLuntanSelectxiangxi()
+  await userLuntanSelectxiangxi()
 }
 
 /**
@@ -53,7 +52,7 @@ const userLuntanSelectxiangxi = async () => {
   pageContentMarkShow.value = true
   comments.value = res.data.conmments
   // 等页面渲染之后再调用这个函数
-  await userLuntanIsguanzhu();
+  await userLuntanIsguanzhu()
 }
 
 /**
@@ -62,20 +61,15 @@ const userLuntanSelectxiangxi = async () => {
  */
 const updateLike = async () => {
   const res = await userLuntanDianzanGetApi(blogid.value)
-  await userLuntanDianzanrank();
+  await userLuntanDianzanrank()
   if (res.data === '点赞成功') {
     userLuntanXiangxi.value.blogLike = !userLuntanXiangxi.value.blogLike
     userLuntanXiangxi.value.liked += 1
   }
-    if (res.data === '点赞取消') {
+  if (res.data === '点赞取消') {
     userLuntanXiangxi.value.blogLike = !userLuntanXiangxi.value.blogLike
     userLuntanXiangxi.value.liked -= 1
   }
-
-}
-
-const jumpToPoemDetail = ()=>{
-  router.push(`/poedetails?id=${poemId.value}`)
 }
 
 /**
@@ -111,37 +105,36 @@ const userLuntanSelectConmmets = async () => {
 
 onMounted(() => {
   userLuntanSelectxiangxi()
-  userLuntanSelectConmmets();
-  userLuntanDianzanrank();
-});
-
-
+  userLuntanSelectConmmets()
+  userLuntanDianzanrank()
+})
 </script>
 
 <template>
   <div class="layout-container">
-    <div style="width: 74%;">
+    <div style="width: 74%">
       <el-card class="article-card">
         <div class="article-info">
           <h1 class="article-title">{{ userLuntanXiangxi.title }}</h1>
-          <p class="article-meta">作者: {{ userLuntanXiangxi.username }} · {{ userLuntanXiangxi.createTime }} · 点赞量
-            {{ userLuntanXiangxi.liked }}</p>
+          <p class="article-meta">
+            作者: {{ userLuntanXiangxi.username }} · {{ userLuntanXiangxi.createTime }} · 点赞量
+            {{ userLuntanXiangxi.liked }}
+          </p>
           <p class="article-quote" @click="jumpToPoemDetail">{{ userLuntanXiangxi.poemWord }}</p>
         </div>
-        <div style="margin-top: 20px; padding: 0 20px; height: 100%;">
-          <Markdown v-if="pageContentMarkShow" :content='content' />
-
+        <div style="margin-top: 20px; padding: 0 20px; height: 100%">
+          <Markdown v-if="pageContentMarkShow" :content="content" />
         </div>
       </el-card>
       <common v-if="pageContentMarkShow" :comments="comments" />
     </div>
 
-    <div class="author-container" style="width: 24%;">
+    <div class="author-container" style="width: 24%">
       <el-card class="author-card">
         <div class="author-info">
-          <img :src="userLuntanXiangxi.touxiang" alt="Avatar" class="author-avatar"/>
+          <img :src="userLuntanXiangxi.touxiang" alt="Avatar" class="author-avatar" />
           <div>
-            <h3 style="margin-bottom: 5px;">{{ userLuntanXiangxi.username }}</h3>
+            <h3 style="margin-bottom: 5px">{{ userLuntanXiangxi.username }}</h3>
             <p>{{ userLuntanXiangxi.nameTager }}</p>
           </div>
         </div>
@@ -151,10 +144,10 @@ onMounted(() => {
             <p>{{ userLuntanXiangxi.fans }} 粉丝</p>
           </div>
           <div class="buttons">
-            <el-button type="primary" @click="updateFollow" style="height: 40px; width: 120px;">
+            <el-button type="primary" @click="updateFollow" style="height: 40px; width: 120px">
               {{ isFollowed ? '取消关注' : '关注' }}
             </el-button>
-            <el-button size="large" style="height: 40px; width: 120px;" @click="updateLike">
+            <el-button size="large" style="height: 40px; width: 120px" @click="updateLike">
               {{ userLuntanXiangxi.blogLike ? '取消点赞' : '点赞' }}
             </el-button>
           </div>
@@ -167,21 +160,22 @@ onMounted(() => {
         </template>
         <div>
           <div v-if="userLuntanDianzanrankData.length > 0">
-            <div v-for="item in userLuntanDianzanrankData" :key="item.id"
-                 style="display: flex; align-items: center; margin-bottom: 10px">
-              <img :src="item.touxiang" style="width: 40px; height: 40px; border-radius: 50%;">
-              <p style="margin-left: 12px; font-size: 17px;">{{ item.name }}</p>
+            <div
+              v-for="item in userLuntanDianzanrankData"
+              :key="item.id"
+              style="display: flex; align-items: center; margin-bottom: 10px"
+            >
+              <img :src="item.touxiang" style="width: 40px; height: 40px; border-radius: 50%" />
+              <p style="margin-left: 12px; font-size: 17px">{{ item.name }}</p>
             </div>
           </div>
-          <div v-else style="display: flex; align-items: center; margin-bottom: 10px">
-            暂无用户点赞
-          </div>
+          <div v-else style="display: flex; align-items: center; margin-bottom: 10px">暂无用户点赞</div>
         </div>
       </el-card>
 
-     <ArticleRecommentDation />
+      <ArticleRecommentDation />
 
-     <DayRecommend style="margin-top: 30px;"/>
+      <DayRecommend style="margin-top: 30px" />
     </div>
   </div>
 </template>

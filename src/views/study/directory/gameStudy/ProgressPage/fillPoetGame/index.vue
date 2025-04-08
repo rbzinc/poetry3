@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { userGameStore } from '@/stores/modules/game.js'
 import { ElMessage } from 'element-plus'
+import { goDictionaryFillPoemGame, goDictionaryTextList } from '@/router/helpers.js'
 const gameStore = userGameStore()
 const router = useRouter()
 let number = ref(0)
@@ -58,11 +59,11 @@ const nextQuestion = () => {
 }
 
 const returnclick = () => {
-  router.push('/study/dictionary/textlist')
+  goDictionaryTextList()
 }
 
 const fillgameclick = () => {
-  router.push('/study/dictionary/fillpoetgame')
+  goDictionaryFillPoemGame()
 }
 </script>
 

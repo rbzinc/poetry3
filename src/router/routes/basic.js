@@ -1,14 +1,15 @@
 import permissionRoutes from './permission/index.js'
+import * as ROUTES from '../constants.js'
 
 const routes = [...permissionRoutes]
 
 export const rootRoute = {
   path: '/',
   name: 'Layout',
-  redirect: '/home',
+  redirect: ROUTES.HOME,
   children: [
     {
-      path: '/home',
+      path: ROUTES.HOME,
       component: () => import('@/Layout/index.vue'),
     },
     ...routes,
@@ -16,7 +17,7 @@ export const rootRoute = {
 }
 
 export const loginRoute = {
-  path: '/login',
+  path: ROUTES.LOGIN,
   name: 'Login',
   component: () => import('@/views/login/index.vue'),
 }
@@ -25,10 +26,10 @@ export const notFoundRoutes = [
   {
     path: '/:path(.*)*',
     name: 'NotFound',
-    redirect: '/404',
+    redirect: ROUTES.NOT_FOUND,
   },
   {
-    path: '/404',
+    path: ROUTES.NOT_FOUND,
     name: '404',
     component: () => import('@/views/errors/404/index.vue'),
   },
@@ -36,46 +37,46 @@ export const notFoundRoutes = [
 
 export const vrAll = [
   {
-    path: '/vr',
+    path: ROUTES.VR,
     component: () => import('@/views/study/directory/vrExhibition/index.vue'),
   },
   {
-    path: '/vrExhibition',
+    path: ROUTES.VR_EXHIBITION,
     component: () => import('@/views/study/directory/vrExhibition/vrExhibitionDetail/index.vue'),
   },
 ]
 
 export const userRoutes = [
   {
-    path: '/user',
+    path: ROUTES.USER,
     component: () => import('@/views/user/index.vue'),
   },
   {
-    path: '/user/editUserInfo',
+    path: ROUTES.USER_EDIT,
     component: () => import('@/views/user/editUserInfo/index.vue'),
   },
 ]
 
 export const dictionaryRoutes = [
   {
-    path: '/study/dictionary',
+    path: ROUTES.DICTIONARY,
     component: () => import('@/views/study/directory/gameStudy/index.vue'),
-    redirect: '/study/dictionary/index',
+    redirect: ROUTES.DICTIONARY_INDEX,
     children: [
       {
-        path: '/study/dictionary/index',
+        path: ROUTES.DICTIONARY_INDEX.replace(ROUTES.DICTIONARY + '/', ''),
         component: () => import('@/views/study/directory/gameStudy/ProgressPage/dictionary/index.vue'),
       },
       {
-        path: '/study/dictionary/textlist',
+        path: ROUTES.DICTIONARY_TEXT_LIST.replace(ROUTES.DICTIONARY + '/', ''),
         component: () => import('@/views/study/directory/gameStudy/ProgressPage/textList/index.vue'),
       },
       {
-        path: '/study/dictionary/poetgame',
+        path: ROUTES.DICTIONARY_POET_GAME.replace(ROUTES.DICTIONARY + '/', ''),
         component: () => import('@/views/study/directory/gameStudy/ProgressPage/poetGame/index.vue'),
       },
       {
-        path: '/study/dictionary/fillpoetgame',
+        path: ROUTES.DICTIONARY_FILL_POET_GAME.replace(ROUTES.DICTIONARY + '/', ''),
         component: () => import('@/views/study/directory/gameStudy/ProgressPage/fillPoetGame/index.vue'),
       },
     ],
@@ -84,21 +85,22 @@ export const dictionaryRoutes = [
 
 export const forumRoutes = [
   {
-    path: '/forum',
+    path: ROUTES.FORUM,
     component: () => import('@/views/talksquare/index.vue'),
   },
   {
-    path: '/edit',
+    path: ROUTES.FORUM_EDIT,
     component: () => import('@/views/talksquare/editTalk/index.vue'),
     params: {
       id: '',
     },
   },
   {
-    path: '/detail',
+    path: ROUTES.FORUM_DETAIL,
     component: () => import('@/views/talksquare/talksquareDetail/index.vue'),
   },
 ]
+
 const basicRoutes = [
   rootRoute,
   loginRoute,

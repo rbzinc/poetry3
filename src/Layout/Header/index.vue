@@ -4,10 +4,11 @@ import { useUserInfoStore } from '@/stores/index.js'
 import router from '@/router/index.js'
 import { ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import * as ROUTES from '@/router/constants.js'
 
 const useUser = useUserInfoStore()
 const route = useRoute()
-const activeIndex = ref('/home')
+const activeIndex = ref(ROUTES.HOME)
 
 // 监听路由变化，更新激活菜单
 onMounted(() => {
@@ -24,7 +25,7 @@ watch(
 // 退出登录
 const logout = () => {
   useUser.clearUserInfo()
-  router.push('/login')
+  router.push(ROUTES.LOGIN)
 }
 
 // 处理菜单点击事件
@@ -47,33 +48,33 @@ const handleSelect = (key) => {
         :ellipsis="false"
         router
       >
-        <el-menu-item index="/home">首页</el-menu-item>
-        <el-menu-item index="/poet">书阁</el-menu-item>
+        <el-menu-item :index="ROUTES.HOME">首页</el-menu-item>
+        <el-menu-item :index="ROUTES.POET">书阁</el-menu-item>
 
-        <el-sub-menu index="/study" popper-class="custom-dropdown">
+        <el-sub-menu :index="ROUTES.STUDY" popper-class="custom-dropdown">
           <template #title>
             <span class="submenu-title">学习</span>
           </template>
-          <el-menu-item index="/study/ai">AI助学</el-menu-item>
-          <el-menu-item index="/study/dictionary">游戏助学</el-menu-item>
-          <el-menu-item index="/vr">vr助学</el-menu-item>
+          <el-menu-item :index="ROUTES.STUDY_AI">AI助学</el-menu-item>
+          <el-menu-item :index="ROUTES.DICTIONARY">游戏助学</el-menu-item>
+          <el-menu-item :index="ROUTES.VR">vr助学</el-menu-item>
         </el-sub-menu>
 
-        <el-menu-item index="/forum">论坛</el-menu-item>
+        <el-menu-item :index="ROUTES.FORUM">论坛</el-menu-item>
 
         <template v-if="useUser.userInfo">
-          <el-sub-menu index="/user" popper-class="custom-dropdown">
+          <el-sub-menu :index="ROUTES.USER" popper-class="custom-dropdown">
             <template #title>
               我的
               <el-icon class="user-icon"><User /></el-icon>
             </template>
-            <el-menu-item index="/user">个人主页</el-menu-item>
+            <el-menu-item :index="ROUTES.USER">个人主页</el-menu-item>
 
-            <el-menu-item index="/logout" @click="logout">退出登录</el-menu-item>
+            <el-menu-item @click="logout">退出登录</el-menu-item>
           </el-sub-menu>
         </template>
         <template v-else>
-          <el-menu-item index="/login">
+          <el-menu-item :index="ROUTES.LOGIN">
             登录
             <el-icon class="user-icon"><User /></el-icon>
           </el-menu-item>

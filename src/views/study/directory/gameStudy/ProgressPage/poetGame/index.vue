@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { goDictionaryFillPoemGame } from '@/router/helpers.js'
 const router = useRouter()
 let number = ref(0)
 let score = ref(0)
@@ -58,7 +59,7 @@ const returnclick = () => {
 }
 
 const fillgameclick = () => {
-  router.push('/study/dictionary/fillpoetgame')
+  goDictionaryFillPoemGame()
 }
 </script>
 

@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import Poetryitem from '@/components/poet/poetryitem/index.vue'
 import { getpoemRandomData, getDynastyData, getClassData, getWriterPoemData } from '@/api/index.js'
 import { usePoetDataStore } from '@/stores/modules/poetData.js'
+import { goPoetClassDetail } from '@/router/helpers.js'
 
 const poetDataStore = usePoetDataStore()
 const FILTER_CONFIG = poetDataStore.getAllConfig
@@ -81,12 +82,12 @@ onMounted(async () => {
       <div v-for="(config, type) in FILTER_CONFIG" :key="type" class="filter-section">
         <div class="filter-row">
           <span class="filter-title">{{ config.title }}:</span>
-          <div class="filter-options" :class="{ 'expanded': state.openStates[type] }">
+          <div class="filter-options" :class="{ expanded: state.openStates[type] }">
             <button
               v-for="option in config.options"
               :key="option"
               class="option-btn"
-              :class="{ 'active': state.currentName === option }"
+              :class="{ active: state.currentName === option }"
               @click="fetchData(type, option)"
             >
               {{ option }}
@@ -114,12 +115,12 @@ onMounted(async () => {
             ...item,
             id: String(item.id),
           }"
-          @click="$router.push(`/poet/class/poet?id=${item.id}`)"
+          @click="goPoetClassDetail(item.id)"
         />
       </template>
       <div v-else class="empty-state">暂无数据</div>
     </div>
-    
+
     <el-pagination
       v-if="state.pageTotal > 0"
       :current-page="state.pageNum"
@@ -214,11 +215,11 @@ onMounted(async () => {
     transition: all 0.2s ease;
 
     &:hover {
-      color: #409EFF;
+      color: #409eff;
     }
 
     &.active {
-      color: #409EFF;
+      color: #409eff;
       font-weight: bold;
     }
   }
@@ -239,8 +240,8 @@ onMounted(async () => {
       border-radius: 4px;
 
       &:hover:not(.is-disabled) {
-        color: #409EFF;
-        border-color: #409EFF;
+        color: #409eff;
+        border-color: #409eff;
       }
 
       &.is-disabled {
@@ -265,14 +266,14 @@ onMounted(async () => {
         color: #606266;
 
         &:hover:not(.is-active) {
-          color: #409EFF;
-          border-color: #409EFF;
+          color: #409eff;
+          border-color: #409eff;
         }
 
         &.is-active {
-          background-color: #409EFF;
+          background-color: #409eff;
           color: #fff !important;
-          border-color: #409EFF;
+          border-color: #409eff;
           position: relative;
           z-index: 1;
         }

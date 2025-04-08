@@ -1,23 +1,22 @@
 <script setup>
-import LoginPage from "./login/index.vue"
-import RegisterPage from "./register/index.vue"
-import ForgetPage from "./forget/index.vue"
-import EmailPage from "./email/index.vue"
+import { ref } from 'vue'
+import LoginPage from './login/index.vue'
+import RegisterPage from './register/index.vue'
+import ForgetPage from './forget/index.vue'
+import EmailPage from './email/index.vue'
 const basicPage = ref(1)
 const changePage = (page) => {
   basicPage.value = page
 }
-
-
 </script>
 <template>
   <div class="login-container">
     <div class="login-box">
       <div class="bg"></div>
-      <LoginPage v-if="basicPage === 1" @changePage="changePage"/>
-      <email-page v-if="basicPage === 2" @changePage="changePage"/>
-      <register-page v-if="basicPage === 3" @changePage="changePage"/>
-      <forget-page v-if="basicPage === 4" @changePage="changePage"/>
+      <LoginPage v-if="basicPage === 1" @changePage="changePage" />
+      <email-page v-if="basicPage === 2" @changePage="changePage" />
+      <register-page v-if="basicPage === 3" @changePage="changePage" />
+      <forget-page v-if="basicPage === 4" @changePage="changePage" />
     </div>
   </div>
 </template>
@@ -43,8 +42,7 @@ const changePage = (page) => {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url("../../assets/pic/login/login-bg.jpg");
+    background-image: url('../../assets/pic/login/login-bg.jpg');
   }
 }
-
 </style>

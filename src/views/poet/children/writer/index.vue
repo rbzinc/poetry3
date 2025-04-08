@@ -1,11 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import Writeritem from '@/components/poet/writeritem/index.vue'
-import { usePoetDataStore } from "@/stores/modules/poetData.js";
+import { usePoetDataStore } from '@/stores/modules/poetData.js'
 import { getPoetRandomData, getWriterData } from '@/api/modules/poePavilion.js'
+import { goPoetWriterDetail } from '@/router/helpers.js'
 
-const poetDataStore = usePoetDataStore();
-const DYNASTY_CONFIG = poetDataStore.getDynastyConfig;
+const poetDataStore = usePoetDataStore()
+const DYNASTY_CONFIG = poetDataStore.getDynastyConfig
 
 /**
  * 定义数据
@@ -17,7 +18,7 @@ const state = ref({
   pageNum: 1,
   pageSize: 5,
   pageTotal: 0,
-  loading: false
+  loading: false,
 })
 
 // 获取随机数据
@@ -67,21 +68,25 @@ onMounted(getRandom)
       <div class="filter-section">
         <div class="filter-row">
           <span class="filter-title">{{ DYNASTY_CONFIG.title }}:</span>
-          <div class="filter-options" :class="{ 'expanded': state.isOpen }">
-            <button v-for="option in DYNASTY_CONFIG.options"
-                    :key="option"
-                    class="option-btn"
-                    :class="{ 'active': state.currentDynasty === option }"
-                    @click="fetchData(option)">
+          <div class="filter-options" :class="{ expanded: state.isOpen }">
+            <button
+              v-for="option in DYNASTY_CONFIG.options"
+              :key="option"
+              class="option-btn"
+              :class="{ active: state.currentDynasty === option }"
+              @click="fetchData(option)"
+            >
               {{ option }}
             </button>
           </div>
           <button class="toggle-btn" @click="toggleSection">
-            <img :class="{ 'rotate-180': state.isOpen }"
-                 src="https://ziyuan.guwendao.net/siteimg/jianBtn.png"
-                 alt="toggle"
-                 width="13"
-                 height="13">
+            <img
+              :class="{ 'rotate-180': state.isOpen }"
+              src="https://ziyuan.guwendao.net/siteimg/jianBtn.png"
+              alt="toggle"
+              width="13"
+              height="13"
+            />
           </button>
         </div>
       </div>
@@ -89,25 +94,27 @@ onMounted(getRandom)
 
     <div class="content-list" v-loading="state.loading">
       <template v-if="state.randomList.length">
-        <Writeritem v-for="item in state.randomList"
-                    :key="item?.id"
-                    :name="item.name"
-                    :content="item.simpleIntro"
-                    :dynasty="item.dynasty"
-                    @click="$router.push(`/poet/writer/writer?id=${item.id}`)" />
+        <Writeritem
+          v-for="item in state.randomList"
+          :key="item?.id"
+          :name="item.name"
+          :content="item.simpleIntro"
+          :dynasty="item.dynasty"
+          @click="goPoetWriterDetail(item.id)"
+        />
       </template>
-      <div v-else class="empty-state">
-        暂无数据
-      </div>
+      <div v-else class="empty-state">暂无数据</div>
     </div>
 
-    <el-pagination v-if="state.pageTotal > 0"
-                   :current-page="state.pageNum"
-                   :page-size="state.pageSize"
-                   :total="state.pageTotal"
-                   background
-                   layout="prev, pager, next"
-                   @current-change="handlePageChange" />
+    <el-pagination
+      v-if="state.pageTotal > 0"
+      :current-page="state.pageNum"
+      :page-size="state.pageSize"
+      :total="state.pageTotal"
+      background
+      layout="prev, pager, next"
+      @current-change="handlePageChange"
+    />
   </div>
 </template>
 
@@ -188,11 +195,11 @@ onMounted(getRandom)
     transition: all 0.2s ease;
 
     &:hover {
-      color: #409EFF;
+      color: #409eff;
     }
 
     &.active {
-      color: #409EFF;
+      color: #409eff;
       font-weight: bold;
     }
   }
@@ -213,8 +220,8 @@ onMounted(getRandom)
       border-radius: 4px;
 
       &:hover:not(.is-disabled) {
-        color: #409EFF;
-        border-color: #409EFF;
+        color: #409eff;
+        border-color: #409eff;
       }
 
       &.is-disabled {
@@ -239,14 +246,14 @@ onMounted(getRandom)
         color: #606266;
 
         &:hover:not(.is-active) {
-          color: #409EFF;
-          border-color: #409EFF;
+          color: #409eff;
+          border-color: #409eff;
         }
 
         &.is-active {
-          background-color: #409EFF;
+          background-color: #409eff;
           color: #fff !important;
-          border-color: #409EFF;
+          border-color: #409eff;
           position: relative;
           z-index: 1;
         }

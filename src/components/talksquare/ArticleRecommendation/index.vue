@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { userLuntanSelectForumGetApi } from '@/api/modules/talkSquare.js'
 import { useRouter } from 'vue-router'
-const router = useRouter()
+import { goForumDetail } from '@/router/helpers.js'
 const RecommendationData = ref({}) // 今日古诗推荐
 
 const userLuntanSelectForum = async () => {
@@ -11,7 +11,8 @@ const userLuntanSelectForum = async () => {
 }
 // TODO 跳转详情页页面不会自动更新
 const goToDetail = (item) => {
-  router.push(`/detail?id=${item.id}`)
+  console.log(item)
+  goForumDetail(item.id)
 }
 onMounted(() => {
   userLuntanSelectForum()

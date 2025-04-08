@@ -1,6 +1,7 @@
 <script setup>
 import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
+import { goDictionaryTextList } from '@/router/helpers.js'
 const router = useRouter()
 const props = defineProps({
   title: String,
@@ -10,7 +11,7 @@ const props = defineProps({
 
 <template>
   <el-tooltip :content="content" placement="bottom" effect="light">
-    <div class="box" @click="router.push('/study/dictionary/textlist')">
+    <div class="box" @click="goDictionaryTextList()">
       <div class="title">{{ title }}</div>
     </div>
   </el-tooltip>

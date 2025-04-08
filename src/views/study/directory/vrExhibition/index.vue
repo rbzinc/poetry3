@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import router from '@/router/index.js'
+import { goVrDetail } from '@/router/helpers.js'
 
 const currentPage = ref(1)
 const pageSize = ref(6)
@@ -42,7 +42,7 @@ const fictitiousList = ref([
 // 点击跳转到景点详情页
 function goToDetail(item) {
   console.log(item)
-  router.push(`/vrExhibition?id=${item.id}`)
+  goVrDetail(item.id)
 }
 
 onMounted(() => {})

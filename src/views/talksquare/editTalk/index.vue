@@ -1,79 +1,71 @@
 <script setup>
 // 引入 Vue 相关的响应式 API
-import { ref, watch } from "vue";
-import { ElForm, ElFormItem, ElInput, ElButton, ElMessage } from "element-plus";
-import { Plus, Search } from "@element-plus/icons-vue";
-import router from "@/router/index.js";
-import { useUserInfoStore } from "@/stores/index.js";
-import {
-  userLuntanFabutieziPostApi,
-  userLuntanSearchGetApi,
-} from "@/api/modules/talkSquare.js";
-import { getpoemRandomData } from "@/api/index.js";
+import { ref, watch, computed } from 'vue'
+import { ElForm, ElFormItem, ElInput, ElButton, ElMessage } from 'element-plus'
+import { Plus, Search } from '@element-plus/icons-vue'
+import { useUserInfoStore } from '@/stores/index.js'
+import { userLuntanFabutieziPostApi, userLuntanSearchGetApi } from '@/api/modules/talkSquare.js'
+import { getpoemRandomData } from '@/api/index.js'
+import { goForum, goHome } from '@/router/helpers.js'
 
 // 初始化变量
-const length = ref(0);
-const dialogTableVisible = ref(false);
-const drawer = ref(false);
-const inputValue = ref("");
-const shakeButton = ref(false);
-const poemData = ref([]);
-const choicePoemContent = ref("点此选择");
-const ExcerptDisabled = ref(true);
+const length = ref(0)
+const dialogTableVisible = ref(false)
+const drawer = ref(false)
+const inputValue = ref('')
+const shakeButton = ref(false)
+const poemData = ref([])
+const choicePoemContent = ref('点此选择')
+const ExcerptDisabled = ref(true)
 /**
  * 发文设置表单
  * @type {Ref<UnwrapRef<{images: string, poemId: string, poemWord: string, title: string, type: string, content: string}>, UnwrapRef<{images: string, poemId: string, poemWord: string, title: string, type: string, content: string}> | {images: string, poemId: string, poemWord: string, title: string, type: string, content: string}>}
  */
 const EditForm = ref({
-  title: "",
-  content: "",
-  type: "",
-  poemId: "",
-  images: "",
-  poemWord: "",
-});
+  title: '',
+  content: '',
+  type: '',
+  poemId: '',
+  images: '',
+  poemWord: '',
+})
 
 /**
  * 发布博客
  * @returns {Promise<void>}
  */
 const submitForm = async () => {
-  if (
-    !EditForm.value.title ||
-    !EditForm.value.content ||
-    !EditForm.value.type ||
-    !EditForm.value.images
-  ) {
-    showMessage("请认真填写发文设置！");
-    return;
+  if (!EditForm.value.title || !EditForm.value.content || !EditForm.value.type || !EditForm.value.images) {
+    showMessage('请认真填写发文设置！')
+    return
   }
   // 发送请求
-  const res = await userLuntanFabutieziPostApi(EditForm.value);
-  if (res.data === "发布成功") {
-    ElMessage.success("发布成功！");
-    EditForm.value;
-    router.push("/talksquare");
+  const res = await userLuntanFabutieziPostApi(EditForm.value)
+  if (res.data === '发布成功') {
+    ElMessage.success('发布成功！')
+    EditForm.value
+    goForum()
   }
-};
+}
 
 /**
  * 保存草稿
  */
 const saveDraft = () => {
   if (!EditForm.value.content) {
-    showMessage("没有内容可以保存草稿！", "warning");
-    return;
+    showMessage('没有内容可以保存草稿！', 'warning')
+    return
   }
-  showMessage("草稿保存成功！", "success");
-};
+  showMessage('草稿保存成功！', 'success')
+}
 
 /**
  * 保存发文设置
  */
 const saveEdit = () => {
-  dialogTableVisible.value = false;
-  showMessage("发文设置保存成功！", "success");
-};
+  dialogTableVisible.value = false
+  showMessage('发文设置保存成功！', 'success')
+}
 
 /**
  * 监听发文设置内容变化
@@ -81,132 +73,130 @@ const saveEdit = () => {
 watch(
   () => EditForm.value.content,
   () => {
-    length.value = EditForm.value.content.length;
+    length.value = EditForm.value.content.length
   },
-);
+)
 
 // 显示消息
-const showMessage = (message, type = "error") => {
-  shakeButton.value = type === "error"; // 根据类型决定是否震动
-  ElMessage({ message, type });
-  if (type === "error") {
+const showMessage = (message, type = 'error') => {
+  shakeButton.value = type === 'error' // 根据类型决定是否震动
+  ElMessage({ message, type })
+  if (type === 'error') {
     setTimeout(() => {
-      shakeButton.value = false;
-    }, 500);
+      shakeButton.value = false
+    }, 500)
   }
-};
+}
 
 // 跳转到首页
 const toLayoutHome = () => {
-  router.push("/");
-};
+  goHome()
+}
 
 // 增加计算效率的函数
-const count = ref(0);
+const count = ref(0)
 const load = () => {
-  count.value += 2;
-};
+  count.value += 2
+}
 
 // 为图片上传设置请求头
-const userStore = useUserInfoStore();
+const userStore = useUserInfoStore()
 const headers = ref({
   token: userStore.userInfo.token,
-});
+})
 // 图片上传成功回调
 const handleSuccess = (res) => {
-  EditForm.value.images = res.data;
-};
+  EditForm.value.images = res.data
+}
 
 const tagData = ref([
   {
     id: 1,
-    name: "诗词创作",
+    name: '诗词创作',
     checked: false,
   },
   {
     id: 2,
-    name: "诗词赏析",
+    name: '诗词赏析',
     checked: false,
   },
   {
     id: 3,
-    name: "诗词学习",
+    name: '诗词学习',
     checked: false,
   },
   {
     id: 4,
-    name: "诗词活动",
+    name: '诗词活动',
     checked: false,
   },
   {
     id: 5,
-    name: "诗词资源",
+    name: '诗词资源',
     checked: false,
   },
   {
     id: 6,
-    name: "诗词杂谈",
+    name: '诗词杂谈',
     checked: false,
   },
-]);
+])
 
-const selectedTagId = ref(null);
+const selectedTagId = ref(null)
 
 const selectedTagName = computed(() => {
   if (selectedTagId.value === null) {
-    return "分类选择";
+    return '分类选择'
   } else {
-    const selectedTag = tagData.value.find(
-      (tag) => tag.id === selectedTagId.value,
-    );
-    return selectedTag ? selectedTag.name : "分类选择";
+    const selectedTag = tagData.value.find((tag) => tag.id === selectedTagId.value)
+    return selectedTag ? selectedTag.name : '分类选择'
   }
-});
+})
 
 /**
  * 切换标签
  * @param item
  */
 const toggleTag = (item) => {
-  EditForm.value.type = item.name;
+  EditForm.value.type = item.name
   if (selectedTagId.value !== item.id) {
-    selectedTagId.value = item.id;
+    selectedTagId.value = item.id
   } else {
-    selectedTagId.value = null; // 如果再次点击同一个标签，则取消选中
+    selectedTagId.value = null // 如果再次点击同一个标签，则取消选中
   }
-};
+}
 
 /**
  * 打开侧边栏选择古诗
  * @returns {Promise<void>}
  */
 const choosePoem = async () => {
-  drawer.value = true;
-  const res = await getpoemRandomData();
-  poemData.value = res.data;
-  inputValue.value = "";
-};
+  drawer.value = true
+  const res = await getpoemRandomData()
+  poemData.value = res.data
+  inputValue.value = ''
+}
 
 /**
  * 选择古诗
  * @param e
  */
 const getPoemContent = (e) => {
-  drawer.value = false;
-  EditForm.value.poemWord = e.content;
-  EditForm.value.poemId = e.id;
-  choicePoemContent.value = e.title;
-  ExcerptDisabled.value = false;
-};
+  drawer.value = false
+  EditForm.value.poemWord = e.content
+  EditForm.value.poemId = e.id
+  choicePoemContent.value = e.title
+  ExcerptDisabled.value = false
+}
 
 /**
  * 通过关键字搜索古诗
  * @returns {Promise<void>}
  */
 const searchPoemByKey = async () => {
-  const res = await userLuntanSearchGetApi(inputValue.value);
-  poemData.value = res.data;
-};
+  const res = await userLuntanSearchGetApi(inputValue.value)
+  poemData.value = res.data
+}
 </script>
 
 <template>
@@ -214,25 +204,15 @@ const searchPoemByKey = async () => {
     <mavon-editor v-model="EditForm.content" style="height: 90vh" />
     <div class="blog-post">
       <div class="foot-left">
-        <p style="margin-right: 40px; cursor: pointer" @click="toLayoutHome">
-          < 返回首页
-        </p>
+        <p style="margin-right: 40px; cursor: pointer" @click="toLayoutHome">< 返回首页</p>
         <p style="margin-right: 40px">共 {{ length }} 个字</p>
-        <el-button
-          size="large"
-          type="primary"
-          round
-          @click="dialogTableVisible = true"
-          :class="{ shake: shakeButton }"
-        >
+        <el-button size="large" type="primary" round @click="dialogTableVisible = true" :class="{ shake: shakeButton }">
           发文设置
         </el-button>
       </div>
       <div class="foot-right">
         <el-button size="large" round @click="saveDraft">保存草稿</el-button>
-        <el-button size="large" type="primary" round @click="submitForm"
-          >发布博客</el-button
-        >
+        <el-button size="large" type="primary" round @click="submitForm">发布博客</el-button>
       </div>
     </div>
   </div>
@@ -259,8 +239,7 @@ const searchPoemByKey = async () => {
           <template #reference>
             <el-button
               :style="{
-                backgroundColor:
-                  selectedTagName === '分类选择' ? '' : 'skyblue',
+                backgroundColor: selectedTagName === '分类选择' ? '' : 'skyblue',
               }"
               style="margin-right: 16px"
             >
@@ -283,35 +262,21 @@ const searchPoemByKey = async () => {
         <el-button @click="choosePoem">{{ choicePoemContent }}</el-button>
       </el-form-item>
       <el-form-item label="古诗节选">
-        <el-input
-          v-model="EditForm.poemWord"
-          type="textarea"
-          :disabled="ExcerptDisabled"
-        />
+        <el-input v-model="EditForm.poemWord" type="textarea" :disabled="ExcerptDisabled" />
       </el-form-item>
     </el-form>
     <el-button type="primary" @click="saveEdit">保存</el-button>
   </el-dialog>
 
   <el-drawer v-model="drawer" title="文章大全">
-    <el-input
-      v-model="inputValue"
-      style="max-width: 600px"
-      placeholder="请输入古诗名字"
-      class="input-with-select"
-    >
+    <el-input v-model="inputValue" style="max-width: 600px" placeholder="请输入古诗名字" class="input-with-select">
       <template #append>
         <el-button :icon="Search" @click="searchPoemByKey" />
       </template>
     </el-input>
 
     <div v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
-      <div
-        v-for="item in poemData"
-        :key="item.id"
-        @click="getPoemContent(item)"
-        class="infinite-list-item"
-      >
+      <div v-for="item in poemData" :key="item.id" @click="getPoemContent(item)" class="infinite-list-item">
         <h3 class="title">{{ item.title }}</h3>
         <p class="content" v-html="item.content"></p>
       </div>

@@ -5,6 +5,7 @@ import { userLuntanSelecttiezTypesGetApi } from '@/api/modules/talkSquare.js'
 import DayRecommend from '@/components/talksquare/DayRecommend/index.vue'
 import ArticleRecommendation from '@/components/talksquare/ArticleRecommendation/index.vue'
 import { computed } from 'vue'
+import { goForumDetail, goForumEdit } from '@/router/helpers.js'
 const activeName = ref('new') // 当前激活的tab
 const activeIndex = ref('1') // 当前激活的tab
 const pageSize = ref(5) // 每页显示的条数
@@ -59,10 +60,10 @@ const handleMenuClick = (item) => {
   userLuntanSelecttiezTypes()
 }
 const goToDetail = (item) => {
-  router.push(`/detail?id=${item.id}`)
+  goForumDetail(item.id)
 }
 const EditPublic = () => {
-  router.push('/edit')
+  goForumEdit()
 }
 const userLuntanSelecttiezTypes = async () => {
   const res = await userLuntanSelecttiezTypesGetApi(currentPage.value, pageSize.value, nowMenuData.value)

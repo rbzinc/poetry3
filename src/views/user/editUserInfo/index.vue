@@ -1,147 +1,138 @@
 <script setup>
 // 导入 Vue 相关的响应式 API
-import { reactive, ref } from "vue";
+import { reactive, ref } from 'vue'
 // 导入 Vue 路由
-import router from "@/router/index.js";
+import router from '@/router/index.js'
 // 导入 Element Plus 消息组件
-import { ElMessage } from "element-plus";
+import { ElMessage } from 'element-plus'
 // 导入用户信息状态管理
-import { useUserInfoStore } from "@/stores/modules/user.js";
+import { useUserInfoStore } from '@/stores/modules/user.js'
 // 导入 Element Plus 图标组件
-import { Plus } from "@element-plus/icons-vue";
+import { Plus } from '@element-plus/icons-vue'
+import * as ROUTERS from '@/router/constants.js'
 
 // 当前激活的菜单索引
-const activeIndex = ref("1");
+const activeIndex = ref('1')
 // 获取用户信息状态
-const userInfo = useUserInfoStore();
+const userInfo = useUserInfoStore()
 // 修改密码弹窗的状态
-const dialogTableVisibleReset = ref(false);
+const dialogTableVisibleReset = ref(false)
 // 修改密码表单数据模型定义
 const ResetForm = ref({
-  oldPassword: "",
-  newPassword: "",
-  confirmPassword: "",
-});
-const userStore = useUserInfoStore();
+  oldPassword: '',
+  newPassword: '',
+  confirmPassword: '',
+})
+const userStore = useUserInfoStore()
 const headers = ref({
   token: userStore.userInfo.token,
-});
+})
 // 修改密码表单验证规则定义
 const ResetRules = ref({
-  oldPassword: [
-    { min: 4, max: 10, message: "密码长度在 4 到 10 个字符", trigger: "blur" },
-  ],
-  newPassword: [
-    { min: 4, max: 10, message: "密码长度在 4 到 10 个字符", trigger: "blur" },
-  ],
+  oldPassword: [{ min: 4, max: 10, message: '密码长度在 4 到 10 个字符', trigger: 'blur' }],
+  newPassword: [{ min: 4, max: 10, message: '密码长度在 4 到 10 个字符', trigger: 'blur' }],
   confirmPassword: [
     {
       validator: (rule, value, callback) => {
         if (value === ResetForm.value.newPassword) {
-          callback();
+          callback()
         } else {
-          callback("两次输入的密码不一致!");
+          callback('两次输入的密码不一致!')
         }
       },
     },
   ],
-});
+})
 // 表单数据模型定义
 const ruleForm = ref({
-  name: userInfo.userInfo.username || "",
-  age: userInfo.userInfo.age || "",
-  degree: userInfo.userInfo.degree || "",
-  touxiang: userInfo.userInfo.touxiang || "",
-  sex: userInfo.userInfo.sex || "",
-  phone: userInfo.userInfo.phone || "",
-});
+  name: userInfo.userInfo.username || '',
+  age: userInfo.userInfo.age || '',
+  degree: userInfo.userInfo.degree || '',
+  touxiang: userInfo.userInfo.touxiang || '',
+  sex: userInfo.userInfo.sex || '',
+  phone: userInfo.userInfo.phone || '',
+})
 
 // 表单验证规则定义
 const rules = reactive({
-  name: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
-  region: [{ required: true, message: "请选择活动区域", trigger: "change" }],
-  count: [{ required: true, message: "请选择活动人数", trigger: "change" }],
+  name: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
+  region: [{ required: true, message: '请选择活动区域', trigger: 'change' }],
+  count: [{ required: true, message: '请选择活动人数', trigger: 'change' }],
   date1: [
     {
-      type: "date",
+      type: 'date',
       required: true,
-      message: "请选择一个日期",
-      trigger: "change",
+      message: '请选择一个日期',
+      trigger: 'change',
     },
   ],
   date2: [
     {
-      type: "date",
+      type: 'date',
       required: true,
-      message: "请选择一个时间",
-      trigger: "change",
+      message: '请选择一个时间',
+      trigger: 'change',
     },
   ],
-  location: [{ required: true, message: "请选择一个地点", trigger: "change" }],
+  location: [{ required: true, message: '请选择一个地点', trigger: 'change' }],
   type: [
     {
-      type: "array",
+      type: 'array',
       required: true,
-      message: "请至少选择一种活动类型",
-      trigger: "change",
+      message: '请至少选择一种活动类型',
+      trigger: 'change',
     },
   ],
-  resource: [{ required: true, message: "请选择活动资源", trigger: "change" }],
-  desc: [{ required: true, message: "请输入活动描述", trigger: "blur" }],
-});
+  resource: [{ required: true, message: '请选择活动资源', trigger: 'change' }],
+  desc: [{ required: true, message: '请输入活动描述', trigger: 'blur' }],
+})
 
 // 提交表单信息的处理函数
 const handleSubmit = () => {
-  userUpdatemessagebyid();
-  ElMessage.success("保存成功");
-};
+  userUpdatemessagebyid()
+  ElMessage.success('保存成功')
+}
 
 // 账号设置内容数据
 const accountSetting = [
-  { title: "手机", info: "13812345678", operate: "换绑" },
-  { title: "微信", info: "未绑定", operate: "绑定" },
-  { title: "邮箱", info: "未绑定", operate: "绑定" },
-  { title: "密码", info: "******", operate: "重置" },
-];
+  { title: '手机', info: '13812345678', operate: '换绑' },
+  { title: '微信', info: '未绑定', operate: '绑定' },
+  { title: '邮箱', info: '未绑定', operate: '绑定' },
+  { title: '密码', info: '******', operate: '重置' },
+]
 
 // 重置密码的处理函数
 const resetPassword = (e) => {
-  if (e === "重置") {
-    dialogTableVisibleReset.value = true;
+  if (e === '重置') {
+    dialogTableVisibleReset.value = true
   }
-};
+}
 // 确认重置密码的处理函数
 const confirmResetPassword = async () => {
-  ElMessage.success("密码重置成功，请重新登录");
-  dialogTableVisibleReset.value = false;
-  router.push("/login");
-};
+  ElMessage.success('密码重置成功，请重新登录')
+  dialogTableVisibleReset.value = false
+  router.push('/login')
+}
 
 const handleSuccess = (res) => {
-  console.log(res.data);
-  ruleForm.value.touxiang = res.data;
-  console.log(ruleForm.value.touxiang);
-};
+  console.log(res.data)
+  ruleForm.value.touxiang = res.data
+  console.log(ruleForm.value.touxiang)
+}
 
 const userUpdatemessagebyid = async () => {
-  console.log(ruleForm.value);
+  console.log(ruleForm.value)
   // const res = await userUpdatemessagebyidPutApi(ruleForm.value)
   // console.log(res)
-};
+}
 </script>
 
 <template>
   <div class="info-list-container">
-    <el-card class="last-page" @click="router.push('/user')">
-      < 返回个人主页
-    </el-card>
+    <el-card class="last-page" @click="router.push(ROUTERS.USER)"> < 返回个人主页 </el-card>
     <div class="info-container">
       <div class="info-left">
-        <el-menu
-          mode="vertical"
-          :default-active="activeIndex"
-          class="image-navigation"
-        >
+        <el-menu mode="vertical" :default-active="activeIndex" class="image-navigation">
           <el-menu-item index="1" @click="activeIndex = '1'">
             <el-icon class="el-icon">
               <Avatar />
@@ -161,25 +152,12 @@ const userUpdatemessagebyid = async () => {
           <p class="info-title">个人资料</p>
           <el-divider style="margin: 16px 0" />
           <div class="info-form">
-            <el-form
-              label-width="auto"
-              :model="ruleForm"
-              class="demo-ruleForm"
-              status-icon
-            >
-              <el-form-item
-                label="用户名"
-                prop="name"
-                required
-                style="width: 500px"
-              >
+            <el-form label-width="auto" :model="ruleForm" class="demo-ruleForm" status-icon>
+              <el-form-item label="用户名" prop="name" required style="width: 500px">
                 <el-input v-model="ruleForm.name" />
               </el-form-item>
               <el-form-item label="职业" prop="degree">
-                <el-input
-                  v-model="ruleForm.degree"
-                  placeholder="请输入职业方向"
-                />
+                <el-input v-model="ruleForm.degree" placeholder="请输入职业方向" />
               </el-form-item>
               <el-form-item label="年龄" prop="age">
                 <el-input v-model="ruleForm.age" placeholder="请输入你的年龄" />
@@ -188,12 +166,7 @@ const userUpdatemessagebyid = async () => {
                 <el-input v-model="ruleForm.sex" placeholder="请输入性别" />
               </el-form-item>
               <el-form-item label="手机号" prop="phone">
-                <el-input
-                  v-model="ruleForm.phone"
-                  placeholder="请输入手机号"
-                  maxlength="11"
-                  show-word-limit
-                />
+                <el-input v-model="ruleForm.phone" placeholder="请输入手机号" maxlength="11" show-word-limit />
               </el-form-item>
             </el-form>
             <div class="avatar-uploader">
@@ -209,24 +182,10 @@ const userUpdatemessagebyid = async () => {
               </el-upload>
             </div>
           </div>
-          <el-button
-            type="primary"
-            style="margin-left: 40px; margin-top: 20px"
-            @click="handleSubmit"
-            >保存</el-button
-          >
+          <el-button type="primary" style="margin-left: 40px; margin-top: 20px" @click="handleSubmit">保存</el-button>
         </div>
         <div v-if="activeIndex === '2'" class="info-right-two">
-          <h2
-            style="
-              margin-left: 20px;
-              font-size: 20px;
-              margin-top: 20px;
-              font-weight: 500;
-            "
-          >
-            账号设置
-          </h2>
+          <h2 style="margin-left: 20px; font-size: 20px; margin-top: 20px; font-weight: 500">账号设置</h2>
           <el-divider style="margin: 16px 0" />
           <div v-for="item in accountSetting" :key="item.title">
             <div class="info-binding">
@@ -234,9 +193,7 @@ const userUpdatemessagebyid = async () => {
                 <p style="font-size: 17px; font-weight: 500">
                   {{ item.title }}
                 </p>
-                <p
-                  style="font-size: 17px; font-weight: 500; margin-left: 240px"
-                >
+                <p style="font-size: 17px; font-weight: 500; margin-left: 240px">
                   {{ item.info }}
                 </p>
               </div>
@@ -248,11 +205,7 @@ const userUpdatemessagebyid = async () => {
           </div>
         </div>
 
-        <el-dialog
-          v-model="dialogTableVisibleReset"
-          title="Shipping address"
-          width="800"
-        >
+        <el-dialog v-model="dialogTableVisibleReset" title="Shipping address" width="800">
           <el-form
             ref="ruleFormRef"
             style="max-width: 600px"
@@ -263,35 +216,19 @@ const userUpdatemessagebyid = async () => {
             status-icon
           >
             <el-form-item label="请输入旧密码" prop="oldPassword">
-              <el-input
-                type="password"
-                show-password
-                v-model="ResetForm.oldPassword"
-              />
+              <el-input type="password" show-password v-model="ResetForm.oldPassword" />
             </el-form-item>
             <el-form-item label="请输入新密码" prop="newPassword">
-              <el-input
-                type="password"
-                show-password
-                v-model="ResetForm.newPassword"
-              />
+              <el-input type="password" show-password v-model="ResetForm.newPassword" />
             </el-form-item>
             <el-form-item label="再次确认新密码" prop="confirmPassword">
-              <el-input
-                type="password"
-                show-password
-                v-model="ResetForm.confirmPassword"
-              />
+              <el-input type="password" show-password v-model="ResetForm.confirmPassword" />
             </el-form-item>
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button @click="dialogTableVisibleReset = false"
-                >取消</el-button
-              >
-              <el-button type="primary" @click="confirmResetPassword"
-                >确认</el-button
-              >
+              <el-button @click="dialogTableVisibleReset = false">取消</el-button>
+              <el-button type="primary" @click="confirmResetPassword">确认</el-button>
             </div>
           </template>
         </el-dialog>

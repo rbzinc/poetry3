@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { userGameStore } from '@/stores/modules/game.js'
+import { goDictionary, goDictionaryPoemGame } from '@/router/helpers.js'
 const gameStore = userGameStore()
 const router = useRouter()
 const title = ref([
@@ -49,12 +50,12 @@ const title = ref([
 const status = ref()
 let checked = ref(false)
 const returnclick = () => {
-  router.push('/dictionary')
+  goDictionary()
 }
 
 const entergame = () => {
   const checked1 = ref(false)
-  router.push('/study/dictionary/poetgame')
+  goDictionaryPoemGame()
 }
 
 const recitestatus = () => {

@@ -15,7 +15,8 @@ const route = useRoute()
 const userInfo = useUserInfoStore()
 const PoemImgStore = usePoemImgStore()
 const PoemImg = PoemImgStore.poemImg
-const poetId = Number(route.params.id) - 1
+console.log('route', route)
+const poetId = Number(route.query.id) - 1
 
 // 初始化状态
 const messages = ref([{ text: PoemImg[poetId].content, self: false }])
