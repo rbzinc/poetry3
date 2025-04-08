@@ -1,8 +1,8 @@
 <script setup>
-import {ref} from 'vue';
-import {useRouter} from "vue-router";
-import { userGameStore } from "@/stores/modules/game.js";
-import {ElMessage} from "element-plus";
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { userGameStore } from '@/stores/modules/game.js'
+import { ElMessage } from 'element-plus'
 const gameStore = userGameStore()
 const router = useRouter()
 let number = ref(0)
@@ -13,19 +13,19 @@ const active = ref(gameStore.poetstatus)
 let dialogFormVisible = ref(false)
 
 const poems = [
-  {question: '率妻子（ ）来此绝境', answer: '邑人'},
-  {question: '（ ）交通，鸡犬相闻', answer: '阡陌'},
-  {question: '黄发（ ），并怡然自乐', answer: '垂髫'},
-  {question: '便（ ）家，设酒杀鸡作食', answer: '要还'},
-];
-const current = ref(0);
-const question = ref(poems[current.value].question);
-let answer = ref('');
-const correctAnswer = ref(poems[current.value].answer);
+  { question: '率妻子（ ）来此绝境', answer: '邑人' },
+  { question: '（ ）交通，鸡犬相闻', answer: '阡陌' },
+  { question: '黄发（ ），并怡然自乐', answer: '垂髫' },
+  { question: '便（ ）家，设酒杀鸡作食', answer: '要还' },
+]
+const current = ref(0)
+const question = ref(poems[current.value].question)
+let answer = ref('')
+const correctAnswer = ref(poems[current.value].answer)
 //判断回答正误
 const checkAnswer = () => {
   if (answer.value === correctAnswer.value) {
-    score.value += 1;
+    score.value += 1
     ElMessage({
       message: '回答正确！',
       type: 'success',
@@ -33,81 +33,72 @@ const checkAnswer = () => {
   } else {
     alert('错误！正确答案是：' + correctAnswer.value)
   }
-};
+}
 
 const nextQuestion = () => {
   if (current.value < poems.length - 1) {
     if (answer.value === '') {
-      message.value = '答案不能为空';
+      message.value = '答案不能为空'
     } else {
-      checkAnswer();
-      current.value = (current.value + 1) % poems.length;
-      question.value = poems[current.value].question;
-      correctAnswer.value = poems[current.value].answer;
-      answer.value = '';
+      checkAnswer()
+      current.value = (current.value + 1) % poems.length
+      question.value = poems[current.value].question
+      correctAnswer.value = poems[current.value].answer
+      answer.value = ''
     }
-  }
-  else if(current.value === poems.length - 1){
-    checkAnswer();
-    button.value = '查看分数';
-    current.value +=1
-  }
-  else{
-    dialogFormVisible.value = true;
-    active.value++;
+  } else if (current.value === poems.length - 1) {
+    checkAnswer()
+    button.value = '查看分数'
+    current.value += 1
+  } else {
+    dialogFormVisible.value = true
+    active.value++
     gameStore.poetstatus = active
   }
-};
-
-
-const returnclick = () =>{
-  router.push('/dictionary/textlist')
 }
 
-const fillgameclick = () =>{
-  router.push('/dictionary/fillpoetgame')
+const returnclick = () => {
+  router.push('/study/dictionary/textlist')
 }
 
+const fillgameclick = () => {
+  router.push('/study/dictionary/fillpoetgame')
+}
 </script>
 
 <template>
-  <el-card style="max-width: 100%;height: 560px;" class="el-card">
+  <el-card style="max-width: 100%; height: 560px" class="el-card">
     <template #header>
       <div class="return" @click="returnclick">
         <el-icon><ArrowLeftBold /></el-icon>
         返回
       </div>
     </template>
-  <div class="game">
-    <div class="inner">
-      <div class="poetry-quiz">
-        <div class="question">
-          <div class="ask">{{ question }}</div>
-          <el-input v-model="answer" style="width: 240px" :placeholder="message" />
+    <div class="game">
+      <div class="inner">
+        <div class="poetry-quiz">
+          <div class="question">
+            <div class="ask">{{ question }}</div>
+            <el-input v-model="answer" style="width: 240px" :placeholder="message" />
+          </div>
+          <el-button @click="nextQuestion">{{ button }}</el-button>
         </div>
-        <el-button @click="nextQuestion">{{ button }}</el-button>
+        <div class="progress-bar">
+          <el-steps style="max-width: 600px" :space="180" :active="active" finish-status="success">
+            <el-step title="古诗填句" />
+            <el-step title="挖词填空" @click="fillgameclick" />
+          </el-steps>
+        </div>
       </div>
-    <div class="progress-bar">
-      <el-steps
-          style="max-width: 600px"
-          :space="180"
-          :active="active"
-          finish-status="success"
-      >
-        <el-step title="古诗填句" />
-        <el-step title="挖词填空" @click="fillgameclick"/>
-      </el-steps>
     </div>
-    </div>
-  </div>
-  <el-dialog v-model="dialogFormVisible" title="以下是您的得分" width="800px">
-    <p>{{score}}</p>
-    <template #footer>
-      <div class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">关闭</el-button>
-      </div>
-    </template>
-  </el-dialog>
+    <el-dialog v-model="dialogFormVisible" title="以下是您的得分" width="800px">
+      <p>{{ score }}</p>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">关闭</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -118,13 +109,13 @@ const fillgameclick = () =>{
   background-position: center; /* 居中显示 */
   background-repeat: no-repeat; /* 不重复 */
 }
-.return{
+.return {
   display: flex;
   cursor: pointer;
   font-size: 20px;
   font-family: 'Georgia', serif;
 }
-.game{
+.game {
   width: 1060px;
   height: 440px;
   margin: 10px auto;
@@ -134,7 +125,7 @@ const fillgameclick = () =>{
   display: flex;
   justify-content: center;
   align-items: center;
-  .inner{
+  .inner {
     width: 1000px;
     height: 380px;
     border: rgba(171, 74, 3, 0.3) solid 2px;
@@ -144,16 +135,16 @@ const fillgameclick = () =>{
       text-align: center;
       .question {
         margin-bottom: 20px;
-        .ask{
+        .ask {
           margin-top: 40px;
-          margin-bottom:20px ;
+          margin-bottom: 20px;
           font-size: 25px;
           font-family: 'Georgia', serif;
           font-weight: bold;
         }
       }
     }
-    .progress-bar{
+    .progress-bar {
       width: 200px;
       height: 200px;
       margin: 50px auto 0;
@@ -162,5 +153,4 @@ const fillgameclick = () =>{
     }
   }
 }
-
 </style>

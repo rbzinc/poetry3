@@ -1,25 +1,23 @@
 <script setup>
-import { defineProps } from 'vue';
-import {useRouter} from "vue-router"
-
+import { defineProps } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const props = defineProps({
-  title:String,
-  content:String,
+  title: String,
+  content: String,
 })
-
-
 </script>
 
 <template>
   <el-tooltip :content="content" placement="bottom" effect="light">
-  <div class="box" @click="$router.push('/dictionary/textlist')" >
-    <div class="title" >{{title}}</div>
-  </div>
+    <div class="box" @click="router.push('/study/dictionary/textlist')">
+      <div class="title">{{ title }}</div>
+    </div>
   </el-tooltip>
 </template>
 
 <style scoped lang="scss">
-.box{
+.box {
   background-image: url('@/assets/pic/study/f18e59c7edb7edc404e6f3301fd5112.jpg');
   background-size: cover;
   background-position: center;
@@ -31,11 +29,11 @@ const props = defineProps({
   background-color: #ededed;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
   box-sizing: border-box;
-  &:hover{
+  &:hover {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
     cursor: pointer;
   }
-  .title{
+  .title {
     width: 36px;
     height: 170px;
     margin-top: 25px;
@@ -52,11 +50,10 @@ const props = defineProps({
     background-position: center;
     background-repeat: no-repeat;
   }
-  p{
+  p {
     font-size: 16px;
     line-height: 120px;
     text-align: center;
   }
 }
-
 </style>

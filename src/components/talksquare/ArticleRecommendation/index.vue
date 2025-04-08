@@ -1,21 +1,21 @@
 <script setup>
-import { ref } from "vue";
-import { userLuntanSelectForumGetApi } from "@/api/modules/talkSquare.js";
-import { useRouter } from "vue-router";
-const router = useRouter();
-const RecommendationData = ref({}); // 今日古诗推荐
+import { ref, onMounted } from 'vue'
+import { userLuntanSelectForumGetApi } from '@/api/modules/talkSquare.js'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const RecommendationData = ref({}) // 今日古诗推荐
 
 const userLuntanSelectForum = async () => {
-  const res = await userLuntanSelectForumGetApi();
-  RecommendationData.value = res.data;
-};
+  const res = await userLuntanSelectForumGetApi()
+  RecommendationData.value = res.data
+}
 // TODO 跳转详情页页面不会自动更新
 const goToDetail = (item) => {
-  router.push(`/talksquareDetail/${item.id}`);
-};
+  router.push(`/detail?id=${item.id}`)
+}
 onMounted(() => {
-  userLuntanSelectForum();
-});
+  userLuntanSelectForum()
+})
 </script>
 
 <template>

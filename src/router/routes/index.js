@@ -1,8 +1,17 @@
 // 改进后
-import { rootRoute, loginRoute, notFoundRoutes } from "./basic";
-import permissionRoutes from "./permission";
+import { rootRoute, loginRoute, notFoundRoutes, vrAll, userRoutes, dictionaryRoutes, forumRoutes } from './basic'
+import permissionRoutes from './permission'
 
 // 扁平化处理所有路由
-const routes = [rootRoute, loginRoute, ...permissionRoutes, ...notFoundRoutes];
+const routes = [
+  rootRoute,
+  loginRoute,
+  ...permissionRoutes,
+  ...notFoundRoutes,
+  ...vrAll,
+  ...userRoutes,
+  ...dictionaryRoutes,
+  ...forumRoutes,
+]
 
-export default routes;
+export default routes

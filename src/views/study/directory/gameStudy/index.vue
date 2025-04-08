@@ -1,8 +1,6 @@
 <script setup>
-import DayCommon from '@/components/talksquare/DayRecommend/index.vue'
 import Ranking from '@/components/study/directory/GameStudy/ranking/index.vue'
 import Forget from '@/components/study/directory/GameStudy/forget/index.vue'
-import {Plus} from '@element-plus/icons-vue';
 </script>
 
 <template>
@@ -11,8 +9,8 @@ import {Plus} from '@element-plus/icons-vue';
       <router-view></router-view>
     </div>
     <div class="sidebar">
-      <Ranking/>
-      <Forget class="card"/>
+      <Ranking />
+      <Forget class="card" />
     </div>
   </div>
 </template>
@@ -54,6 +52,6 @@ import {Plus} from '@element-plus/icons-vue';
       margin-top: 30px;
     }
   }
-
 }
-</style>se
+</style>
+se

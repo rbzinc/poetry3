@@ -55,8 +55,8 @@ const handleSelect = (key) => {
             <span class="submenu-title">学习</span>
           </template>
           <el-menu-item index="/study/ai">AI助学</el-menu-item>
-          <el-menu-item index="/dictionary">游戏助学</el-menu-item>
-          <el-menu-item index="/vrExhibition">vr助学</el-menu-item>
+          <el-menu-item index="/study/dictionary">游戏助学</el-menu-item>
+          <el-menu-item index="/vr">vr助学</el-menu-item>
         </el-sub-menu>
 
         <el-menu-item index="/forum">论坛</el-menu-item>
