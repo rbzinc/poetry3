@@ -7,7 +7,7 @@ import Header from '@/Layout/Header/index.vue'
     <el-scrollbar>
       <Header v-show="$route.path !== '/login'" class="sticky-header"> </Header>
       <div class="content-container">
-        <router-view></router-view>
+        <router-view />
       </div>
     </el-scrollbar>
   </div>

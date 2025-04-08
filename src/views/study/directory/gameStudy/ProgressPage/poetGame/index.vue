@@ -1,99 +1,182 @@
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { goDictionaryFillPoemGame } from '@/router/helpers.js'
-const router = useRouter()
-let number = ref(0)
-let score = ref(0)
-const button = ref('下一题')
+import { goDictionary, goDictionaryFillPoemGame } from '@/router/helpers.js'
+import { userGameStore } from '@/stores/modules/game.js'
+import { ArrowLeftBold, Timer, QuestionFilled } from '@element-plus/icons-vue'
+
+const gameStore = userGameStore()
+
+// 游戏状态
+const score = ref(0)
+const timeLeft = ref(60)
+const isTimerRunning = ref(false)
+const button = ref('确认答案')
 const message = ref('请输入下一句')
-let dialogFormVisible = ref(false)
+const dialogFormVisible = ref(false)
+const showHint = ref(false)
+const currentHint = ref('')
+
+// 诗词数据
 const poems = [
-  { question: '土地平旷', answer: '屋舍俨然' },
-  { question: '阡陌交通', answer: '鸡犬相闻' },
-  { question: '黄发垂髫', answer: '并怡然自乐' },
-  { question: '便要还家', answer: '设酒杀鸡作食' },
+  {
+    question: '土地平旷',
+    answer: '屋舍俨然',
+    hint: '描写建筑整齐排列的景象',
+    source: '桃花源记',
+    author: '陶渊明',
+  },
+  {
+    question: '阡陌交通',
+    answer: '鸡犬相闻',
+    hint: '描写村落里的生活气息',
+    source: '桃花源记',
+    author: '陶渊明',
+  },
+  // ... 其他诗句
 ]
+
 const current = ref(0)
-const question = ref(poems[current.value].question)
-let answer = ref('')
-const correctAnswer = ref(poems[current.value].answer)
-const active = ref(0)
-//判断回答正误
+const question = computed(() => poems[current.value].question)
+const answer = ref('')
+const correctAnswer = computed(() => poems[current.value].answer)
+
+// 计时器
+let timer = null
+const startTimer = () => {
+  isTimerRunning.value = true
+  timer = setInterval(() => {
+    if (timeLeft.value > 0) {
+      timeLeft.value--
+    } else {
+      endGame()
+    }
+  }, 1000)
+}
+
+const endGame = () => {
+  clearInterval(timer)
+  isTimerRunning.value = false
+  dialogFormVisible.value = true
+  gameStore.updateGameScore('matchPoem', score.value)
+}
+
+// 显示提示
+const showHintMessage = () => {
+  currentHint.value = poems[current.value].hint
+  showHint.value = true
+}
+
+// 检查答案
 const checkAnswer = () => {
+  if (!isTimerRunning.value) {
+    startTimer()
+  }
+
+  if (answer.value === '') {
+    ElMessage.warning('答案不能为空')
+    return
+  }
+
   if (answer.value === correctAnswer.value) {
-    score.value += 1
+    score.value += timeLeft.value > 30 ? 2 : 1 // 根据剩余时间给分
     ElMessage({
       message: '回答正确！',
       type: 'success',
     })
   } else {
-    alert('错误！正确答案是：' + correctAnswer.value)
+    ElMessage({
+      message: `正确答案是：${correctAnswer.value}`,
+      type: 'error',
+    })
   }
-}
 
-const nextQuestion = () => {
+  // 更新题目
   if (current.value < poems.length - 1) {
-    if (answer.value === '') {
-      message.value = '答案不能为空'
-    } else {
-      checkAnswer()
-      current.value = (current.value + 1) % poems.length
-      question.value = poems[current.value].question
-      correctAnswer.value = poems[current.value].answer
-      answer.value = ''
-    }
-  } else if (current.value === poems.length - 1) {
-    checkAnswer()
-    button.value = '查看分数'
-    current.value += 1
+    current.value++
+    answer.value = ''
+    showHint.value = false
   } else {
-    dialogFormVisible.value = true
-    active.value++
+    endGame()
   }
 }
 
-const returnclick = () => {
-  router.push('/dictionary')
+// 重新开始游戏
+const restartGame = () => {
+  score.value = 0
+  timeLeft.value = 60
+  current.value = 0
+  answer.value = ''
+  showHint.value = false
+  dialogFormVisible.value = false
+  isTimerRunning.value = false
+  clearInterval(timer)
 }
 
-const fillgameclick = () => {
-  goDictionaryFillPoemGame()
-}
+onMounted(() => {
+  restartGame()
+})
 </script>
 
 <template>
-  <el-card style="max-width: 100%; height: 560px" class="el-card">
+  <el-card class="game-card">
     <template #header>
-      <div class="return" @click="returnclick">
-        <el-icon><ArrowLeftBold /></el-icon>
-        返回
+      <div class="header">
+        <div class="return" @click="goDictionary()">
+          <el-icon><ArrowLeftBold /></el-icon>
+          返回
+        </div>
+        <div class="game-info">
+          <div class="timer">
+            <el-icon><Timer /></el-icon>
+            剩余时间：{{ timeLeft }}秒
+          </div>
+          <div class="score">得分：{{ score }}</div>
+        </div>
       </div>
     </template>
-    <div class="game">
+
+    <div class="game-container">
       <div class="inner">
+        <div class="poetry-info">
+          <h3>{{ poems[current].source }}</h3>
+          <p class="author">{{ poems[current].author }}</p>
+        </div>
+
         <div class="poetry-quiz">
           <div class="question">
             <div class="ask">{{ question }}</div>
-            <el-input v-model="answer" style="width: 240px" :placeholder="message" />
+            <div class="answer-input">
+              <el-input v-model="answer" :placeholder="message" @keyup.enter="checkAnswer" />
+              <el-tooltip content="查看提示" placement="top">
+                <el-button circle @click="showHintMessage">
+                  <el-icon><QuestionFilled /></el-icon>
+                </el-button>
+              </el-tooltip>
+            </div>
           </div>
-          <el-button @click="nextQuestion">{{ button }}</el-button>
+          <el-button type="primary" @click="checkAnswer">{{ button }}</el-button>
         </div>
-        <div class="progress-bar">
-          <el-steps style="max-width: 600px" :space="180" :active="active" finish-status="success">
-            <el-step title="古诗填句" />
-            <el-step title="挖词填空" @click="fillgameclick" />
-          </el-steps>
+
+        <el-collapse-transition>
+          <div v-if="showHint" class="hint">提示：{{ currentHint }}</div>
+        </el-collapse-transition>
+
+        <div class="progress">
+          <el-progress :percentage="(current / poems.length) * 100" :format="() => `${current}/${poems.length}`" />
         </div>
       </div>
     </div>
 
-    <el-dialog v-model="dialogFormVisible" title="以下是您的得分" width="800px">
-      <p>{{ score }}</p>
+    <el-dialog v-model="dialogFormVisible" title="游戏结束" width="400px" :close-on-click-modal="false">
+      <div class="result">
+        <h2>最终得分：{{ score }}</h2>
+        <p>答对题目：{{ current }} 题</p>
+      </div>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">关闭</el-button>
+          <el-button @click="restartGame">重新开始</el-button>
+          <el-button type="primary" @click="goDictionaryFillPoemGame"> 下一关 </el-button>
         </div>
       </template>
     </el-dialog>
@@ -101,54 +184,125 @@ const fillgameclick = () => {
 </template>
 
 <style scoped lang="scss">
-.el-card {
+.game-card {
+  height: 560px;
   background-image: url('@/assets/pic/study/微信图片_20241201193836.jpg');
-  background-size: cover; /* 覆盖整个元素 */
-  background-position: center; /* 居中显示 */
-  background-repeat: no-repeat; /* 不重复 */
-}
-.return {
-  display: flex;
-  cursor: pointer;
-  font-size: 20px;
-  font-family: 'Georgia', serif;
-}
-.game {
-  width: 1060px;
-  height: 440px;
-  margin: 10px auto;
-  box-sizing: border-box;
-  border: rgba(171, 74, 3, 0.3) solid 7px;
-  border-radius: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  .inner {
-    width: 1000px;
-    height: 380px;
-    border: rgba(171, 74, 3, 0.3) solid 2px;
-    border-radius: 20px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
-    .poetry-quiz {
-      text-align: center;
-      .question {
-        margin-bottom: 20px;
-        .ask {
-          margin-top: 40px;
-          margin-bottom: 20px;
-          font-size: 25px;
-          font-family: 'Georgia', serif;
-          font-weight: bold;
-        }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .return {
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .game-info {
+      display: flex;
+      gap: 20px;
+      font-size: 16px;
+
+      .timer,
+      .score {
+        display: flex;
+        align-items: center;
+        gap: 5px;
       }
     }
-    .progress-bar {
-      width: 200px;
-      height: 200px;
-      margin: 50px auto 0;
-      box-sizing: border-box;
-      padding: 15px;
+  }
+
+  .game-container {
+    width: 100%;
+    height: 440px;
+    margin: 10px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .inner {
+      width: 90%;
+      height: 90%;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+      .poetry-info {
+        text-align: center;
+        margin-bottom: 20px;
+
+        h3 {
+          font-size: 24px;
+          color: #333;
+          margin: 0;
+        }
+
+        .author {
+          color: #666;
+          font-style: italic;
+        }
+      }
+
+      .poetry-quiz {
+        text-align: center;
+
+        .question {
+          margin-bottom: 30px;
+
+          .ask {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+          }
+
+          .answer-input {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+
+            .el-input {
+              width: 300px;
+            }
+          }
+        }
+      }
+
+      .hint {
+        text-align: center;
+        color: #666;
+        margin: 20px 0;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+      }
+
+      .progress {
+        margin-top: 30px;
+      }
     }
   }
+}
+
+.result {
+  text-align: center;
+
+  h2 {
+    color: #409eff;
+    margin-bottom: 20px;
+  }
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
 </style>
