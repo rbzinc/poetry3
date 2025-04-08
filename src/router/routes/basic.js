@@ -101,6 +101,28 @@ export const forumRoutes = [
   },
 ]
 
+export const tourismRouters = [
+  {
+    path: ROUTES.TOURISM,
+    component: () => import('@/views/tourism/index.vue'),
+    redirect: ROUTES.TOURISM_DOMESTIC,
+    children: [
+      {
+        path: ROUTES.TOURISM_DOMESTIC,
+        component: () => import('@/views/tourism/domestic/index.vue'),
+      },
+      {
+        path: ROUTES.TOURISM_PROVINCE,
+        component: () => import('@/views/tourism/domestic/province/index.vue'),
+      },
+      {
+        path: ROUTES.TOURISM_SCENERY,
+        component: () => import('@/components/tourism/SceneryDetail/index.vue'),
+      },
+    ],
+  },
+]
+
 const basicRoutes = [
   rootRoute,
   loginRoute,
@@ -109,6 +131,7 @@ const basicRoutes = [
   ...userRoutes,
   ...dictionaryRoutes,
   ...forumRoutes,
+  ...tourismRouters,
 ]
 
 export default basicRoutes

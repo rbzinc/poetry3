@@ -44,5 +44,8 @@ export const POET_WRITER = '/poet/writer'
 export const POET_CLASS_DETAIL = '/poet/class/detail'
 export const POET_WRITER_DETAIL = '/poet/writer/detail'
 
-// 诗词详情页
-export const POEM_DETAILS = '/poem-details'
+// 旅游模块路由
+export const TOURISM = '/tourism'
+export const TOURISM_DOMESTIC = '/tourism/domestic'
+export const TOURISM_PROVINCE = '/tourism/domestic/province'
+export const TOURISM_SCENERY = '/tourism/scenery'

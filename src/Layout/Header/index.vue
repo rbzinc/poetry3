@@ -1,13 +1,13 @@
 <script setup>
 import { User } from '@element-plus/icons-vue'
 import { useUserInfoStore } from '@/stores/index.js'
-import router from '@/router/index.js'
 import { ref, watch, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import * as ROUTES from '@/router/constants.js'
 
 const useUser = useUserInfoStore()
 const route = useRoute()
+const router = useRouter()
 const activeIndex = ref(ROUTES.HOME)
 
 // 监听路由变化，更新激活菜单
@@ -61,6 +61,8 @@ const handleSelect = (key) => {
         </el-sub-menu>
 
         <el-menu-item :index="ROUTES.FORUM">论坛</el-menu-item>
+
+        <el-menu-item :index="ROUTES.TOURISM_DOMESTIC">诗意之旅</el-menu-item>
 
         <template v-if="useUser.userInfo">
           <el-sub-menu :index="ROUTES.USER" popper-class="custom-dropdown">
