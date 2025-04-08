@@ -1,54 +1,41 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { ElCard, ElMessage } from 'element-plus'
-
+import { computed, ref, onMounted } from 'vue'
+import { ElCard, ElMessage} from 'element-plus'
 import { useUserInfoStore } from '@/stores/modules/user.js'
 import router from '@/router/index.js'
 import { userLuntanSelectBlogGetApi } from '@/api/modules/talkSquare.js'
 import { goUserEdit } from '@/router/helpers.js'
 
-const userLuntanSelecttiezTypesData = ref([])
+// 状态管理
+const state = ref({
+  dialogVisible: false,
+  pageNum: 1,
+  pageSize: 6,
+  activeIndex: '1',
+  loading: false,
+  hasMore: true,
+})
+
 const userStore = useUserInfoStore()
-const activeIndex = ref('1')
-const achievement = ref([
-  {
-    icon: 'iconfont icon-zan',
-    text: '获得过100次点赞',
-  },
-  {
-    icon: 'iconfont icon-iconfontzhizuobiaozhun023130',
-    text: '获得过50次分享',
-  },
-  {
-    icon: 'iconfont icon-shoucang',
-    text: '被收藏20次',
-  },
-  {
-    icon: 'iconfont icon-pinglun',
-    text: '获得过200次评论',
-  },
-  {
-    icon: 'iconfont icon-icon-',
-    text: '浏览量达到1000次',
-  },
-  {
-    icon: 'iconfont icon-biaoqian',
-    text: '被标记为有用10次',
-  },
-])
-const myInterest = ref(['诗词创作', '诗词赏析', '诗词学习', '诗词活动', '诗词资源', '诗词杂谈'])
-const dialogTableVisible = ref(false)
-const pageNum = ref(1)
-const pageSize = ref(6)
+const userLuntanSelecttiezTypesData = ref([])
 const scrollbarRef = ref(null)
+
 // 判断用户是否登录
 if (!userStore.userInfo) {
   ElMessage.error('请先登录！')
   router.push({ name: 'login' })
 }
-const goToUserInfo = () => {
-  goUserEdit()
-}
+
+const achievement = ref([
+  { icon: 'iconfont icon-zan', text: '获得过100次点赞' },
+  { icon: 'iconfont icon-iconfontzhizuobiaozhun023130', text: '获得过50次分享' },
+  { icon: 'iconfont icon-shoucang', text: '被收藏20次' },
+  { icon: 'iconfont icon-pinglun', text: '获得过200次评论' },
+  { icon: 'iconfont icon-icon-', text: '浏览量达到1000次' },
+  { icon: 'iconfont icon-biaoqian', text: '被标记为有用10次' },
+])
+
+const myInterest = ref(['诗词创作', '诗词赏析', '诗词学习', '诗词活动', '诗词资源', '诗词杂谈'])
 
 const interest = ref([
   { name: '诗词创作', active: true },
@@ -59,301 +46,446 @@ const interest = ref([
   { name: '诗词杂谈', active: true },
 ])
 
-const removeInterest = (item) => {
-  // 更新 interest 数组状态
-  const indexInInterest = interest.value.findIndex((interestItem) => interestItem.name === item.name)
-  if (indexInInterest > -1) {
-    interest.value[indexInInterest].active = false // 标记为不活跃
-  }
+// 加载更多数据
+const loadMore = async () => {
+  if (state.value.loading || !state.value.hasMore) return
 
-  // 同时从 myInterest 中删除对应的兴趣项
-  const indexInMyInterest = myInterest.value.indexOf(item.name)
-  if (indexInMyInterest > -1) {
-    myInterest.value.splice(indexInMyInterest, 1) // 移除当前兴趣项
+  state.value.loading = true
+  try {
+    const res = await userLuntanSelectBlogGetApi(
+      state.value.pageNum,
+      state.value.pageSize,
+      Number(userStore.userInfo.id),
+    )
+    if (res.data.records.length === 0) {
+      state.value.hasMore = false
+      return
+    }
+    userLuntanSelecttiezTypesData.value = [...userLuntanSelecttiezTypesData.value, ...res.data.records]
+    state.value.pageNum++
+  } catch (error) {
+    console.error('加载失败：', error)
+    ElMessage.error('加载失败，请重试')
+  } finally {
+    state.value.loading = false
   }
 }
 
-const dialogVisibleFalse = () => {
-  dialogTableVisible.value = false
+// 滚动处理
+const handleScroll = (event) => {
+  const { scrollTop, clientHeight, scrollHeight } = event.target
+  if (scrollHeight - scrollTop - clientHeight < 50) {
+    loadMore()
+  }
+}
+
+// 移除兴趣
+const removeInterest = (item) => {
+  const indexInInterest = interest.value.findIndex((i) => i.name === item.name)
+  if (indexInInterest > -1) {
+    interest.value[indexInInterest].active = false
+  }
+
+  const indexInMyInterest = myInterest.value.indexOf(item.name)
+  if (indexInMyInterest > -1) {
+    myInterest.value.splice(indexInMyInterest, 1)
+  }
+}
+
+// 关闭对话框
+const handleDialogClose = () => {
+  state.value.dialogVisible = false
   ElMessage.success('自定义兴趣领域成功')
 }
 
-const userLuntanSelectBlog = async () => {
-  const res = await userLuntanSelectBlogGetApi(pageNum.value, pageSize.value, Number(userStore.userInfo.id))
-  userLuntanSelecttiezTypesData.value = [...userLuntanSelecttiezTypesData.value, ...res.data.records]
-}
-const handleScroll = (event) => {
-  console.log(event)
-  if (event.scrollTop === 280) {
-    pageNum.value += 1
-    userLuntanSelectBlog()
-  }
-}
+// 内容截断处理
 const truncatedContent = computed(() => {
-  return userLuntanSelecttiezTypesData.value.map((item) => {
-    return {
-      ...item,
-      content: item.content.length > 100 ? item.content.slice(0, 100) + '...' : item.content,
-    }
-  })
+  return userLuntanSelecttiezTypesData.value.map((item) => ({
+    ...item,
+    content: item.content.length > 100 ? `${item.content.slice(0, 100)}...` : item.content,
+  }))
 })
+
 onMounted(() => {
-  userLuntanSelectBlog()
-  scrollbarRef.value = document.querySelector('.el-scrollbar__wrap')
+  loadMore()
 })
-console.log(scrollbarRef.value)
 </script>
+
 <template>
-  <div class="bgc">
+  <div class="user-center">
     <div class="container">
       <!-- 用户信息卡片 -->
-      <el-card class="user-info-card">
-        <div style="display: flex">
+      <el-card class="user-info-card" shadow="hover">
+        <div class="user-info-wrapper">
           <div class="user-avatar">
             <img :src="userStore.userInfo.touxiang" alt="用户头像" />
           </div>
-          <div>
-            <div class="user-info">
-              <p>用户名：{{ userStore.userInfo.username }}</p>
-              <div class="manageBtn">
-                <el-button @click="goToUserInfo">
-                  <el-icon>
-                    <Edit />
-                  </el-icon>
+          <div class="user-detail">
+            <div class="user-header">
+              <h2 class="username">{{ userStore.userInfo.username }}</h2>
+              <div class="action-buttons">
+                <el-button @click="goUserEdit" round>
+                  <el-icon><Edit /></el-icon>
                   编辑资料
                 </el-button>
-                <el-button>
-                  <el-icon>
-                    <MessageBox />
-                  </el-icon>
+                <el-button round>
+                  <el-icon><MessageBox /></el-icon>
                   管理文章
                 </el-button>
-                <el-button>
-                  <el-icon>
-                    <Setting />
-                  </el-icon>
+                <el-button round>
+                  <el-icon><Setting /></el-icon>
                   设置
                 </el-button>
               </div>
             </div>
-            <div class="user-info-number">
-              <p>39299 总访问量</p>
-              <p>{{ userLuntanSelecttiezTypesData.length }} 原创</p>
-              <p>503 粉丝</p>
-              <p>0 铁粉</p>
+            <div class="user-stats">
+              <div class="stat-item">
+                <span class="number">39299</span>
+                <span class="label">访问量</span>
+              </div>
+              <div class="stat-item">
+                <span class="number">{{ userLuntanSelecttiezTypesData.length }}</span>
+                <span class="label">原创</span>
+              </div>
+              <div class="stat-item">
+                <span class="number">503</span>
+                <span class="label">粉丝</span>
+              </div>
+              <div class="stat-item">
+                <span class="number">0</span>
+                <span class="label">铁粉</span>
+              </div>
             </div>
-            <p style="margin-left: 24px; margin-top: 10px">IP属地：江西省</p>
+            <div class="user-location">
+              <i class="el-icon-location"></i>
+              <span>IP属地：江西省</span>
+            </div>
           </div>
         </div>
       </el-card>
 
-      <div class="article-container">
-        <div class="article-left">
-          <el-card class="interest-card">
-            <div class="interest-title">
-              <p>兴趣领域</p>
-              <p style="cursor: pointer" @click="dialogTableVisible = true">管理></p>
+      <div class="content-container">
+        <!-- 左侧边栏 -->
+        <aside class="sidebar">
+          <el-card class="interest-card" shadow="hover">
+            <div class="card-header">
+              <h3>兴趣领域</h3>
+              <el-button text type="primary" @click="state.dialogVisible = true">
+                管理 <i class="el-icon-arrow-right"></i>
+              </el-button>
             </div>
-            <el-divider style="margin: 16px 0" />
-            <div v-for="(item, index) in myInterest" :key="index">
-              <p style="line-height: 25px; margin-bottom: 4px">{{ item }}</p>
+            <el-divider />
+            <div class="interest-list">
+              <div v-for="(item, index) in myInterest" :key="index" class="interest-item">
+                {{ item }}
+              </div>
             </div>
           </el-card>
 
-          <el-card class="achievement-card">
-            <p>个人成就</p>
-            <el-divider style="margin: 16px 0" />
-            <div class="achievement-card-list" v-for="(item, index) in achievement" :key="index">
-              <i :class="item.icon" style="margin-right: 10px" />
-              <p style="line-height: 25px; margin-left: 10px">{{ item.text }}</p>
+          <el-card class="achievement-card" shadow="hover">
+            <h3>个人成就</h3>
+            <el-divider />
+            <div v-for="(item, index) in achievement" :key="index" class="achievement-item">
+              <i :class="item.icon"></i>
+              <span>{{ item.text }}</span>
             </div>
           </el-card>
-        </div>
-        <div class="article-right">
-          <el-card class="article-card">
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+          <el-card class="article-card" shadow="hover">
             <template #header>
-              <el-menu :default-active="activeIndex" mode="horizontal">
+              <el-menu :default-active="state.activeIndex" mode="horizontal" class="nav-menu">
                 <el-menu-item index="1">我的文章</el-menu-item>
                 <el-menu-item index="2">关注列表</el-menu-item>
                 <el-menu-item index="3">粉丝列表</el-menu-item>
                 <el-menu-item index="4">收藏列表</el-menu-item>
               </el-menu>
             </template>
-            <el-scrollbar style="height: 500px" @scroll="handleScroll" ref="scrollbarRef">
-              <div class="article" v-for="(item, index) in truncatedContent" :key="index">
-                <div class="article-list">
-                  <div class="list-left">
-                    <h3 class="list-title">{{ item.title }}</h3>
-                    <p class="list-content" style="margin: 5px 0; text-indent: 2em">{{ item.content }}</p>
-                    <div class="list-footer" style="margin-top: 25px">
-                      <p style="margin-right: 12px">赞 {{ item.liked }}</p>
-                      <p style="margin-right: 12px">评 {{ item.conmments }}</p>
-                      <p v-if="item.poemWord">引用 “{{ item.poemWord }}”</p>
-                    </div>
-                  </div>
-                  <div class="list-right" style="background-color: skyblue; height: 100px; width: 100px">
-                    <img alt="" :src="item.images" style="width: 100%; height: 100%" />
+
+            <el-scrollbar height="540px" @scroll="handleScroll" ref="scrollbarRef">
+              <div v-for="(item, index) in truncatedContent" :key="index" class="article-item">
+                <div class="article-content">
+                  <h3 class="title">{{ item.title }}</h3>
+                  <p class="content">{{ item.content }}</p>
+                  <div class="meta">
+                    <span>赞 {{ item.liked }}</span>
+                    <span>评 {{ item.conmments }}</span>
+                    <span v-if="item.poemWord" class="quote"> 引用 "{{ item.poemWord }}" </span>
                   </div>
                 </div>
+                <div class="article-image">
+                  <el-image :src="item.images" fit="cover" loading="lazy" />
+                </div>
               </div>
+
+              <div v-if="state.loading" class="loading-more">
+                <el-icon class="loading-icon"><Loading /></el-icon>
+                <span>加载中...</span>
+              </div>
+
+              <div v-if="!state.hasMore" class="no-more">没有更多内容了</div>
             </el-scrollbar>
           </el-card>
+        </main>
+      </div>
+    </div>
+
+    <!-- 兴趣设置对话框 -->
+    <el-dialog v-model="state.dialogVisible" title="选择喜欢的兴趣领域" width="600px">
+      <div class="interest-tags">
+        <div v-for="(item, index) in interest" :key="index" class="interest-tag" :class="{ active: item.active }">
+          {{ item.name }}
+          <el-icon class="remove-icon" @click="removeInterest(item)">
+            <Close />
+          </el-icon>
         </div>
       </div>
-
-      <el-dialog v-model="dialogTableVisible" title="选择喜欢的兴趣领域" width="600">
-        <ul style="display: flex; flex-wrap: wrap">
-          <li
-            v-for="(item, index) in interest"
-            :key="index"
-            :style="{
-              marginBottom: '18px',
-              marginRight: '20px',
-              cursor: 'pointer',
-              fontSize: '16px',
-              border: '1px solid #ccc',
-              opacity: 0.7,
-              padding: '6px',
-              backgroundColor: item.active ? 'skyblue' : 'white',
-            }"
-          >
-            {{ item.name }}
-            <i style="margin-left: 10px" @click="removeInterest(item)">x</i>
-          </li>
-        </ul>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button type="primary" @click="dialogVisibleFalse"> 确定 </el-button>
-          </div>
-        </template>
-      </el-dialog>
-    </div>
+      <template #footer>
+        <el-button type="primary" @click="handleDialogClose"> 确定 </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.bgc {
-  width: 100%;
-  height: 1000px;
+.user-center {
   background-image: url('@/assets/pic/home/bee34c20e167d7862d96afdf465b4d8.jpg');
-  background-size: 100% 100%;
+  background-size: cover;
+  background-attachment: fixed;
+  padding: 20px 0;
 
   .container {
     max-width: 1200px;
-    margin: auto;
-    padding: 20px;
+    margin: 0 auto;
+    padding: 0 20px;
 
     .user-info-card {
-      height: 140px;
-
-      .user-avatar {
-        img {
-          width: 100px;
-          height: 100px;
-          border-radius: 50%;
-        }
-      }
-
-      .user-info {
+      .user-info-wrapper {
         display: flex;
-        width: 1050px;
-        height: 35px;
-        line-height: 35px;
-        justify-content: space-between;
+        gap: 20px;
 
-        p {
-          margin-left: 24px;
-          font-weight: 500;
-          font-size: 20px;
+        .user-avatar {
+          img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #409eff;
+          }
         }
 
-        button,
-        [type='button'],
-        [type='reset'],
-        [type='submit'] {
-          -webkit-appearance: button;
-          border-radius: 50px;
-        }
-      }
+        .user-detail {
+          flex: 1;
 
-      .user-info-number {
-        display: flex;
-        font-size: 18px;
-        width: 600px;
-        height: 30px;
-        line-height: 30px;
+          .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
 
-        p {
-          margin-left: 24px;
+            .username {
+              font-size: 24px;
+              font-weight: 500;
+              margin: 0;
+            }
+
+            .action-buttons {
+              display: flex;
+              gap: 10px;
+            }
+          }
+
+          .user-stats {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 15px;
+
+            .stat-item {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+
+              .number {
+                font-size: 20px;
+                font-weight: 500;
+                color: #333;
+              }
+
+              .label {
+                font-size: 14px;
+                color: #666;
+              }
+            }
+          }
+
+          .user-location {
+            color: #666;
+            font-size: 14px;
+
+            i {
+              margin-right: 5px;
+            }
+          }
         }
       }
     }
 
-    .article-container {
-      display: flex;
+    .content-container {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+      margin-top: 20px;
 
-      .article-left {
-        width: 300px;
+      .sidebar {
+        .interest-card,
+        .achievement-card {
+          margin-bottom: 20px;
+          transition: transform 0.3s ease;
 
-        .interest-card {
-          margin: 20px 20px 20px 0;
+          &:hover {
+            transform: translateY(-2px);
+          }
 
-          .interest-title {
+          .card-header {
             display: flex;
             justify-content: space-between;
-          }
-        }
-
-        .achievement-card {
-          margin: 20px 20px 20px 0;
-
-          .achievement-card-list {
-            display: flex;
-            margin-bottom: 10px;
             align-items: center;
+            margin-bottom: 15px;
+
+            h3 {
+              margin: 0;
+              font-size: 18px;
+            }
+          }
+
+          .interest-list {
+            .interest-item {
+              padding: 8px 0;
+              border-bottom: 1px solid #eee;
+
+              &:last-child {
+                border-bottom: none;
+              }
+            }
+          }
+
+          .achievement-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+
+            i {
+              margin-right: 10px;
+              font-size: 18px;
+              color: #409eff;
+            }
           }
         }
       }
 
-      .article-right {
-        width: 900px;
-
+      .main-content {
         .article-card {
-          margin-top: 20px;
-          height: 600px;
+          .nav-menu {
+            border-bottom: none;
+          }
 
-          .article {
+          .article-item {
             display: flex;
-            align-items: center;
-            height: 120px;
-            margin-bottom: 10px;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s ease;
 
-            .article-list {
-              width: 100%;
-              padding: 0 15px;
-              display: flex;
-              justify-content: space-between;
+            &:hover {
+              background-color: #f5f7fa;
+            }
 
-              .list-left {
-                width: 90%;
+            .article-content {
+              flex: 1;
+              margin-right: 20px;
 
-                .list-footer {
-                  display: flex;
+              .title {
+                font-size: 18px;
+                color: #333;
+                margin: 0 0 10px;
+              }
+
+              .content {
+                color: #666;
+                line-height: 1.6;
+                margin-bottom: 15px;
+              }
+
+              .meta {
+                display: flex;
+                gap: 15px;
+                color: #999;
+                font-size: 14px;
+
+                .quote {
+                  color: #409eff;
                 }
               }
+            }
+
+            .article-image {
+              width: 120px;
+              height: 120px;
+              border-radius: 4px;
+              overflow: hidden;
+
+              .el-image {
+                width: 100%;
+                height: 100%;
+              }
+            }
+          }
+
+          .loading-more {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+
+            .loading-icon {
+              animation: rotating 2s linear infinite;
+              margin-right: 5px;
             }
           }
         }
       }
     }
   }
+}
 
-  .el-menu--horizontal.el-menu {
-    border-bottom: none;
-  }
+.interest-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 
-  .el-menu--horizontal {
-    --el-menu-horizontal-height: 35px;
+  .interest-tag {
+    padding: 8px 15px;
+    border-radius: 20px;
+    background-color: #f5f7fa;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &.active {
+      background-color: #409eff;
+      color: white;
+    }
+
+    .remove-icon {
+      font-size: 14px;
+
+      &:hover {
+        color: #f56c6c;
+      }
+    }
   }
 }
+
 </style>

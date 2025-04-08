@@ -1,238 +1,240 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import router from '@/router/index.js'
+import { ref, computed, onMounted } from 'vue'
 import { userLuntanSelecttiezTypesGetApi } from '@/api/modules/talkSquare.js'
 import DayRecommend from '@/components/talksquare/DayRecommend/index.vue'
 import ArticleRecommendation from '@/components/talksquare/ArticleRecommendation/index.vue'
-import { computed } from 'vue'
-import { goForumDetail, goForumEdit } from '@/router/helpers.js'
-const activeName = ref('new') // 当前激活的tab
-const activeIndex = ref('1') // 当前激活的tab
-const pageSize = ref(5) // 每页显示的条数
-const currentPage = ref(1) // 当前页
-const nowMenuData = ref(1) // 当前选择的分类
-const totalPage = ref(1) // 总页数
+import { goForumDetail, goForumEdit, goPoetClassDetail } from '@/router/helpers.js'
+import { CirclePlusFilled } from '@element-plus/icons-vue'
 
-const userLuntanSelecttiezTypesData = ref([]) // 根据分类选择的列表
-// 自定义数据
+// 状态管理
+const state = ref({
+  activeName: 'new',
+  activeIndex: '1',
+  pageSize: 5,
+  currentPage: 1,
+  nowMenuData: 1,
+  totalPage: 1,
+  userLuntanSelecttiezTypesData: [],
+})
+
+// 菜单配置
 const menuData = ref([
-  {
-    id: '1',
-    name: '诗词创作',
-    icon: 'iconfont icon-chuangzuo',
-  },
-  {
-    id: '2',
-    name: '诗词赏析',
-    icon: 'iconfont icon-shuhuashangxi',
-  },
-  {
-    id: '3',
-    name: '诗词学习',
-    icon: 'iconfont icon-xinshouxuetang',
-  },
-  {
-    id: '4',
-    name: '诗词活动',
-    icon: 'iconfont icon-huodong',
-  },
-  {
-    id: '5',
-    name: '诗词资源',
-    icon: 'iconfont icon-ziyuan',
-  },
-  {
-    id: '6',
-    name: '诗词杂谈',
-    icon: 'iconfont icon-zatan',
-  },
+  { id: '1', name: '诗词创作', icon: 'iconfont icon-chuangzuo' },
+  { id: '2', name: '诗词赏析', icon: 'iconfont icon-shuhuashangxi' },
+  { id: '3', name: '诗词学习', icon: 'iconfont icon-xinshouxuetang' },
+  { id: '4', name: '诗词活动', icon: 'iconfont icon-huodong' },
+  { id: '5', name: '诗词资源', icon: 'iconfont icon-ziyuan' },
+  { id: '6', name: '诗词杂谈', icon: 'iconfont icon-zatan' },
 ])
-const handleClick = (tab, event) => {
-  // console.log(tab, event)
-}
-const handlePageChange = (page) => {
-  currentPage.value = page
-  userLuntanSelecttiezTypes()
-}
-const handleMenuClick = (item) => {
-  nowMenuData.value = item.id
 
-  userLuntanSelecttiezTypes()
-}
-const goToDetail = (item) => {
-  goForumDetail(item.id)
-}
-const EditPublic = () => {
-  goForumEdit()
-}
-const userLuntanSelecttiezTypes = async () => {
-  const res = await userLuntanSelecttiezTypesGetApi(currentPage.value, pageSize.value, nowMenuData.value)
-  totalPage.value = res.data.total
-  userLuntanSelecttiezTypesData.value = res.data.records
-}
-
+// 计算属性
 const truncatedContent = computed(() => {
-  return userLuntanSelecttiezTypesData.value.map((item) => {
-    return {
-      ...item,
-      content: item.content.length > 100 ? item.content.slice(0, 100) + '...' : item.content,
-    }
-  })
+  return state.value.userLuntanSelecttiezTypesData.map((item) => ({
+    ...item,
+    content: item.content.length > 100 ? `${item.content.slice(0, 100)}...` : item.content,
+  }))
 })
 
-/**
- * 跳转到诗词详情页
- * @param item
- * @constructor
- */
-const JumpPoemDetails = (item) => {
-  router.push(`/detail?id=${item.poemId}`)
+// 方法
+const handlePageChange = async (page) => {
+  state.value.currentPage = page
+  await fetchForumData()
 }
 
-onMounted(() => {
-  userLuntanSelecttiezTypes()
-})
+const handleMenuClick = async (item) => {
+  state.value.nowMenuData = item.id
+  await fetchForumData()
+}
+
+const fetchForumData = async () => {
+  try {
+    const res = await userLuntanSelecttiezTypesGetApi(
+      state.value.currentPage,
+      state.value.pageSize,
+      state.value.nowMenuData,
+    )
+    state.value.totalPage = res.data.total
+    state.value.userLuntanSelecttiezTypesData = res.data.records
+  } catch (error) {
+    console.error('获取论坛数据失败：', error)
+  }
+}
+
+onMounted(fetchForumData)
 </script>
+
 <template>
-  <div class="bgc">
-    <div class="article-container">
-      <div class="article-left">
-        <el-menu mode="vertical" :default-active="activeIndex">
+  <div class="forum-container">
+    <div class="forum-content">
+      <!-- 左侧菜单 -->
+      <aside class="forum-sidebar">
+        <el-menu mode="vertical" :default-active="state.activeIndex">
           <el-menu-item v-for="item in menuData" :key="item.id" :index="item.id" @click="handleMenuClick(item)">
-            <i :class="item.icon" style="margin-right: 10px" />
+            <i :class="item.icon" />
             <span>{{ item.name }}</span>
           </el-menu-item>
         </el-menu>
-      </div>
-      <div class="article-middle">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
+      </aside>
+
+      <!-- 中间内容区 -->
+      <main class="forum-main">
+        <el-tabs v-model="state.activeName">
           <el-tab-pane label="最新" name="new">
-            <div class="article" v-for="(item, index) in truncatedContent" @click="goToDetail(item)" :key="index">
-              <div class="article-list">
-                <div class="list-left">
-                  <h3 class="list-title">{{ item.title }}</h3>
-                  <p class="list-content" style="margin: 5px 0; text-indent: 2em">{{ item.content }}</p>
-                  <div class="list-footer" style="margin-top: 25px">
-                    <p style="margin-right: 12px">作者: {{ item.username }}</p>
-                    <p style="margin-right: 12px">赞 {{ item.liked }}</p>
-                    <p style="margin-right: 12px">评 {{ item.conmments }}</p>
-                    <p v-if="item.poemWord" style="cursor: pointer" @click.stop="JumpPoemDetails(item)">
-                      引用 “{{ item.poemWord }}”
-                    </p>
+            <div class="article-list">
+              <div
+                v-for="(item, index) in truncatedContent"
+                :key="index"
+                class="article-item"
+                @click="goForumDetail(item.id)"
+              >
+                <div class="article-content">
+                  <h3 class="title">{{ item.title }}</h3>
+                  <p class="content">{{ item.content }}</p>
+                  <div class="meta">
+                    <span class="author">作者: {{ item.username }}</span>
+                    <span class="likes">赞 {{ item.liked }}</span>
+                    <span class="comments">评 {{ item.conmments }}</span>
+                    <span v-if="item.poemWord" class="quote" @click.stop="goPoetClassDetail(item.poemId)">
+                      引用 "{{ item.poemWord }}"
+                    </span>
                   </div>
                 </div>
-                <div class="list-right" style="height: 100px; width: 100px">
-                  <img alt="" :src="item.images" style="width: 100%; height: 100%" />
+                <div class="article-image">
+                  <el-image :src="item.images" fit="cover" loading="lazy" />
                 </div>
               </div>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="最热" name="heat"></el-tab-pane>
+          <el-tab-pane label="最热" name="heat">
+            <!-- 最热内容待实现 -->
+          </el-tab-pane>
         </el-tabs>
 
-        <div class="pagination-container">
-          <el-pagination
-            :page-size="pageSize"
-            :current-page="currentPage"
-            @current-change="handlePageChange"
-            background
-            layout="prev, pager, next"
-            :total="totalPage"
-          />
-        </div>
-      </div>
+        <el-pagination
+          v-model:current-page="state.currentPage"
+          :page-size="state.pageSize"
+          :total="state.totalPage"
+          background
+          layout="prev, pager, next"
+          @current-change="handlePageChange"
+          class="pagination"
+        />
+      </main>
 
-      <div class="article-right">
+      <!-- 右侧推荐 -->
+      <aside class="forum-aside">
         <ArticleRecommendation />
         <DayRecommend />
-      </div>
-
-      <div class="add">
-        <el-icon size="56px" @click="EditPublic"><CirclePlusFilled /></el-icon>
-      </div>
+      </aside>
     </div>
+
+    <!-- 发布按钮 -->
+    <el-button class="publish-btn" type="primary" circle @click="goForumEdit">
+      <el-icon><CirclePlusFilled /></el-icon>
+    </el-button>
   </div>
 </template>
 
-<style scoped lang="scss">
-.bgc {
-  width: 100%;
-  height: 1000px;
+<style lang="scss" scoped>
+.forum-container {
+  min-height: 100vh;
   background-image: url('@/assets/pic/forum/c0b5d3eab10bd3a732987c09aff12b7.jpg');
-  background-size: 100% 100%;
+  background-size: cover;
+  background-attachment: fixed;
 
-  .article-container {
-    max-width: 1300px;
-    display: flex;
-    margin: auto;
+  .forum-content {
+    display: grid;
+    grid-template-columns: 250px 1fr 300px;
+    gap: 20px;
+    border-radius: 8px;
     padding: 20px;
 
-    .article-left {
-      margin: 20px 0;
-      width: 20%;
-    }
-
-    .article-middle {
-      width: 60%;
-      margin: 0 20px;
-
-      .article {
-        display: flex;
-        align-items: center;
-        height: 120px;
-        margin-bottom: 10px;
-
-        .article-list {
-          width: 100%;
-          padding: 0 15px;
-          display: flex;
-          justify-content: space-between;
-
-          .list-left {
-            width: 90%;
-
-            .list-footer {
-              display: flex;
-            }
-          }
+    .forum-sidebar {
+      .el-menu-item {
+        i {
+          margin-right: 8px;
+          font-size: 18px;
         }
       }
     }
 
-    .article-right {
-      width: 20%;
+    .forum-main {
+      .article-list {
+        .article-item {
+          display: flex;
+          padding: 10px;
+          border-bottom: 1px solid #eee;
+          cursor: pointer;
+          transition: all 0.3s;
+
+          &:hover {
+            background: #f5f7fa;
+          }
+
+          .article-content {
+            flex: 1;
+            margin-right: 20px;
+
+            .title {
+              font-size: 18px;
+              color: #333;
+              margin-bottom: 10px;
+            }
+
+            .content {
+              color: #666;
+              line-height: 1.6;
+              margin-bottom: 15px;
+            }
+
+            .meta {
+              display: flex;
+              align-items: center;
+              gap: 15px;
+              color: #999;
+
+              .quote {
+                color: #409eff;
+                cursor: pointer;
+
+                &:hover {
+                  text-decoration: underline;
+                }
+              }
+            }
+          }
+
+          .article-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 4px;
+            overflow: hidden;
+
+            .el-image {
+              width: 100%;
+              height: 100%;
+            }
+          }
+        }
+      }
+
+      .pagination {
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+      }
     }
-
-    .add {
-      width: 56px;
-      height: 56px;
-      background-color: #c3ecea;
-      border-radius: 28px;
-      position: fixed;
-      right: 30px;
-      bottom: 30px;
-      transition: all 0.3s;
-      cursor: pointer;
-    }
   }
-
-  .pagination-container {
-    display: flex;
-    justify-content: center;
-    margin: 40px auto;
-    width: 100%;
-  }
-
-  /* 未点赞状态 */
-  .unliked {
-    background-color: white;
-    color: black;
-  }
-
-  /* 已点赞状态 */
-  .liked {
-    background-color: #3f7ef7;
-    color: white;
+  .publish-btn {
+    width: 56px;
+    height: 56px;
+    background-color: #181b1b;
+    border-radius: 28px;
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    transition: all 0.3s;
+    cursor: pointer;
   }
 }
 </style>
