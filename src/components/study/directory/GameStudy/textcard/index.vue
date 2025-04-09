@@ -2,6 +2,7 @@
 import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 import { goDictionaryTextList } from '@/router/helpers.js'
+import { BOOK_BG, BOOK_CONTAINER_BG } from '@/constants/bgUrl.js'
 const router = useRouter()
 const props = defineProps({
   title: String,
@@ -11,15 +12,14 @@ const props = defineProps({
 
 <template>
   <el-tooltip :content="content" placement="bottom" effect="light">
-    <div class="box" @click="goDictionaryTextList()">
-      <div class="title">{{ title }}</div>
+    <div class="box" @click="goDictionaryTextList()" :style="{ backgroundImage: `url(${BOOK_BG})` }">
+      <div class="title" :style="{ backgroundImage: `url(${BOOK_CONTAINER_BG})` }">{{ title }}</div>
     </div>
   </el-tooltip>
 </template>
 
 <style scoped lang="scss">
 .box {
-  background-image: url('@/assets/pic/study/f18e59c7edb7edc404e6f3301fd5112.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -46,7 +46,6 @@ const props = defineProps({
     font-family: '汉仪尚巍手书', cursive;
     font-weight: bold;
     writing-mode: vertical-rl;
-    background-image: url('@/assets/pic/study/65a0c2be7443a0a865c684d6c6ac023.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

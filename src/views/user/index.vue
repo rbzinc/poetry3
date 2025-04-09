@@ -1,10 +1,11 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
-import { ElCard, ElMessage} from 'element-plus'
+import { ElCard, ElMessage } from 'element-plus'
 import { useUserInfoStore } from '@/stores/modules/user.js'
 import router from '@/router/index.js'
 import { userLuntanSelectBlogGetApi } from '@/api/modules/talkSquare.js'
 import { goUserEdit } from '@/router/helpers.js'
+import { USER_BG_URL } from '@/constants/bgUrl.js'
 
 // 状态管理
 const state = ref({
@@ -112,7 +113,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="user-center">
+  <div
+    class="user-center"
+    :style="{
+      backgroundImage: `url(${USER_BG_URL})`,
+    }"
+  >
     <div class="container">
       <!-- 用户信息卡片 -->
       <el-card class="user-info-card" shadow="hover">
@@ -251,7 +257,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .user-center {
-  background-image: url('@/assets/pic/home/bee34c20e167d7862d96afdf465b4d8.jpg');
+  background-image: url('@/assets/pic/home/userBg.jpg');
   background-size: cover;
   background-attachment: fixed;
   padding: 20px 0;
@@ -487,5 +493,4 @@ onMounted(() => {
     }
   }
 }
-
 </style>

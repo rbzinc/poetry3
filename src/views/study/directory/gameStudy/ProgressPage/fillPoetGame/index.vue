@@ -4,6 +4,7 @@ import { userGameStore } from '@/stores/modules/game.js'
 import { ElMessage } from 'element-plus'
 import { goDictionaryFillPoemGame, goDictionaryTextList } from '@/router/helpers.js'
 import { ArrowLeftBold, Timer, QuestionFilled } from '@element-plus/icons-vue'
+import { GAME_PROGRESS_BG } from '@/constants/bgUrl.js'
 
 const gameStore = userGameStore()
 
@@ -124,7 +125,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-card class="game-card">
+  <el-card class="game-card" :style="{ background: `url(${GAME_PROGRESS_BG})` }">
     <template #header>
       <div class="header">
         <div class="return" @click="goDictionaryTextList">
@@ -199,7 +200,7 @@ onMounted(() => {
 <style scoped lang="scss">
 .game-card {
   height: 560px;
-  background-image: url('@/assets/pic/study/微信图片_20241201193836.jpg');
+
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

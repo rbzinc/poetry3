@@ -62,7 +62,6 @@ export const usePoetDataStore = defineStore('poetData', () => {
     '纳兰性德',
   ])
 
-  // getters 改为 computed
   const getDynastyConfig = computed(() => ({
     title: '朝代',
     options: dynastyOptions.value,

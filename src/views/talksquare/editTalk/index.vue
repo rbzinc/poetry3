@@ -7,6 +7,7 @@ import { useUserInfoStore } from '@/stores/index.js'
 import { userLuntanFabutieziPostApi, userLuntanSearchGetApi } from '@/api/modules/talkSquare.js'
 import { getpoemRandomData } from '@/api/index.js'
 import { goForum, goHome } from '@/router/helpers.js'
+import { UPLOAD_ADDRESS } from '@/constants/upload.js'
 
 // 初始化变量
 const length = ref(0)
@@ -223,12 +224,7 @@ const searchPoemByKey = async () => {
         <el-input v-model="EditForm.title" />
       </el-form-item>
       <el-form-item label="添加封面">
-        <el-upload
-          action="http://fuze1.nat300.top/user/luntan/updateImage"
-          list-type="picture-card"
-          :headers="headers"
-          :on-success="handleSuccess"
-        >
+        <el-upload :action="UPLOAD_ADDRESS" list-type="picture-card" :headers="headers" :on-success="handleSuccess">
           <el-icon>
             <Plus />
           </el-icon>

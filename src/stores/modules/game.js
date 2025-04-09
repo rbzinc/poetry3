@@ -5,7 +5,7 @@ export const userGameStore = defineStore(
   'game',
   () => {
     // 游戏进度状态
-    const poetstatus = ref(1)
+    const poetStatus = ref(1)
 
     // 已完成的诗词列表
     const completedPoems = ref([])
@@ -43,7 +43,7 @@ export const userGameStore = defineStore(
 
     // 重置游戏状态
     const resetGameStatus = () => {
-      poetstatus.value = 1
+      poetStatus.value = 1
       completedPoems.value = []
       gameScores.value = {
         fillPoem: 0,
@@ -53,7 +53,7 @@ export const userGameStore = defineStore(
     }
 
     return {
-      poetstatus,
+      poetstatus: poetStatus,
       completedPoems,
       gameScores,
       updatePoetStatus,

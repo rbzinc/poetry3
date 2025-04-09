@@ -1,15 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import Cartoon from '@/components/home/cartoon/index.vue'
-
-// 导入轮播图图片
-import bg1 from '../assets/pic/home/1.jpg'
-import bg2 from '../assets/pic/home/2.jpg'
-import bg3 from '../assets/pic/home/3.jpg'
-import bg4 from '../assets/pic/home/4.jpg'
-import bg5 from '../assets/pic/home/5.jpg'
-
-const carouselImages = ref([bg1, bg2, bg3, bg4, bg5])
+import { HOME_BG_URL, HOME_CAROUSEL } from '@/constants/bgUrl.js'
 
 // 柱状图配置
 const barChartOption = ref({
@@ -75,7 +67,7 @@ const pieChartOption = ref({
   },
   legend: {
     orient: 'vertical',
-    left: 10, 
+    left: 10,
     top: 'middle',
     data: ['李白', '杜甫', '白居易', '王维', '苏轼', '李清照'],
   },
@@ -118,14 +110,14 @@ const pieChartOption = ref({
 </script>
 
 <template>
-  <div class="background">
+  <div class="background" :style="{ backgroundImage: `url(${HOME_BG_URL})` }">
     <Cartoon />
     <div class="content-container">
       <div class="section-title">今日推荐</div>
       <div class="carousel-container">
         <el-carousel trigger="click" height="400px" class="custom-carousel">
-          <el-carousel-item v-for="(img, index) in carouselImages" :key="index" class="carousel-item">
-            <img :src="img" class="carousel-image" />
+          <el-carousel-item v-for="(img, index) in HOME_CAROUSEL" :key="index" class="carousel-item">
+            <img :src="img.url" class="carousel-image" />
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -140,7 +132,6 @@ const pieChartOption = ref({
 <style scoped lang="scss">
 .background {
   width: 100%;
-  background-image: url('@/assets/pic/home/6.jpg');
 
   .content-container {
     width: 1000px;
@@ -171,7 +162,7 @@ const pieChartOption = ref({
             width: 100%;
             height: 100%;
             object-fit: cover;
-            
+
             // 备选方案
             &.contain-mode {
               max-width: 100%;

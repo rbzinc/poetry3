@@ -5,6 +5,7 @@ import DayRecommend from '@/components/talksquare/DayRecommend/index.vue'
 import ArticleRecommendation from '@/components/talksquare/ArticleRecommendation/index.vue'
 import { goForumDetail, goForumEdit, goPoetClassDetail } from '@/router/helpers.js'
 import { CirclePlusFilled } from '@element-plus/icons-vue'
+import { FORUM_BG } from '@/constants/bgUrl.js'
 
 // 状态管理
 const state = ref({
@@ -64,7 +65,7 @@ onMounted(fetchForumData)
 </script>
 
 <template>
-  <div class="forum-container">
+  <div class="forum-container" :style="{ backgroundImage: `url(${FORUM_BG})` }">
     <div class="forum-content">
       <!-- 左侧菜单 -->
       <aside class="forum-sidebar">
@@ -138,7 +139,6 @@ onMounted(fetchForumData)
 <style lang="scss" scoped>
 .forum-container {
   min-height: 100vh;
-  background-image: url('@/assets/pic/forum/c0b5d3eab10bd3a732987c09aff12b7.jpg');
   background-size: cover;
   background-attachment: fixed;
 

@@ -4,6 +4,7 @@ import LoginPage from './login/index.vue'
 import RegisterPage from './register/index.vue'
 import ForgetPage from './forget/index.vue'
 import EmailPage from './email/index.vue'
+import { LOGIN_BG } from '@/constants/bgUrl.js'
 const basicPage = ref(1)
 const changePage = (page) => {
   basicPage.value = page
@@ -12,7 +13,7 @@ const changePage = (page) => {
 <template>
   <div class="login-container">
     <div class="login-box">
-      <div class="bg"></div>
+      <div class="bg" :style="{ backgroundImage: `url(${LOGIN_BG})` }"></div>
       <LoginPage v-if="basicPage === 1" @changePage="changePage" />
       <email-page v-if="basicPage === 2" @changePage="changePage" />
       <register-page v-if="basicPage === 3" @changePage="changePage" />
@@ -42,7 +43,6 @@ const changePage = (page) => {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url('../../assets/pic/login/login-bg.jpg');
   }
 }
 </style>

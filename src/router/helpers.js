@@ -1,5 +1,5 @@
 import router from './index.js'
-import * as ROUTES from './constants.js'
+import * as ROUTES from '../constants/router.js'
 
 /**
  * 跳转到首页
@@ -24,6 +24,10 @@ export const goPoetClassDetail = (id) => {
     path: ROUTES.POET_CLASS_DETAIL,
     query: { id },
   })
+}
+
+export const goStudyAI = () => {
+  router.push(ROUTES.STUDY_AI)
 }
 
 /**

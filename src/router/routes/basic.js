@@ -1,5 +1,5 @@
 import permissionRoutes from './permission/index.js'
-import * as ROUTES from '../constants.js'
+import * as ROUTES from '../../constants/router.js'
 
 const routes = [...permissionRoutes]
 

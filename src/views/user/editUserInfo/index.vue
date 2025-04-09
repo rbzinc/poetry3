@@ -4,8 +4,9 @@ import router from '@/router/index.js'
 import { ElMessage } from 'element-plus'
 import { useUserInfoStore } from '@/stores/modules/user.js'
 import { Plus, Avatar, Tools } from '@element-plus/icons-vue'
-import * as ROUTERS from '@/router/constants.js'
+import * as ROUTERS from '@/constants/router.js'
 import { userUpdatemessagebyidPutApi } from '@/api/modules/myUser.js'
+import { UPLOAD_ADDRESS } from '@/constants/upload.js'
 
 // 状态管理
 const state = ref({
@@ -221,7 +222,7 @@ const handleAccountOperation = (operation) => {
               <h3>头像</h3>
               <el-upload
                 class="avatar-upload"
-                action="http://fuze1.nat300.top/user/luntan/updateImage"
+                :action="UPLOAD_ADDRESS"
                 :headers="headers"
                 :show-file-list="false"
                 :before-upload="beforeAvatarUpload"

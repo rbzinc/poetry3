@@ -1,7 +1,8 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
 import { ref, watch } from 'vue'
-import * as ROUTERS from '@/router/constants.js'
+import * as ROUTERS from '@/constants/router.js'
+import { POET_BANNER_BG } from '@/constants/bgUrl.js'
 const route = useRoute()
 const router = useRouter()
 
@@ -55,7 +56,7 @@ const handleSelect = (key) => {
 
     <!-- 其余部分保持不变 -->
     <div class="banner-image">
-      <img src="@/assets/pic/banner/banner.jpg" alt="书阁装饰图" />
+      <img :src="POET_BANNER_BG" alt="书阁装饰图" />
     </div>
   </div>
 </template>

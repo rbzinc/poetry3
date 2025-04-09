@@ -1,4 +1,4 @@
-import * as ROUTES from '../../../constants.js'
+import * as ROUTES from '../../../../constants/router.js'
 
 // 诗人模块路由
 const main = [

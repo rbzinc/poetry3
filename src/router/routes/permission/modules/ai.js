@@ -1,10 +1,10 @@
-import * as ROUTES from '@/router/constants.js'
+import * as ROUTES from '@/constants/router.js'
 
 // AI学习模块路由
 const aiRoutes = [
   {
     path: ROUTES.STUDY_AI.replace(ROUTES.STUDY + '/', ''),
-    component: () => import('@/views/study/directory/aiChat/studyHome/index.vue'),
+    component: () => import('@/views/study/directory/aiChat/index.vue'),
   },
   {
     path: ROUTES.STUDY_AI_CHAT_WITH_ID.replace(ROUTES.STUDY + '/', ''),

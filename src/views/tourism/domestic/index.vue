@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import SceneryCard from '../components/SceneryCard/index.vue'
 import { useRouter } from 'vue-router'
-import * as ROUTES from '@/router/constants.js'
+import * as ROUTES from '@/constants/router.js'
 
 const router = useRouter()
 const activeProvince = ref('all')

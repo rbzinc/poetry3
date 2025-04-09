@@ -3,6 +3,7 @@ import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useUserInfoStore } from '@/stores/index.js'
 import { aiPicturePostApi } from '@/api/modules/aiChat.js'
+import { UPLOAD_ADDRESS } from '@/constants/upload.js'
 // import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 // 定义消息的响应式数据
@@ -405,7 +406,7 @@ const configSummary = computed(() => {
                 <div class="upload-area" @click.stop>
                   <el-upload
                     class="image-uploader"
-                    action="http://120.27.234.36:8080/user/luntan/updateImage"
+                    :action="UPLOAD_ADDRESS"
                     :headers="headers"
                     :limit="1"
                     :on-success="handleSuccess"

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { goVrDetail } from '@/router/helpers.js'
+import { STUDY_BG } from '@/constants/bgUrl.js'
 
 // 分页相关
 const currentPage = ref(1)
@@ -143,7 +144,7 @@ const goToDetail = (scene) => {
 </script>
 
 <template>
-  <div class="vr-container">
+  <div class="vr-container" :style="{ backgroundImage: `${STUDY_BG}` }">
     <div class="header">
       <h2 class="title">VR助学</h2>
       <div class="search-box">
@@ -184,7 +185,6 @@ const goToDetail = (scene) => {
 <style lang="scss" scoped>
 .vr-container {
   padding: 20px;
-  background-image: url('@/assets/pic/study/799d4d5991388a52874f6b3b602989d.png');
   background-size: cover;
   height: calc(100vh - 120px);
 

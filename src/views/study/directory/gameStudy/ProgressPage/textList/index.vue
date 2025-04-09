@@ -4,6 +4,8 @@ import { userGameStore } from '@/stores/modules/game.js'
 import { goDictionary, goDictionaryPoemGame } from '@/router/helpers.js'
 import { ArrowLeftBold, Document } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import * as url from 'node:url'
+import { GAME_PROGRESS_BG } from '@/constants/bgUrl.js'
 
 const gameStore = userGameStore()
 const searchQuery = ref('')
@@ -17,7 +19,7 @@ const poems = ref([
     dynasty: '晋',
     type: '记',
     completed: false,
-    content: '晋太元中，武陵人捕鱼为业...'
+    content: '晋太元中，武陵人捕鱼为业...',
   },
   {
     id: '1',
@@ -26,23 +28,24 @@ const poems = ref([
     dynasty: '南北朝',
     type: '辞',
     completed: false,
-    content: '唧唧复唧唧，木兰当户织...'
+    content: '唧唧复唧唧，木兰当户织...',
   },
   // ... 其他诗词数据
 ])
 
 // 搜索过滤
 const filteredPoems = computed(() => {
-  return poems.value.filter(poem => 
-    poem.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    poem.author.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return poems.value.filter(
+    (poem) =>
+      poem.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      poem.author.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
 })
 
 // 统计信息
 const statistics = computed(() => {
   const total = poems.value.length
-  const completed = poems.value.filter(poem => poem.completed).length
+  const completed = poems.value.filter((poem) => poem.completed).length
   const progress = Math.round((completed / total) * 100)
   return { total, completed, progress }
 })
@@ -69,21 +72,21 @@ const viewPoemDetail = (poem) => {
   ElMessage({
     message: poem.content,
     type: 'info',
-    duration: 5000
+    duration: 5000,
   })
 }
 
 onMounted(() => {
   // 初始化已完成状态
   const completedPoems = gameStore.getCompletedPoems()
-  poems.value.forEach(poem => {
+  poems.value.forEach((poem) => {
     poem.completed = completedPoems.includes(poem.id)
   })
 })
 </script>
 
 <template>
-  <el-card class="poem-list-card">
+  <el-card class="poem-list-card" :style="{ background: `url(${GAME_PROGRESS_BG})` }">
     <template #header>
       <div class="card-header">
         <div class="left">
@@ -125,11 +128,7 @@ onMounted(() => {
                 <Document />
               </el-icon>
             </el-tooltip>
-            <el-checkbox
-              v-model="poem.completed"
-              @change="() => entergame(poem)"
-              :loading="loading"
-            />
+            <el-checkbox v-model="poem.completed" @change="() => entergame(poem)" :loading="loading" />
           </div>
         </div>
       </div>
@@ -140,7 +139,6 @@ onMounted(() => {
 <style scoped lang="scss">
 .poem-list-card {
   height: 560px;
-  background-image: url('@/assets/pic/study/7754bcfc0e4b6ca416b0c0435aac38f.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

@@ -186,7 +186,6 @@ onMounted(() => {
 <style scoped lang="scss">
 .game-card {
   height: 560px;
-  background-image: url('@/assets/pic/study/微信图片_20241201193836.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

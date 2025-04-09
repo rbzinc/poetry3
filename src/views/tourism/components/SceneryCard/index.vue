@@ -1,7 +1,7 @@
 <script setup>
 import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
-import * as ROUTES from '@/router/constants.js'
+import * as ROUTES from '@/constants/router.js'
 
 const router = useRouter()
 

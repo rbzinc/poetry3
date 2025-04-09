@@ -1,7 +1,15 @@
 <script setup>
 import { ref } from 'vue'
 import { useUserInfoStore } from '@/stores/modules/user.js'
-import { goChatToChat, goChatToPic, goChatToRefine, goPicToChat } from '@/router/helpers.js'
+import {
+  goChatToChat,
+  goChatToPic,
+  goChatToRefine,
+  goPicToChat,
+  goPoetWriterDetail,
+  goStudyAI,
+} from '@/router/helpers.js'
+import { STUDY_AI } from '@/constants/router.js'
 
 const userInfo = useUserInfoStore()
 const menuItems = ref([
@@ -27,6 +35,9 @@ const navigate = (label) => {
       case '4':
         goChatToRefine()
         break
+      case '0':
+        goStudyAI()
+        break
     }
   } catch (error) {
     console.error('导航错误:', error)
@@ -39,7 +50,7 @@ const navigate = (label) => {
     <ul class="sidebar-menu">
       <li class="sidebar-item home-item">
         <el-tooltip content="返回AI学习首页" placement="right">
-          <img :src="userInfo.userInfo.touxiang" alt="用户头像" class="avatar" @click="navigate('/study/ai')" />
+          <img :src="userInfo.userInfo.touxiang" alt="用户头像" class="avatar" @click="navigate('0')" />
         </el-tooltip>
       </li>
       <el-divider style="margin: 8px 0; border-color: rgba(255, 255, 255, 0.2)" />

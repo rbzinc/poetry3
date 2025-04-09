@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import * as ROUTES from '@/router/constants.js'
+import * as ROUTES from '@/constants/router.js'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()

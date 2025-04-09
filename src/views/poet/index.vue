@@ -1,11 +1,11 @@
 <script setup>
-import Banner from '@/views/poet/banner/index.vue';
-import Search from "@/components/poet/search/index.vue";
-
+import Banner from '@/views/poet/banner/index.vue'
+import Search from '@/components/poet/search/index.vue'
+import { POET_BG } from '@/constants/bgUrl.js'
 </script>
 
 <template>
-  <div class="poet-container">
+  <div class="poet-container" :style="{ backgroundImage: `url(${POET_BG})` }">
     <div class="poet-content">
       <aside class="sidebar">
         <Banner />
@@ -22,7 +22,7 @@ import Search from "@/components/poet/search/index.vue";
 .poet-container {
   min-height: 100vh;
   width: 100%;
-  background: url('@/assets/pic/poet/微信图片_20241016040103.jpg') no-repeat center center;
+  background: no-repeat center center;
   background-size: cover;
   .poet-content {
     width: min(1300px, 90%);
@@ -42,6 +42,4 @@ import Search from "@/components/poet/search/index.vue";
     }
   }
 }
-
-
 </style>

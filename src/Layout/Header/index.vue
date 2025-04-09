@@ -3,7 +3,8 @@ import { User } from '@element-plus/icons-vue'
 import { useUserInfoStore } from '@/stores/index.js'
 import { ref, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import * as ROUTES from '@/router/constants.js'
+import * as ROUTES from '@/constants/router.js'
+import { LOGO_URL } from '@/constants/bgUrl.js'
 
 const useUser = useUserInfoStore()
 const route = useRoute()
@@ -37,7 +38,7 @@ const handleSelect = (key) => {
 <template>
   <div class="leader">
     <div class="left">
-      <img src="@/assets/pic/home/logo.jpg" alt="" width="250px" height="80px" />
+      <img :src="LOGO_URL" alt="" width="250px" height="80px" />
     </div>
     <div class="right">
       <el-menu

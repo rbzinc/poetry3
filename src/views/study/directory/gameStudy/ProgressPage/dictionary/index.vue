@@ -3,6 +3,7 @@ import Textcard from '@/components/study/directory/GameStudy/textcard/index.vue'
 import { ref, computed } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import { BOOK_BG, GAME_BG, STUDY_BG } from '@/constants/bgUrl.js'
 
 const searchQuery = ref('')
 const dialogVisible = ref(false)
@@ -70,7 +71,12 @@ const addNewCategory = () => {
 </script>
 
 <template>
-  <el-card class="dictionary-card">
+  <el-card
+    class="dictionary-card"
+    :style="{
+      background: `url(${GAME_BG})`,
+    }"
+  >
     <template #header>
       <div class="card-header">
         <h2>诗词学习</h2>
@@ -117,7 +123,6 @@ const addNewCategory = () => {
 <style scoped lang="scss">
 .dictionary-card {
   height: 100%;
-  background-image: url('@/assets/pic/study/2e9520938fcd4da8d130e9bdd3b18bf.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
