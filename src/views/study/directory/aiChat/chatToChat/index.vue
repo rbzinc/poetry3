@@ -6,7 +6,6 @@ import { useUserInfoStore } from '@/stores/index.js'
 import { usePoemImgStore } from '@/stores/index.js'
 import { aiChatGetApi } from '@/api/modules/aiChat.js'
 import { getSentenceData } from '@/api/index.js'
-// import { fetchEventSource } from "@microsoft/fetch-event-source";
 import ChatContainer from '@/components/study/directory/AiStudy/ChatContainer/index.vue'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
 
@@ -15,9 +14,8 @@ const route = useRoute()
 const userInfo = useUserInfoStore()
 const PoemImgStore = usePoemImgStore()
 const PoemImg = PoemImgStore.poemImg
-console.log('route', route)
 const poetId = Number(route.query.id) - 1
-
+const inputMessage = ref('')
 // 初始化状态
 const messages = ref([{ text: PoemImg[poetId].content, self: false }])
 const loading = ref(false)
@@ -106,6 +104,7 @@ onBeforeUnmount(() => {
         :loading="loading"
         :user-avatar="userInfo.userInfo.touxiang"
         :ai-avatar="PoemImg[poetId].url"
+        v-model="inputMessage"
         placeholder="有什么想问的你都可以畅所欲言！"
         @send="handleSend"
       />

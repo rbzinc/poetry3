@@ -265,172 +265,168 @@ const configSummary = computed(() => {
     </div>
 
     <!-- 输入区域 -->
-    <!-- 输入区域 -->
     <div class="input-area">
-      <!-- 修改 el-popover 的配置 -->
-      <el-popover
-        v-model:visible="configVisible"
-        placement="top"
-        :width="450"
-        trigger="click"
-        popper-class="config-popover"
-        :hide-after="0"
-        :teleported="true"
-        :stop-popper-mouse-event="false"
-      >
-        <template #reference>
-          <div class="config-summary" :class="{ 'has-config': hasConfig }">
-            <el-icon>
-              <Setting />
-            </el-icon>
-            <span>{{ configSummary }}</span>
-          </div>
-        </template>
-
-        <template #default>
-          <div class="config-form" @click.stop>
-            <h3 class="config-title">古诗生成配置</h3>
-
-            <!-- 体裁和情感选择 -->
-            <div class="form-row">
-              <!-- 体裁选择 -->
-              <div class="form-item">
-                <div class="form-label">体裁</div>
-                <el-select
-                  v-model="genreValue"
-                  placeholder="请选择"
-                  size="default"
-                  class="form-input"
-                  :close-on-click-modal="false"
-                  :close-on-select="false"
-                >
-                  <el-option v-for="item in genre" :key="item.value" :label="item.label" :value="item.value" />
-                  <template #footer>
-                    <div class="custom-option">
-                      <el-button v-if="!genreAdding" text size="small" @click.stop="genreAdding = true">
-                        <el-icon>
-                          <Plus />
-                        </el-icon>
-                        自定义
-                      </el-button>
-                      <div v-else class="custom-input-area">
-                        <el-input v-model="genreOptionName" placeholder="请输入体裁" size="default" @click.stop />
-                        <div class="custom-buttons">
-                          <el-button type="primary" size="small" @click.stop="onGenreConfirm">确定</el-button>
-                          <el-button size="small" @click.stop="handleCancelGenre">取消</el-button>
-                        </div>
-                      </div>
-                    </div>
-                  </template>
-                </el-select>
-              </div>
-
-              <!-- 情感选择 -->
-              <div class="form-item">
-                <div class="form-label">情感</div>
-                <el-select
-                  v-model="emotionValue"
-                  placeholder="请选择"
-                  size="default"
-                  class="form-input"
-                  :close-on-click-modal="false"
-                  :close-on-select="false"
-                >
-                  <el-option v-for="item in emotion" :key="item.value" :label="item.label" :value="item.value" />
-                  <template #footer>
-                    <div class="custom-option">
-                      <el-button v-if="!emotionAdding" text size="small" @click.stop="emotionAdding = true">
-                        <el-icon>
-                          <Plus />
-                        </el-icon>
-                        自定义
-                      </el-button>
-                      <div v-else class="custom-input-area">
-                        <el-input v-model="emotionOptionName" placeholder="请输入情感" size="default" @click.stop />
-                        <div class="custom-buttons">
-                          <el-button type="primary" size="small" @click.stop="onEmotionConfirm">确定</el-button>
-                          <el-button size="small" @click.stop="handleCancelEmotion">取消</el-button>
-                        </div>
-                      </div>
-                    </div>
-                  </template>
-                </el-select>
-              </div>
-            </div>
-
-            <!-- 主题和标题 -->
-            <div class="form-row">
-              <!-- 主题选择 -->
-              <div class="form-item">
-                <div class="form-label">主题</div>
-                <el-select
-                  v-model="themeValue"
-                  placeholder="请选择"
-                  size="default"
-                  class="form-input"
-                  :close-on-click-modal="false"
-                  :close-on-select="false"
-                >
-                  <el-option v-for="item in theme" :key="item.value" :label="item.label" :value="item.value" />
-                  <template #footer>
-                    <div class="custom-option">
-                      <el-button v-if="!themeAdding" text size="small" @click.stop="themeAdding = true">
-                        <el-icon>
-                          <Plus />
-                        </el-icon>
-                        自定义
-                      </el-button>
-                      <div v-else class="custom-input-area">
-                        <el-input v-model="themeOptionName" placeholder="请输入主题" size="default" @click.stop />
-                        <div class="custom-buttons">
-                          <el-button type="primary" size="small" @click.stop="onThemeConfirm">确定</el-button>
-                          <el-button size="small" @click.stop="handleCancelTheme">取消</el-button>
-                        </div>
-                      </div>
-                    </div>
-                  </template>
-                </el-select>
-              </div>
-
-              <!-- 标题输入 -->
-              <div class="form-item">
-                <div class="form-label">标题</div>
-                <el-input v-model="input" placeholder="请输入标题" size="default" class="form-input" @click.stop />
-              </div>
-            </div>
-
-            <!-- 图片上传 -->
-            <div class="form-row">
-              <div class="form-item upload-item">
-                <div class="form-label">图片</div>
-                <div class="upload-area" @click.stop>
-                  <el-upload
-                    class="image-uploader"
-                    :action="UPLOAD_ADDRESS"
-                    :headers="headers"
-                    :limit="1"
-                    :on-success="handleSuccess"
-                    :show-file-list="false"
-                  >
-                    <div v-if="!previewImage" class="upload-placeholder">
-                      <el-icon>
-                        <Plus />
-                      </el-icon>
-                      <span>上传图片</span>
-                    </div>
-                    <img v-else :src="previewImage" class="preview-img" />
-                  </el-upload>
-                </div>
-              </div>
-            </div>
-          </div>
-        </template>
-      </el-popover>
+      <!-- 使用 el-drawer 替代 el-popover -->
+      <div class="config-summary" :class="{ 'has-config': hasConfig }" @click="configVisible = true">
+        <el-icon>
+          <Setting />
+        </el-icon>
+        <span>{{ configSummary }}</span>
+      </div>
 
       <el-button type="primary" class="send-button" :loading="loading" :disabled="!hasConfig" @click="sendMessage">
         生成古诗
       </el-button>
     </div>
+
+    <!-- 使用 el-drawer 替代 el-popover -->
+    <el-drawer
+      v-model="configVisible"
+      title="古诗生成配置"
+      direction="rtl"
+      size="450px"
+      :with-header="true"
+      :destroy-on-close="false"
+      :close-on-click-modal="false"
+    >
+      <div class="config-form">
+        <!-- 体裁和情感选择 -->
+        <div class="form-row">
+          <!-- 体裁选择 -->
+          <div class="form-item">
+            <div class="form-label">体裁</div>
+            <el-select
+              v-model="genreValue"
+              placeholder="请选择"
+              size="default"
+              class="form-input"
+              :close-on-click-modal="false"
+            >
+              <el-option v-for="item in genre" :key="item.value" :label="item.label" :value="item.value" />
+              <template #footer>
+                <div class="custom-option">
+                  <el-button v-if="!genreAdding" text size="small" @click="genreAdding = true">
+                    <el-icon>
+                      <Plus />
+                    </el-icon>
+                    自定义
+                  </el-button>
+                  <div v-else class="custom-input-area">
+                    <el-input v-model="genreOptionName" placeholder="请输入体裁" size="default" />
+                    <div class="custom-buttons">
+                      <el-button type="primary" size="small" @click="onGenreConfirm">确定</el-button>
+                      <el-button size="small" @click="handleCancelGenre">取消</el-button>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </el-select>
+          </div>
+
+          <!-- 情感选择 -->
+          <div class="form-item">
+            <div class="form-label">情感</div>
+            <el-select
+              v-model="emotionValue"
+              placeholder="请选择"
+              size="default"
+              class="form-input"
+              :close-on-click-modal="false"
+            >
+              <el-option v-for="item in emotion" :key="item.value" :label="item.label" :value="item.value" />
+              <template #footer>
+                <div class="custom-option">
+                  <el-button v-if="!emotionAdding" text size="small" @click="emotionAdding = true">
+                    <el-icon>
+                      <Plus />
+                    </el-icon>
+                    自定义
+                  </el-button>
+                  <div v-else class="custom-input-area">
+                    <el-input v-model="emotionOptionName" placeholder="请输入情感" size="default" />
+                    <div class="custom-buttons">
+                      <el-button type="primary" size="small" @click="onEmotionConfirm">确定</el-button>
+                      <el-button size="small" @click="handleCancelEmotion">取消</el-button>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </el-select>
+          </div>
+        </div>
+
+        <!-- 主题和标题 -->
+        <div class="form-row">
+          <!-- 主题选择 -->
+          <div class="form-item">
+            <div class="form-label">主题</div>
+            <el-select
+              v-model="themeValue"
+              placeholder="请选择"
+              size="default"
+              class="form-input"
+              :close-on-click-modal="false"
+            >
+              <el-option v-for="item in theme" :key="item.value" :label="item.label" :value="item.value" />
+              <template #footer>
+                <div class="custom-option">
+                  <el-button v-if="!themeAdding" text size="small" @click="themeAdding = true">
+                    <el-icon>
+                      <Plus />
+                    </el-icon>
+                    自定义
+                  </el-button>
+                  <div v-else class="custom-input-area">
+                    <el-input v-model="themeOptionName" placeholder="请输入主题" size="default" />
+                    <div class="custom-buttons">
+                      <el-button type="primary" size="small" @click="onThemeConfirm">确定</el-button>
+                      <el-button size="small" @click="handleCancelTheme">取消</el-button>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </el-select>
+          </div>
+
+          <!-- 标题输入 -->
+          <div class="form-item">
+            <div class="form-label">标题</div>
+            <el-input v-model="input" placeholder="请输入标题" size="default" class="form-input" />
+          </div>
+        </div>
+
+        <!-- 图片上传 -->
+        <div class="form-row">
+          <div class="form-item upload-item">
+            <div class="form-label">图片</div>
+            <div class="upload-area">
+              <el-upload
+                class="image-uploader"
+                :action="UPLOAD_ADDRESS"
+                :headers="headers"
+                :limit="1"
+                :on-success="handleSuccess"
+                :show-file-list="false"
+              >
+                <div v-if="!previewImage" class="upload-placeholder">
+                  <el-icon>
+                    <Plus />
+                  </el-icon>
+                  <span>上传图片</span>
+                </div>
+                <img v-else :src="previewImage" class="preview-img" />
+              </el-upload>
+            </div>
+          </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="form-actions">
+          <el-button type="primary" @click="configVisible = false">确认</el-button>
+          <el-button @click="configVisible = false">取消</el-button>
+        </div>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -593,14 +589,7 @@ const configSummary = computed(() => {
 }
 
 .config-form {
-  .config-title {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 18px;
-    color: #303133;
-    text-align: center;
-    font-weight: 600;
-  }
+  padding: 20px;
 
   .form-row {
     display: flex;
@@ -688,15 +677,13 @@ const configSummary = computed(() => {
   }
 }
 
-:deep(.config-popover) {
-  max-width: 90vw;
-
-  .el-popper__arrow {
-    display: none;
-  }
+:deep(.el-drawer__header) {
+  margin-bottom: 0;
+  padding: 16px 20px;
+  border-bottom: 1px solid #ebeef5;
 }
 
-:deep(.config-popover) {
-  max-width: 90vw;
+:deep(.el-drawer__body) {
+  padding: 0;
 }
 </style>
