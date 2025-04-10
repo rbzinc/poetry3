@@ -5,6 +5,22 @@ export const getpoemRandomData = () => {
   return instance.get('/user/poetry/GetPoemDateRondom')
 }
 
+export const getPoetryCount = () =>
+  instance({
+    url: '/user/poetry/GetCount',
+    method: 'get',
+  })
+
+export const getPoetryPoemPage = (pageNum, pageSize) =>
+  instance({
+    url: '/user/poetry/GetPoemPage',
+    method: 'get',
+    params: {
+      pageNum: pageNum,
+      pageSize: pageSize,
+    },
+  })
+
 //点击朝代搜索古诗，分页搜索
 export const getDynastyData = (dynasty, pagenum, pageSize) =>
   instance({
@@ -76,3 +92,9 @@ export const getSentenceData = (data, pagenum) => {
     },
   })
 }
+
+export const getSentenceCount = () =>
+  instance({
+    url: '/user/rhesis/GetCount',
+    method: 'get',
+  })

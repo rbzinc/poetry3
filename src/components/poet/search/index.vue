@@ -1,24 +1,49 @@
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { userSearchStore } from '@/stores/modules/search.js'
-import { Search as SearchIcon } from '@element-plus/icons-vue'
+import { goPoetClass } from '@/router/helpers.js'
 
 const userSearch = userSearchStore()
 const input = ref('')
-const router = useRouter()
-
+const route = useRoute()
+/**
+ * 执行搜索
+ */
 const handleSearch = () => {
-  if (input.value.trim()) {
-    userSearch.userInput = input.value
-    //TODO搜索不会跳转到新的页面，而是改变poem页面的内容就行
-    router.push('/poetsearch')
+  if (!input.value.trim()) return
+  userSearch.userInput = input.value
+  // 根据当前路由决定搜索行为
+  if (route.path.search('/poet/class') === 0) {
+    // 搜索古诗词 - 直接在当前页面执行搜索
+  } else if (route.path.search('/poet/writer') === 0) {
+    // 搜索诗人 - 这里可以实现诗人搜索逻辑
+    console.log('搜索诗人')
+  } else if (route.path.search('/poet/sentence') === 0) {
+    // 搜索句子 - 这里可以实现句子搜索逻辑
+    console.log('搜索句子')
+  } else {
+    // 如果不在诗词页面，跳转到诗词页面并执行搜索
+    goPoetClass()
+    // 路由跳转后执行搜索
+    setTimeout(() => {
+      userSearch.performSearch(input.value)
+    }, 100)
   }
 }
 
 const handleClear = () => {
   input.value = ''
+  userSearch.userInput = ''
+  userSearch.clearSearch()
 }
+
+watch(
+  () => userSearch.userInput,
+  (newVal) => {
+    input.value = newVal
+  },
+)
 </script>
 
 <template>
@@ -33,7 +58,9 @@ const handleClear = () => {
         @clear="handleClear"
       >
         <template #prefix>
-          <el-icon class="search-icon"><SearchIcon /></el-icon>
+          <el-icon class="search-icon">
+            <Search />
+          </el-icon>
         </template>
         <template #append>
           <el-button @click="handleSearch">搜索</el-button>

@@ -1,58 +1,64 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { usePoetDataStore } from "@/stores/modules/poetData.js";
-import { getsenRandomData, getSentenceData } from '@/api/modules/poePavilion.js'
+import { usePoetDataStore } from '@/stores/modules/poetData.js'
+import { getsenRandomData, getSentenceCount, getSentenceData } from '@/api/modules/poePavilion.js'
 
-const poetDataStore = usePoetDataStore();
-const POET_CONFIG = poetDataStore.getPoetConfig;
+const poetDataStore = usePoetDataStore()
+const POET_CONFIG = poetDataStore.getPoetConfig
 
 /**
  * 定义数据
  */
-const state = ref({
-  isOpen: false,
-  currentPoet: '',
-  pageNum: 1,
-  pageSize: 10,
-  pageTotal: 0,
-  loading: false,
-  sentenceList: []
-})
+const isOpen = ref(false)
+const currentPoet = ref('')
+const pageNum = ref(1)
+const pageSize = ref(10)
+const pageTotal = ref(0)
+const loading = ref(false)
+const sentenceList = ref([])
 
 // 数据获取方法
 const fetchData = async (poetName, page = 1) => {
   try {
-    state.value.loading = true
-    state.value.currentPoet = poetName
+    pageNum.value = page
+    //TODO接口修复之后新增默认按钮
+    loading.value = true
+    currentPoet.value = poetName
     const res = await getSentenceData(poetName, page)
-    state.value.sentenceList = res.data.records
-    state.value.pageTotal = res.data.total
+    sentenceList.value = res.data.records
+    pageTotal.value = res.data.total
   } catch (error) {
     console.error('获取数据失败:', error)
   } finally {
-    state.value.loading = false
+    loading.value = false
   }
 }
 
 // 分页处理
 const handlePageChange = (page) => {
-  state.value.pageNum = page
-  fetchData(state.value.currentPoet, page)
+  pageNum.value = page
+  fetchData(currentPoet.value, page)
 }
 
 // 切换展开/收起
 const toggleSection = () => {
-  state.value.isOpen = !state.value.isOpen
+  isOpen.value = !isOpen.value
+}
+
+const sentenceCount = async () => {
+  const res = await getSentenceCount()
+  pageTotal.value = res.data
 }
 
 // 初始化数据
 onMounted(async () => {
   try {
     const res = await getsenRandomData()
-    state.value.sentenceList = res.data
+    sentenceList.value = res.data
   } catch (error) {
     console.error('获取随机数据失败:', error)
   }
+  await sentenceCount()
 })
 </script>
 
@@ -62,47 +68,50 @@ onMounted(async () => {
       <div class="filter-section">
         <div class="filter-row">
           <span class="filter-title">{{ POET_CONFIG.title }}:</span>
-          <div class="filter-options" :class="{ 'expanded': state.isOpen }">
-            <button v-for="option in POET_CONFIG.options"
-                    :key="option"
-                    class="option-btn"
-                    :class="{ 'active': state.currentPoet === option }"
-                    @click="fetchData(option)">
+          <div class="filter-options" :class="{ expanded: isOpen }">
+            <button
+              v-for="option in POET_CONFIG.options"
+              :key="option"
+              class="option-btn"
+              :class="{ active: currentPoet === option }"
+              @click="fetchData(option)"
+            >
               {{ option }}
             </button>
           </div>
           <button class="toggle-btn" @click="toggleSection">
-            <img :class="{ 'rotate-180': state.isOpen }"
-                 src="https://ziyuan.guwendao.net/siteimg/jianBtn.png"
-                 alt="toggle"
-                 width="13"
-                 height="13">
+            <img
+              :class="{ 'rotate-180': isOpen }"
+              src="https://ziyuan.guwendao.net/siteimg/jianBtn.png"
+              alt="toggle"
+              width="13"
+              height="13"
+            />
           </button>
         </div>
       </div>
     </div>
 
-    <div class="content-list" v-loading="state.loading">
-      <template v-if="state.sentenceList.length">
-        <div v-for="item in state.sentenceList"
-             :key="item.id"
-             class="sentence-item">
+    <div class="content-list" v-loading="loading">
+      <template v-if="sentenceList.length">
+        <div v-for="item in sentenceList" :key="item.id" class="sentence-item">
           <span class="content">{{ item.name }}</span>
           <span class="source">——{{ item.fromm }}</span>
         </div>
       </template>
-      <div v-else class="empty-state">
-        暂无数据
-      </div>
+      <div v-else class="empty-state">暂无数据</div>
     </div>
 
-    <el-pagination v-if="state.pageTotal > 0"
-                   :current-page="state.pageNum"
-                   :page-size="state.pageSize"
-                   :total="state.pageTotal"
-                   background
-                   layout="prev, pager, next"
-                   @current-change="handlePageChange" />
+    <el-pagination
+      v-if="pageTotal > 0"
+      :current-page="pageNum"
+      :page-size="pageSize"
+      :total="pageTotal"
+      background
+      layout="prev, pager, next"
+      @current-change="handlePageChange"
+      class="pagination"
+    />
   </div>
 </template>
 
@@ -205,11 +214,11 @@ onMounted(async () => {
     transition: all 0.2s ease;
 
     &:hover {
-      color: #409EFF;
+      color: #409eff;
     }
 
     &.active {
-      color: #409EFF;
+      color: #409eff;
       font-weight: bold;
     }
   }
@@ -230,8 +239,8 @@ onMounted(async () => {
       border-radius: 4px;
 
       &:hover:not(.is-disabled) {
-        color: #409EFF;
-        border-color: #409EFF;
+        color: #409eff;
+        border-color: #409eff;
       }
 
       &.is-disabled {
@@ -256,19 +265,22 @@ onMounted(async () => {
         color: #606266;
 
         &:hover:not(.is-active) {
-          color: #409EFF;
-          border-color: #409EFF;
+          color: #409eff;
+          border-color: #409eff;
         }
 
         &.is-active {
-          background-color: #409EFF;
+          background-color: #409eff;
           color: #fff !important;
-          border-color: #409EFF;
+          border-color: #409eff;
           position: relative;
           z-index: 1;
         }
       }
     }
   }
+}
+.pagination {
+  margin-bottom: 20px;
 }
 </style>

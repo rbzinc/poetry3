@@ -1,66 +1,85 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import Poetryitem from '@/components/poet/poetryitem/index.vue'
-import { getpoemRandomData, getDynastyData, getClassData, getWriterPoemData } from '@/api/index.js'
+
+import {
+  getpoemRandomData,
+  getDynastyData,
+  getClassData,
+  getWriterPoemData,
+  getPoetryCount,
+  getPoetryPoemPage,
+} from '@/api/index.js'
 import { usePoetDataStore } from '@/stores/modules/poetData.js'
 import { goPoetClassDetail } from '@/router/helpers.js'
 
-const poetDataStore = usePoetDataStore()
-const FILTER_CONFIG = poetDataStore.getAllConfig
-
+//TODO首屏显示收藏
 /**
  * 数据定义
  */
-const state = ref({
-  // 打开状态
-  openStates: {
-    dynasty: false, // 朝代
-    class: false, // 分类
-    poet: false, // 诗人
-  },
-  currentType: '', // 当前选择的类型
-  currentName: '', // 当前选择的名称
-  pageNum: 1, // 当前页
-  pageSize: 6, // 每页显示数量
-  pageTotal: 0, // 总页数
-  loading: false, // 加载状态
-  randomList: [], // 随机列表
+// 打开状态
+const openStates = ref({
+  dynasty: false, // 朝代
+  class: false, // 分类
+  poet: false, // 诗人
 })
+const currentType = ref('') // 当前选择的类型
+const currentName = ref('') // 当前选择的名称
+const pageNum = ref(1) // 当前页
+const pageSize = ref(10) // 每页显示数量
+const pageTotal = ref(0) // 总页数
+const loading = ref(false) // 加载状态
+const randomList = ref([]) // 随机列表
+const poetDataStore = usePoetDataStore()
+const FILTER_CONFIG = poetDataStore.getAllConfig
 
 // 切换展开/收起
 const toggleSection = (section) => {
-  state.value.openStates[section] = !state.value.openStates[section]
+  openStates.value[section] = !openStates.value[section]
 }
 
 /**
  * 将三个逻辑相同数据请求封装成函数
  */
-const fetchData = async (type, name, page = 1, pageSize = state.value.pageSize) => {
+const fetchData = async (type, name, page = 1, size = pageSize.value) => {
   try {
-    state.value.loading = true
-    state.value.currentType = type
-    state.value.currentName = name
+    loading.value = true
+    currentType.value = type
+    currentName.value = name
     const apiMap = {
       dynasty: getDynastyData,
       class: getClassData,
       poet: getWriterPoemData,
     }
-    const res = await apiMap[type](name, page, pageSize)
-    state.value.randomList = res.data.records
-    state.value.pageTotal = res.data.total
+    const res = await apiMap[type](name, page, size)
+    randomList.value = res.data.records
+    pageTotal.value = res.data.total
   } catch (error) {
     console.error('获取数据失败:', error)
   } finally {
-    state.value.loading = false
+    loading.value = false
   }
 }
 
 /**
  * 分页处理
  */
-const handlePageChange = (page) => {
-  state.value.pageNum = page
-  fetchData(state.value.currentType, state.value.currentName, page, state.value.pageSize)
+const handlePageChange = async (page) => {
+  if (currentType.value === '' || currentName.value === '') {
+    const res = await getPoetryPoemPage(pageNum.value, pageSize.value)
+    console.log(res.data)
+    randomList.value = res.data.records
+    pageTotal.value = res.data.total
+    pageNum.value = page
+  } else {
+    pageNum.value = page
+    await fetchData(currentType.value, currentName.value, page, pageSize.value)
+  }
+}
+
+const getPoemCount = async () => {
+  const res = await getPoetryCount()
+  pageTotal.value = res.data
 }
 
 /**
@@ -69,10 +88,11 @@ const handlePageChange = (page) => {
 onMounted(async () => {
   try {
     const res = await getpoemRandomData()
-    state.value.randomList = res.data
+    randomList.value = res.data
   } catch (error) {
     console.error('获取随机数据失败:', error)
   }
+  await getPoemCount()
 })
 </script>
 
@@ -82,12 +102,12 @@ onMounted(async () => {
       <div v-for="(config, type) in FILTER_CONFIG" :key="type" class="filter-section">
         <div class="filter-row">
           <span class="filter-title">{{ config.title }}:</span>
-          <div class="filter-options" :class="{ expanded: state.openStates[type] }">
+          <div class="filter-options" :class="{ expanded: openStates[type] }">
             <button
               v-for="option in config.options"
               :key="option"
               class="option-btn"
-              :class="{ active: state.currentName === option }"
+              :class="{ active: currentName === option }"
               @click="fetchData(type, option)"
             >
               {{ option }}
@@ -95,7 +115,7 @@ onMounted(async () => {
           </div>
           <button class="toggle-btn" @click="toggleSection(type)">
             <img
-              :class="{ 'rotate-180': state.openStates[type] }"
+              :class="{ 'rotate-180': openStates[type] }"
               src="https://ziyuan.guwendao.net/siteimg/jianBtn.png"
               alt="toggle"
               width="13"
@@ -106,10 +126,10 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="content-list" v-loading="state.loading">
-      <template v-if="state.randomList.length">
+    <div class="content-list" v-loading="loading">
+      <template v-if="randomList.length">
         <Poetryitem
-          v-for="item in state.randomList"
+          v-for="item in randomList"
           :key="item?.id"
           v-bind="{
             ...item,
@@ -122,13 +142,14 @@ onMounted(async () => {
     </div>
 
     <el-pagination
-      v-if="state.pageTotal > 0"
-      :current-page="state.pageNum"
-      :page-size="state.pageSize"
-      :total="state.pageTotal"
+      v-if="pageTotal > 0"
+      :current-page="pageNum"
+      :page-size="pageSize"
+      :total="pageTotal"
       background
       layout="prev, pager, next"
       @current-change="handlePageChange"
+      class="pagination"
     />
   </div>
 </template>
@@ -280,5 +301,8 @@ onMounted(async () => {
       }
     }
   }
+}
+.pagination {
+  margin-bottom: 20px;
 }
 </style>

@@ -11,52 +11,50 @@ const DYNASTY_CONFIG = poetDataStore.getDynastyConfig
 /**
  * 定义数据
  */
-const state = ref({
-  isOpen: false,
-  randomList: [],
-  currentDynasty: '',
-  pageNum: 1,
-  pageSize: 5,
-  pageTotal: 0,
-  loading: false,
-})
+const isOpen = ref(false)
+const randomList = ref([])
+const currentDynasty = ref('')
+const pageNum = ref(1)
+const pageSize = ref(5)
+const pageTotal = ref(0)
+const loading = ref(false)
 
 // 获取随机数据
 const getRandom = async () => {
   try {
-    state.value.loading = true
+    loading.value = true
     const res = await getPoetRandomData()
-    state.value.randomList = res.data
+    randomList.value = res.data
   } catch (error) {
     console.error('获取随机数据失败:', error)
   } finally {
-    state.value.loading = false
+    loading.value = false
   }
 }
 
 // 获取朝代数据
 const fetchData = async (dynastyName, page = 1) => {
   try {
-    state.value.loading = true
-    state.value.currentDynasty = dynastyName
+    loading.value = true
+    currentDynasty.value = dynastyName
     const res = await getWriterData(dynastyName, page)
-    state.value.randomList = res.data.records
-    state.value.pageTotal = res.data.total
+    randomList.value = res.data.records
+    pageTotal.value = res.data.total
   } catch (error) {
     console.error('获取朝代数据失败:', error)
   } finally {
-    state.value.loading = false
+    loading.value = false
   }
 }
 
 // 切换展开/收起
 const toggleSection = () => {
-  state.value.isOpen = !state.value.isOpen
+  isOpen.value = !isOpen.value
 }
 
 // 分页处理
 const handlePageChange = (page) => {
-  fetchData(state.value.currentDynasty, page)
+  fetchData(currentDynasty.value, page)
 }
 
 onMounted(getRandom)
@@ -68,12 +66,12 @@ onMounted(getRandom)
       <div class="filter-section">
         <div class="filter-row">
           <span class="filter-title">{{ DYNASTY_CONFIG.title }}:</span>
-          <div class="filter-options" :class="{ expanded: state.isOpen }">
+          <div class="filter-options" :class="{ expanded: isOpen }">
             <button
               v-for="option in DYNASTY_CONFIG.options"
               :key="option"
               class="option-btn"
-              :class="{ active: state.currentDynasty === option }"
+              :class="{ active: currentDynasty === option }"
               @click="fetchData(option)"
             >
               {{ option }}
@@ -81,7 +79,7 @@ onMounted(getRandom)
           </div>
           <button class="toggle-btn" @click="toggleSection">
             <img
-              :class="{ 'rotate-180': state.isOpen }"
+              :class="{ 'rotate-180': isOpen }"
               src="https://ziyuan.guwendao.net/siteimg/jianBtn.png"
               alt="toggle"
               width="13"
@@ -92,10 +90,10 @@ onMounted(getRandom)
       </div>
     </div>
 
-    <div class="content-list" v-loading="state.loading">
-      <template v-if="state.randomList.length">
+    <div class="content-list" v-loading="loading">
+      <template v-if="randomList.length">
         <Writeritem
-          v-for="item in state.randomList"
+          v-for="item in randomList"
           :key="item?.id"
           :name="item.name"
           :content="item.simpleIntro"
@@ -107,10 +105,10 @@ onMounted(getRandom)
     </div>
 
     <el-pagination
-      v-if="state.pageTotal > 0"
-      :current-page="state.pageNum"
-      :page-size="state.pageSize"
-      :total="state.pageTotal"
+      v-if="pageTotal > 0"
+      :current-page="pageNum"
+      :page-size="pageSize"
+      :total="pageTotal"
       background
       layout="prev, pager, next"
       @current-change="handlePageChange"

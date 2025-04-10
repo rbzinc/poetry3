@@ -1,8 +1,8 @@
 <script setup>
-import { defineProps } from "vue";
-import { Star, VideoPlay } from "@element-plus/icons-vue";
-import { useRouter } from "vue-router";
-import { userCollectPoem } from "@/api/index.js";
+import { defineProps } from 'vue'
+import { Star, VideoPlay } from '@element-plus/icons-vue'
+import { userCollectPoem } from '@/api/index.js'
+import { goPoetClassDetail } from '@/router/helpers.js'
 
 const props = defineProps({
   poetitle: String,
@@ -10,14 +10,15 @@ const props = defineProps({
   content: String,
   dynasty: String,
   id: String,
-});
-const router = useRouter();
+})
+
 const poetDetails = () => {
-  router.push(`/poedetails${item.id}`);
-};
+  goPoetClassDetail(props.id)
+}
 const collect = async () => {
-  const res = await userCollectPoem(item.id);
-};
+  const res = await userCollectPoem(props.id)
+  console.log(res.data)
+}
 </script>
 
 <template>
@@ -25,14 +26,14 @@ const collect = async () => {
     <div class="title" @click="poetDetails">
       {{ poetitle }}
     </div>
-    <div class="author">{{ writer }}——（{{ dynasty }}）</div>
+    <div class="author">{{ writer }}——（{{ dynasty ? dynasty : '暂未收录' }}）</div>
     <div class="stanza">
       <p class="line">
         {{ content }}
       </p>
     </div>
     <div class="footer">
-      <el-icon size="24" class="icon" @click="collect"><Star /></el-icon>
+      <el-icon size="24" class="icon" @click.stop="collect"><Star /></el-icon>
       <el-icon size="24" class="icon"><VideoPlay /></el-icon>
     </div>
   </div>
@@ -47,7 +48,7 @@ const collect = async () => {
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  font-family: "Georgia", serif;
+  font-family: 'Georgia', serif;
   color: #333;
   line-height: 1.6;
   &:hover {

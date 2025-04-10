@@ -1,5 +1,6 @@
 import router from './index.js'
 import * as ROUTES from '../constants/router.js'
+import { POET_CLASS } from '../constants/router.js'
 
 /**
  * 跳转到首页
@@ -13,6 +14,10 @@ export const goHome = () => {
  */
 export const goLogin = () => {
   router.push(ROUTES.LOGIN)
+}
+
+export const goPoetClass = () => {
+  router.push(ROUTES.POET_CLASS)
 }
 
 /**

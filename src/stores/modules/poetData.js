@@ -40,6 +40,7 @@ export const usePoetDataStore = defineStore('poetData', () => {
   ])
 
   const poetOptions = ref([
+    '默认',
     '李白',
     '杜甫',
     '李清照',
