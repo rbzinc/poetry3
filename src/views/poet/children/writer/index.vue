@@ -1,13 +1,14 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import Writeritem from '@/components/poet/writeritem/index.vue'
 import { usePoetDataStore } from '@/stores/modules/poetData.js'
 import { getPoetRandomData, getWriterData } from '@/api/modules/poePavilion.js'
 import { goPoetWriterDetail } from '@/router/helpers.js'
+import { userSearchStore } from '@/stores/index.js'
 
 const poetDataStore = usePoetDataStore()
 const DYNASTY_CONFIG = poetDataStore.getDynastyConfig
-
+const userSearch = userSearchStore()
 /**
  * 定义数据
  */
@@ -18,6 +19,7 @@ const pageNum = ref(1)
 const pageSize = ref(5)
 const pageTotal = ref(0)
 const loading = ref(false)
+const isSearchMode = ref(false)
 
 // 获取随机数据
 const getRandom = async () => {
@@ -46,7 +48,7 @@ const fetchData = async (dynastyName, page = 1) => {
     loading.value = false
   }
 }
-
+//TODO由于后端没有做分页，导致现在分页还不能用
 // 切换展开/收起
 const toggleSection = () => {
   isOpen.value = !isOpen.value
@@ -57,11 +59,34 @@ const handlePageChange = (page) => {
   fetchData(currentDynasty.value, page)
 }
 
+// 添加清除搜索方法
+const clearSearch = () => {
+  isSearchMode.value = false
+  userSearch.clearSearch()
+  getRandom() // 重新获取随机数据
+}
+
+watch(
+  () => userSearch.searchResults,
+  (newResults) => {
+    if (newResults && newResults.length > 0) {
+      randomList.value = newResults
+      pageTotal.value = userSearch.total
+      pageNum.value = 1 // 重置页码
+      isSearchMode.value = true // 设置搜索状态
+    }
+  },
+)
+
 onMounted(getRandom)
 </script>
 
 <template>
   <div class="content-container">
+    <div v-if="isSearchMode" class="search-status">
+      <p>搜索"{{ userSearch.userInput }}"的结果，共 {{ pageTotal }} 条</p>
+      <el-button type="text" @click="clearSearch">清除搜索</el-button>
+    </div>
     <div class="filter-box">
       <div class="filter-section">
         <div class="filter-row">
@@ -257,6 +282,20 @@ onMounted(getRandom)
         }
       }
     }
+  }
+}
+.search-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f0f9ff;
+  border-radius: 8px;
+  margin-bottom: 20px;
+
+  p {
+    margin: 0;
+    color: #409eff;
   }
 }
 </style>

@@ -1,7 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import Poetryitem from '@/components/poet/poetryitem/index.vue'
-
 import {
   getpoemRandomData,
   getDynastyData,
@@ -9,10 +8,14 @@ import {
   getWriterPoemData,
   getPoetryCount,
   getPoetryPoemPage,
+  getPoetSearch,
 } from '@/api/index.js'
 import { usePoetDataStore } from '@/stores/modules/poetData.js'
 import { goPoetClassDetail } from '@/router/helpers.js'
-
+import { userSearchStore } from '@/stores/index.js'
+const userSearch = userSearchStore()
+const poetDataStore = usePoetDataStore()
+const FILTER_CONFIG = poetDataStore.getAllConfig
 //TODO首屏显示收藏
 /**
  * 数据定义
@@ -30,8 +33,7 @@ const pageSize = ref(10) // 每页显示数量
 const pageTotal = ref(0) // 总页数
 const loading = ref(false) // 加载状态
 const randomList = ref([]) // 随机列表
-const poetDataStore = usePoetDataStore()
-const FILTER_CONFIG = poetDataStore.getAllConfig
+const isSearchMode = ref(false)
 
 // 切换展开/收起
 const toggleSection = (section) => {
@@ -65,9 +67,19 @@ const fetchData = async (type, name, page = 1, size = pageSize.value) => {
  * 分页处理
  */
 const handlePageChange = async (page) => {
+  // 判断是否在搜索模式
+  if (isSearchMode.value) {
+    // 在搜索模式下，使用搜索的分页
+    const res = await getPoetSearch(userSearch.userInput, page, pageSize.value)
+    randomList.value = res.data.records
+    pageTotal.value = res.data.total
+    pageNum.value = page
+    return
+  }
+
+  // 非搜索模式下的原有逻辑
   if (currentType.value === '' || currentName.value === '') {
-    const res = await getPoetryPoemPage(pageNum.value, pageSize.value)
-    console.log(res.data)
+    const res = await getPoetryPoemPage(page, pageSize.value)
     randomList.value = res.data.records
     pageTotal.value = res.data.total
     pageNum.value = page
@@ -94,10 +106,32 @@ onMounted(async () => {
   }
   await getPoemCount()
 })
+watch(
+  () => userSearch.searchResults,
+  (newResults) => {
+    if (newResults && newResults.length > 0) {
+      randomList.value = newResults
+      pageTotal.value = userSearch.total
+      pageNum.value = 1 // 重置页码
+      isSearchMode.value = true
+    }
+  },
+)
+const clearSearch = () => {
+  isSearchMode.value = false
+  userSearch.clearSearch()
+  // 重新加载初始数据
+  handlePageChange(1)
+}
+//TODO后面有一个需求，搜索之后页面中带有这个关键字的高亮显示，暂时不知道思路
 </script>
 
 <template>
   <div class="content-container">
+    <div v-if="isSearchMode" class="search-status">
+      <p>搜索"{{ userSearch.userInput }}"的结果，共 {{ pageTotal }} 条</p>
+      <el-button @click="clearSearch">清除搜索</el-button>
+    </div>
     <div class="filter-box">
       <div v-for="(config, type) in FILTER_CONFIG" :key="type" class="filter-section">
         <div class="filter-row">
@@ -304,5 +338,19 @@ onMounted(async () => {
 }
 .pagination {
   margin-bottom: 20px;
+}
+.search-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f0f9ff;
+  border-radius: 8px;
+  margin-bottom: 20px;
+
+  p {
+    margin: 0;
+    color: #409eff;
+  }
 }
 </style>

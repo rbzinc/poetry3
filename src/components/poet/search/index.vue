@@ -1,8 +1,9 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { userSearchStore } from '@/stores/modules/search.js'
 import { goPoetClass } from '@/router/helpers.js'
+import { getPoetSearch, getWriterSearch } from '@/api/index.js'
 
 const userSearch = userSearchStore()
 const input = ref('')
@@ -10,17 +11,26 @@ const route = useRoute()
 /**
  * 执行搜索
  */
-const handleSearch = () => {
+const handleSearch = async () => {
   if (!input.value.trim()) return
-  userSearch.userInput = input.value
   // 根据当前路由决定搜索行为
   if (route.path.search('/poet/class') === 0) {
+    const res = await getPoetSearch(input.value, 1, 10)
+    console.log(res.data)
+    userSearch.updateSearchResults({
+      list: res.data.records,
+      total: res.data.total,
+    })
+
     // 搜索古诗词 - 直接在当前页面执行搜索
   } else if (route.path.search('/poet/writer') === 0) {
     // 搜索诗人 - 这里可以实现诗人搜索逻辑
     console.log('搜索诗人')
+    const res = await getWriterSearch(input.value)
+    userSearch.updateWriterResults(res.data)
   } else if (route.path.search('/poet/sentence') === 0) {
     // 搜索句子 - 这里可以实现句子搜索逻辑
+    //TODO后续后端将两个接口合并之后 按照以往的思路进行修改
     console.log('搜索句子')
   } else {
     // 如果不在诗词页面，跳转到诗词页面并执行搜索
@@ -32,16 +42,27 @@ const handleSearch = () => {
   }
 }
 
+// 根据当前路由计算placeholder文本
+const placeholder = computed(() => {
+  if (route.path.search('/poet/class') === 0) {
+    return '请输入诗词名、作者...'
+  } else if (route.path.search('/poet/writer') === 0) {
+    return '请输入诗人名字或朝代...'
+  } else if (route.path.search('/poet/sentence') === 0) {
+    return '请输入诗词名、作者...'
+  }
+  return '请输入搜索关键词...'
+})
+
 const handleClear = () => {
   input.value = ''
-  userSearch.userInput = ''
-  userSearch.clearSearch()
+  userSearch.clearUserInput()
 }
 
 watch(
-  () => userSearch.userInput,
+  () => input.value,
   (newVal) => {
-    input.value = newVal
+    userSearch.userInput = newVal
   },
 )
 </script>
@@ -52,7 +73,7 @@ watch(
       <el-input
         v-model="input"
         class="search-input"
-        placeholder="请输入诗词名、作者或内容关键词..."
+        :placeholder="placeholder"
         @keyup.enter="handleSearch"
         clearable
         @clear="handleClear"

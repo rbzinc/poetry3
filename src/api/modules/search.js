@@ -11,16 +11,6 @@ export const getPoetSearch = (title, pageNum, pageSize = 10) => {
   })
 }
 
-// 根据诗人查询古诗
-//TODO后续这里会补充成分页查询
-export const getPoemByWriter = (name) => {
-  return instance.get('/user/poetry/GetPoemByWriter', {
-    params: {
-      name: name,
-    },
-  })
-}
-
 //模糊查询名句
 export const getSenSearch = (data, pagenum) => {
   return instance.get('/user/poetry/GetmingjuByThesisDataVo', {
