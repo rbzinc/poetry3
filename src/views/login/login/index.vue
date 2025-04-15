@@ -21,13 +21,13 @@ const formModel = ref({
 const rules = {
   username: [
     { required: true, message: '请输入用户名或者邮箱', trigger: 'blur' },
-    { min: 5, max: 10, message: '用户名必须是 5-10位 的字符', trigger: 'blur' },
+    { min: 4, max: 20, message: '用户名长度在4-20个字符之间', trigger: 'blur' },
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
     {
-      pattern: /^\S{6,15}$/,
-      message: '密码必须是 6-15位 的非空字符',
+      pattern: /^(?=.*[0-9]).{6,15}$/,
+      message: '密码必须包含数字，长度6-15位',
       trigger: 'blur',
     },
   ],
@@ -119,7 +119,6 @@ const changePage = (event) => {
 .form {
   width: 400px;
   height: 520px;
-  background-color: #fdfcf7;
   margin: 0 auto;
   display: flex;
   flex-direction: column;

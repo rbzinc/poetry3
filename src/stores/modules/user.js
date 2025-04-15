@@ -1,21 +1,24 @@
-import { defineStore } from "pinia"
+import { defineStore } from 'pinia'
 // import { userLoginService } from "../../api/modules/user"
-import { ref } from "vue"
+import { ref } from 'vue'
 
-
-export const useUserInfoStore = defineStore('user', () =>{
+export const useUserInfoStore = defineStore(
+  'poemUser',
+  () => {
     const userInfo = ref()
     const setUserInfo = (val) => {
-        userInfo.value = val
+      userInfo.value = val
     }
     const clearUserInfo = () => {
-        userInfo.value = null
+      userInfo.value = null
     }
     return {
-        userInfo,
-        setUserInfo,
-        clearUserInfo
+      userInfo,
+      setUserInfo,
+      clearUserInfo,
     }
-},{
+  },
+  {
     persist: true,
-})
+  },
+)

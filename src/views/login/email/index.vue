@@ -25,14 +25,18 @@ const formModel = ref({
 const rules = {
   email: [
     { required: true, message: '请输入邮箱', trigger: 'blur' },
-    { min: 8, max: 30, message: '邮箱不能为空', trigger: 'blur' },
+    {
+      pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+      message: '请输入正确的邮箱格式',
+      trigger: 'blur',
+    },
   ],
   password: [
     { required: true, message: '请输入验证码', trigger: 'blur' },
     {
-      min: 2,
+      min: 4,
       max: 10,
-      message: '验证码不能为空',
+      message: '验证码长度不正确',
       trigger: 'blur',
     },
   ],
@@ -146,7 +150,6 @@ const changePage = (event) => {
 .form {
   width: 400px;
   height: 520px;
-  background-color: #fdfcf7;
   margin: 0 auto;
   display: flex;
   flex-direction: column;

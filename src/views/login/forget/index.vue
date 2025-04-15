@@ -154,7 +154,6 @@ const changePage = (event) => {
 .form {
   width: 400px;
   height: 520px;
-  background-color: #fdfcf7;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
