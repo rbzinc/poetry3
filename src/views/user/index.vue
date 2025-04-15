@@ -257,7 +257,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .user-center {
-  background-image: url('@/assets/pic/home/userBg.jpg');
   background-size: cover;
   background-attachment: fixed;
   padding: 20px 0;
