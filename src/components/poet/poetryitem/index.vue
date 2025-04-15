@@ -5,17 +5,20 @@ import { userCollectPoem } from '@/api/index.js'
 import { goPoetClassDetail } from '@/router/helpers.js'
 
 const props = defineProps({
-  poetitle: String,
-  writer: String,
   content: String,
   dynasty: String,
   id: String,
+  islike: Boolean,
+  title: String,
+  type: String,
+  writer: String,
 })
-
+console.log(props)
 const poetDetails = () => {
   goPoetClassDetail(props.id)
 }
 const collect = async () => {
+  event.stopPropagation()
   const res = await userCollectPoem(props.id)
   console.log(res.data)
 }
@@ -24,7 +27,7 @@ const collect = async () => {
 <template>
   <div class="poetry-component">
     <div class="title" @click="poetDetails">
-      {{ poetitle }}
+      {{ title }}
     </div>
     <div class="author">{{ writer }}——（{{ dynasty ? dynasty : '暂未收录' }}）</div>
     <div class="stanza">
@@ -33,7 +36,7 @@ const collect = async () => {
       </p>
     </div>
     <div class="footer">
-      <el-icon size="24" class="icon" @click.stop="collect"><Star /></el-icon>
+      <el-icon size="24" class="icon" :class="{ 'star-active': islike }" @click.stop="collect"><Star /></el-icon>
       <el-icon size="24" class="icon"><VideoPlay /></el-icon>
     </div>
   </div>
@@ -90,6 +93,9 @@ const collect = async () => {
     .icon {
       width: 40px;
       height: 40px;
+    }
+    .star-active {
+      color: #ffd700; /* 金黄色 */
     }
   }
 }

@@ -148,10 +148,9 @@ const handleResetPassword = async () => {
 
   try {
     await resetFormRef.value.validate()
-    // TODO: 调用重置密码API
     ElMessage.success('密码重置成功，请重新登录')
     state.value.dialogVisible = false
-    router.push('/login')
+    await router.push('/login')
   } catch (error) {
     console.error('重置密码失败:', error)
   }
@@ -228,7 +227,7 @@ const handleAccountOperation = (operation) => {
                 :before-upload="beforeAvatarUpload"
                 :on-success="handleAvatarSuccess"
               >
-                <img v-if="userForm.touxiang" :src="userForm.touxiang" class="avatar" />
+                <img v-if="userForm.touxiang" :src="userForm.touxiang" class="avatar" alt="" />
                 <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
               </el-upload>
             </div>
