@@ -31,7 +31,7 @@ const handleSend = async (message) => {
     messages.value.push({ text: message, self: true })
 
     // 调用API发送消息
-    await aiChatGetApi(route.params.id, message)
+    await aiChatGetApi(route.query.id, message)
   } catch (error) {
     console.error('发送消息失败:', error)
     ElMessage.error('发送失败，请稍后重试')

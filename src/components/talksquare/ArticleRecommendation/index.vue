@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { userLuntanSelectForumGetApi } from '@/api/modules/talkSquare.js'
-import { useRouter } from 'vue-router'
 import { goForumDetail } from '@/router/helpers.js'
 const RecommendationData = ref({}) // 今日古诗推荐
 

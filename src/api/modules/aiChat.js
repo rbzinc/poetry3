@@ -1,4 +1,4 @@
-import instance from "../instance.js";
+import instance from '../instance.js'
 
 /**
  * ai机器对话
@@ -8,13 +8,13 @@ import instance from "../instance.js";
  */
 export const aiChatGetApi = (idd, message) =>
   instance({
-    url: "/ai/chat11",
-    method: "POST",
+    url: '/ai/chat11',
+    method: 'POST',
     data: {
       idd: idd,
       message: message,
     },
-  });
+  })
 
 /**
  * 文字生成图片
@@ -23,12 +23,12 @@ export const aiChatGetApi = (idd, message) =>
  */
 export const userAIDraowSdadwadwPostApi = (ai) =>
   instance({
-    url: "/user/AI/draow/sdadwadw",
-    method: "POST",
+    url: '/user/AI/draow/sdadwadw',
+    method: 'POST',
     params: {
       ai,
     },
-  });
+  })
 
 /**
  * 图片生成文字
@@ -38,13 +38,13 @@ export const userAIDraowSdadwadwPostApi = (ai) =>
  */
 export const aiPicturePostApi = (msg, url) =>
   instance({
-    url: "/ai/picture",
-    method: "POST",
+    url: '/ai/picture',
+    method: 'POST',
     params: {
       msg,
       url,
     },
-  });
+  })
 
 /**
  * 获取音频
@@ -53,14 +53,13 @@ export const aiPicturePostApi = (msg, url) =>
  */
 export const aiAudioGetAPi = (id) =>
   instance({
-    url: "/ai/audio",
-    method: "GET",
+    url: '/ai/audio',
+    method: 'GET',
     params: {
       id,
     },
-  });
+  })
 
-// TODO 更改到其他文件夹
 /**
  * 获取音频
  * @param {*} id
@@ -68,12 +67,12 @@ export const aiAudioGetAPi = (id) =>
  */
 export const aiAudioGetApi = (id) =>
   instance({
-    url: "/ai/audio",
-    method: "GET",
+    url: '/ai/audio',
+    method: 'GET',
     params: {
       id,
     },
-  });
+  })
 
 /**
  * id获取图片
@@ -82,20 +81,20 @@ export const aiAudioGetApi = (id) =>
  */
 export const userAIDraowGetApi = (id) =>
   instance({
-    url: "/user/AI/draow",
-    method: "POST",
+    url: '/user/AI/draow',
+    method: 'POST',
     params: {
       id,
     },
-  });
+  })
 
 export const userForgetGetApi = (email, password, code) =>
   instance({
-    url: "/user/forget",
-    method: "GET",
+    url: '/user/forget',
+    method: 'GET',
     data: {
       email,
       password,
       code,
     },
-  });
+  })

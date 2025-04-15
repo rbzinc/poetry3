@@ -64,8 +64,13 @@ export const getPoemDetatils = (data) => {
 }
 
 //随机返回几条诗人的简易介绍
-export const getPoetRandomData = () => {
-  return instance.get('/user/poetry/Get')
+export const getPoetRandomData = (pageNum, pageSize) => {
+  return instance.get('/user/poetry/Get', {
+    params: {
+      pageNum: pageNum,
+      pageSize: pageSize,
+    },
+  })
 }
 
 //点击朝代返回相应朝代的诗人信息
@@ -80,7 +85,7 @@ export const getWriterData = (data, pagenum) => {
 
 //随机返回十句名句
 export const getsenRandomData = (data) => {
-  return instance.get('/user/rhesis/GetRhesisDateRondom', data)
+  return instance.get('/user/rhesis/GetRhesisPage', data)
 }
 
 //根据诗人查询名句

@@ -3,7 +3,7 @@ import { ref, watch, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { userSearchStore } from '@/stores/modules/search.js'
 import { goPoetClass } from '@/router/helpers.js'
-import { getPoetSearch, getWriterSearch } from '@/api/index.js'
+import { getPoetSearch, getSenSearch, getWriterSearch } from '@/api/index.js'
 
 const userSearch = userSearchStore()
 const input = ref('')
@@ -16,7 +16,6 @@ const handleSearch = async () => {
   // 根据当前路由决定搜索行为
   if (route.path.search('/poet/class') === 0) {
     const res = await getPoetSearch(input.value, 1, 10)
-    console.log(res.data)
     userSearch.updateSearchResults({
       list: res.data.records,
       total: res.data.total,
@@ -25,20 +24,17 @@ const handleSearch = async () => {
     // 搜索古诗词 - 直接在当前页面执行搜索
   } else if (route.path.search('/poet/writer') === 0) {
     // 搜索诗人 - 这里可以实现诗人搜索逻辑
-    console.log('搜索诗人')
     const res = await getWriterSearch(input.value)
     userSearch.updateWriterResults(res.data)
   } else if (route.path.search('/poet/sentence') === 0) {
     // 搜索句子 - 这里可以实现句子搜索逻辑
-    //TODO后续后端将两个接口合并之后 按照以往的思路进行修改
-    console.log('搜索句子')
+    const res = await getSenSearch(input.value, 1, 10)
+    userSearch.updateSentenceResults({
+      list: res.data.records,
+      total: res.data.total,
+    })
   } else {
-    // 如果不在诗词页面，跳转到诗词页面并执行搜索
     goPoetClass()
-    // 路由跳转后执行搜索
-    setTimeout(() => {
-      userSearch.performSearch(input.value)
-    }, 100)
   }
 }
 

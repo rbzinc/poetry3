@@ -21,6 +21,13 @@ export const userSearchStore = defineStore('userSearch', () => {
     currentPage.value = 1
   }
 
+  //更新名句搜索结果
+  const updateSentenceResults = ({ list, total: totalCount }) => {
+    searchResults.value = list
+    total.value = totalCount
+    currentPage.value = 1
+  }
+
   // 清除搜索
   const clearSearch = () => {
     userInput.value = ''
@@ -37,5 +44,6 @@ export const userSearchStore = defineStore('userSearch', () => {
     updateSearchResults,
     clearSearch,
     updateWriterResults,
+    updateSentenceResults,
   }
 })

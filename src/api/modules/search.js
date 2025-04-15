@@ -12,11 +12,12 @@ export const getPoetSearch = (title, pageNum, pageSize = 10) => {
 }
 
 //模糊查询名句
-export const getSenSearch = (data, pagenum) => {
+export const getSenSearch = (title, pageNum, pageSize) => {
   return instance.get('/user/poetry/GetmingjuByThesisDataVo', {
     params: {
-      title: data,
-      pageNum: pagenum,
+      title,
+      pageNum,
+      pageSize,
     },
   })
 }

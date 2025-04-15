@@ -64,7 +64,6 @@ const startCountdown = () => {
  */
 const captch = async () => {
   // 发送验证码的函数
-  console.log(formModel.value.email)
   await getCodeService(formModel.value.email)
   startCountdown()
   alert('验证码发送成功！')
@@ -74,7 +73,6 @@ const captch = async () => {
  * 登录处理函数
  * @returns {Promise<void>}
  */
-// TODO 修改密码接口报错400
 const revisePassword = () => {
   // 登录处理函数
   // const res = await userForgetGetApi(formModel.value.email, formModel.value.newpassword, formModel.value.captchword)

@@ -16,7 +16,7 @@ const isOpen = ref(false)
 const randomList = ref([])
 const currentDynasty = ref('')
 const pageNum = ref(1)
-const pageSize = ref(5)
+const pageSize = ref(10)
 const pageTotal = ref(0)
 const loading = ref(false)
 const isSearchMode = ref(false)
@@ -25,8 +25,9 @@ const isSearchMode = ref(false)
 const getRandom = async () => {
   try {
     loading.value = true
-    const res = await getPoetRandomData()
-    randomList.value = res.data
+    const res = await getPoetRandomData(pageNum.value, pageSize.value)
+    randomList.value = res.data.records
+    pageTotal.value = res.data.total
   } catch (error) {
     console.error('获取随机数据失败:', error)
   } finally {
@@ -35,7 +36,8 @@ const getRandom = async () => {
 }
 
 // 获取朝代数据
-const fetchData = async (dynastyName, page = 1) => {
+const fetchData = async (dynastyName, page) => {
+  pageNum.value = page
   try {
     loading.value = true
     currentDynasty.value = dynastyName
@@ -56,7 +58,12 @@ const toggleSection = () => {
 
 // 分页处理
 const handlePageChange = (page) => {
-  fetchData(currentDynasty.value, page)
+  if (!currentDynasty.value) {
+    getRandom()
+  } else {
+    fetchData(currentDynasty.value, page)
+  }
+  pageNum.value = page
 }
 
 // 添加清除搜索方法
@@ -69,6 +76,7 @@ const clearSearch = () => {
 watch(
   () => userSearch.searchResults,
   (newResults) => {
+    console.log('搜索结果变化:', userSearch.searchResults)
     if (newResults && newResults.length > 0) {
       randomList.value = newResults
       pageTotal.value = userSearch.total
@@ -97,7 +105,7 @@ onMounted(getRandom)
               :key="option"
               class="option-btn"
               :class="{ active: currentDynasty === option }"
-              @click="fetchData(option)"
+              @click="fetchData(option, 1)"
             >
               {{ option }}
             </button>
@@ -137,6 +145,7 @@ onMounted(getRandom)
       background
       layout="prev, pager, next"
       @current-change="handlePageChange"
+      class="pagination"
     />
   </div>
 </template>
@@ -297,5 +306,8 @@ onMounted(getRandom)
     margin: 0;
     color: #409eff;
   }
+}
+.pagination {
+  margin-bottom: 20px;
 }
 </style>
