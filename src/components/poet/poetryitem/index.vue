@@ -13,7 +13,6 @@ const props = defineProps({
   type: String,
   writer: String,
 })
-console.log(props)
 const poetDetails = () => {
   goPoetClassDetail(props.id)
 }

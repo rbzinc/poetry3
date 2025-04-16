@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import SceneryCard from '../components/SceneryCard/index.vue'
 import { useRouter } from 'vue-router'
 import * as ROUTES from '@/constants/router.js'
@@ -157,16 +157,6 @@ const goToProvince = (province) => {
 // 分页逻辑
 const currentPage = ref(1)
 const pageSize = 8
-
-const paginatedSceneryList = computed(() => {
-  const start = (currentPage.value - 1) * pageSize
-  const end = start + pageSize
-  return sceneryList.value.slice(start, end)
-})
-
-const handlePageChange = (page) => {
-  currentPage.value = page
-}
 </script>
 
 <template>
