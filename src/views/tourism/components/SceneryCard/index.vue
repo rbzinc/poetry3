@@ -56,7 +56,7 @@ const goToDetail = () => {
 
 <style scoped lang="scss">
 .scenery-card {
-  background-color: #0c9dd2;
+  background-color: #a0d9f1;
   width: 300px;
   border-radius: 8px;
   overflow: hidden;

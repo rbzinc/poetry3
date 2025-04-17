@@ -13,7 +13,6 @@ const provinceInfo = ref({
   coverImage: 'https://example.com/jiangsu-cover.jpg',
   features: ['园林文化', '水乡古镇', '文人雅致']
 })
-
 const sceneryList = ref([
   {
     id: 1,

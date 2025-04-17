@@ -2,12 +2,10 @@
 import { User, Lock } from '@element-plus/icons-vue'
 import { userLoginService } from '@/api/modules/user'
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
 import { useUserInfoStore } from '@/stores/index.js'
 import { ElMessage } from 'element-plus'
 import { goHome } from '@/router/helpers.js'
 const useUser = useUserInfoStore()
-const router = useRouter()
 const form = ref(null)
 const formModel = ref({
   username: '',

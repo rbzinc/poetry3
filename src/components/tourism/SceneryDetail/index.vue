@@ -28,7 +28,6 @@ const sceneryDetail = ref({
 })
 
 onMounted(() => {
-  // 根据route.query.id获取景点详情
   console.log('Scenery ID:', route.query.id)
 })
 </script>

@@ -4,6 +4,7 @@ import SceneryCard from '../components/SceneryCard/index.vue'
 import { useRouter } from 'vue-router'
 import * as ROUTES from '@/constants/router.js'
 import { useSceneryStore } from '@/stores/modules/scenery.js'
+
 const router = useRouter()
 const activeProvince = ref('all')
 const currentPage = ref(1) // 新增：当前页
@@ -24,11 +25,14 @@ const sceneryList = computed(() => sceneryStore.getSceneryByProvince(activeProvi
 
 const getProvinceImage = (province) => {
   const imageMap = {
-    beijing: 'https://img.zcool.cn/community/01f9ea5541f3210000019ae9df1533.jpg@1280w_1l_2o_100sh.jpg',
-    jiangsu: 'https://img.zcool.cn/community/0183465541f3220000019ae9b8cd33.jpg@1280w_1l_2o_100sh.jpg',
-    zhejiang: 'https://img.zcool.cn/community/01a0f75541f3220000019ae9f12f18.jpg@1280w_1l_2o_100sh.jpg',
-    anhui: 'https://img.zcool.cn/community/01f4f65541f31f0000019ae9f8ff6a.jpg@1280w_1l_2o_100sh.jpg',
-    sichuan: 'https://img.zcool.cn/community/01f1c65541f3210000019ae9df1533.jpg@1280w_1l_2o_100sh.jpg',
+    beijing:
+      'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%8C%97%E4%BA%AC/%E5%A4%A9%E5%AE%89%E9%97%A8%E5%B9%BF%E5%9C%BA.jpeg',
+    jiangsu: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E6%B1%9F%E8%8B%8F/%E5%8D%97%E4%BA%AC.jpeg',
+    zhejiang: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E6%B5%99%E6%B1%9F/%E6%9D%AD%E5%B7%9E.jpeg',
+    anhui: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%AE%89%E5%BE%BD/%E5%90%88%E8%82%A5.jpeg',
+    sichuan:
+      'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%9B%9B%E5%B7%9D/%E4%B9%9D%E5%AF%A8%E6%B2%9F.png',
+    shanxi: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E9%99%95%E8%A5%BF/%E8%A5%BF%E5%AE%89.jpeg',
   }
   return imageMap[province] || 'https://img.zcool.cn/community/01c2665541f3210000019ae9b8cd33.jpg@1280w_1l_2o_100sh.jpg'
 }
@@ -38,8 +42,7 @@ const paginatedSceneryList = computed(() => {
   return sceneryList.value.slice(start, start + pageSize)
 })
 
-const handleProvinceChange = (province) => {
-  activeProvince.value = province
+const handleProvinceChange = () => {
   currentPage.value = 1 // 切换省份时重置到第一页
 }
 const goToProvince = (province) => {
