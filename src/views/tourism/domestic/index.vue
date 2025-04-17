@@ -3,10 +3,11 @@ import { ref, computed } from 'vue'
 import SceneryCard from '../components/SceneryCard/index.vue'
 import { useRouter } from 'vue-router'
 import * as ROUTES from '@/constants/router.js'
-
+import { useSceneryStore } from '@/stores/modules/scenery.js'
 const router = useRouter()
 const activeProvince = ref('all')
-
+const currentPage = ref(1) // 新增：当前页
+const pageSize = 4 // 每页4条
 const provinces = ref([
   { value: 'all', label: '全部' },
   { value: 'beijing', label: '北京' },
@@ -15,128 +16,12 @@ const provinces = ref([
   { value: 'anhui', label: '安徽' },
   { value: 'sichuan', label: '四川' },
   { value: 'shanxi', label: '陕西' },
-  { value: 'hubei', label: '湖北' },
-  { value: 'hunan', label: '湖南' },
-  { value: 'shandong', label: '山东' },
-  { value: 'henan', label: '河南' },
-  { value: 'guangdong', label: '广东' },
-  { value: 'fujian', label: '福建' },
-  { value: 'jiangxi', label: '江西' },
-  { value: 'guizhou', label: '贵州' },
-  { value: 'yunnan', label: '云南' },
-  { value: 'shaanxi', label: '陕西' },
-  { value: 'gansu', label: '甘肃' },
-  { value: 'hebei', label: '河北' },
-  { value: 'shanxi', label: '山西' },
 ])
 
-const sceneryList = ref([
-  {
-    id: 1,
-    name: '苏州园林',
-    image: 'https://example.com/suzhou.jpg',
-    location: '江苏·苏州',
-    poem: '吴地能种树，园林半是家。',
-    poet: '杜甫',
-    description: '苏州园林以其精致典雅的园林艺术闻名于世，是中国古典园林的代表作品。',
-    tags: ['园林', '江南风光', '世界遗产'],
-  },
-  {
-    id: 2,
-    name: '西湖',
-    image: 'https://example.com/xihu.jpg',
-    location: '浙江·杭州',
-    poem: '欲把西湖比西子，淡妆浓抹总相宜。',
-    poet: '苏轼',
-    description: '杭州西湖景区融自然与人文景观于一体，是中国最著名的观光胜地之一。',
-    tags: ['湖泊', '自然景观', '世界遗产'],
-  },
-  {
-    id: 3,
-    name: '黄山',
-    image: 'https://example.com/huangshan.jpg',
-    location: '安徽·黄山',
-    poem: '黄山四千仞，三十二莲峰。',
-    poet: '李白',
-    description: '黄山以奇松、怪石、云海、温泉"四绝"闻名于世，被誉为"天下第一奇山"。',
-    tags: ['山岳', '自然景观', '世界遗产'],
-  },
-  {
-    id: 4,
-    name: '故宫',
-    image: 'https://example.com/gugong.jpg',
-    location: '北京',
-    poem: '紫禁城中秋月明，菊花香露湿流萤。',
-    poet: '李商隐',
-    description: '故宫是中国明清两代的皇家宫殿，是中国古代宫廷建筑的精华。',
-    tags: ['古建筑', '历史遗迹', '世界遗产'],
-  },
-  {
-    id: 5,
-    name: '九寨沟',
-    image: 'https://example.com/jiuzhaigou.jpg',
-    location: '四川·阿坝',
-    poem: '翠湖碧波映山色，彩林红叶舞秋风。',
-    poet: '现代',
-    description: '九寨沟以其碧蓝的湖水、叠瀑、彩林和雪山闻名于世，被誉为"人间仙境"。',
-    tags: ['自然景观', '湖泊', '世界遗产'],
-  },
-  {
-    id: 6,
-    name: '武陵源',
-    image: 'https://example.com/wulingyuan.jpg',
-    location: '湖南·张家界',
-    poem: '峰林倒影入潭中，山色空蒙雨亦空。',
-    poet: '现代',
-    description: '张家界以其独特的石英砂岩峰林地貌闻名，是《阿凡达》外景地的灵感来源。',
-    tags: ['自然景观', '山岳', '世界遗产'],
-  },
-  {
-    id: 7,
-    name: '泰山',
-    image: 'https://example.com/taishan.jpg',
-    location: '山东·泰安',
-    poem: '会当凌绝顶，一览众山小。',
-    poet: '杜甫',
-    description: '泰山是中国五岳之首，以其雄伟的气势和深厚的文化底蕴著称。',
-    tags: ['山岳', '文化遗产', '世界遗产'],
-  },
-  {
-    id: 8,
-    name: '龙门石窟',
-    image: 'https://example.com/longmen.jpg',
-    location: '河南·洛阳',
-    poem: '石窟千龛佛，雕刻万象新。',
-    poet: '现代',
-    description: '龙门石窟是中国石窟艺术的巅峰之作，展现了盛唐时期的雕刻艺术。',
-    tags: ['石窟', '佛教文化', '世界遗产'],
-  },
-  {
-    id: 9,
-    name: '丽江古城',
-    image: 'https://example.com/lijiang.jpg',
-    location: '云南·丽江',
-    poem: '玉龙雪山云缭绕，纳西古城水潺潺。',
-    poet: '现代',
-    description: '丽江古城是纳西族的传统聚居地，以其独特的民族特色和古城风貌闻名。',
-    tags: ['古城', '民族文化', '世界遗产'],
-  },
-  {
-    id: 10,
-    name: '莫高窟',
-    image: 'https://example.com/mogao.jpg',
-    location: '甘肃·敦煌',
-    poem: '大漠孤烟直，长河落日圆。',
-    poet: '王维',
-    description: '莫高窟是世界上现存规模最大、内容最丰富的佛教艺术圣地。',
-    tags: ['石窟', '丝绸之路', '世界遗产'],
-  },
-])
+// 使用 Pinia Store
+const sceneryStore = useSceneryStore()
+const sceneryList = computed(() => sceneryStore.getSceneryByProvince(activeProvince.value))
 
-const handleProvinceChange = (province) => {
-  activeProvince.value = province
-  // 这里可以根据省份筛选景点
-}
 const getProvinceImage = (province) => {
   const imageMap = {
     beijing: 'https://img.zcool.cn/community/01f9ea5541f3210000019ae9df1533.jpg@1280w_1l_2o_100sh.jpg',
@@ -147,16 +32,22 @@ const getProvinceImage = (province) => {
   }
   return imageMap[province] || 'https://img.zcool.cn/community/01c2665541f3210000019ae9b8cd33.jpg@1280w_1l_2o_100sh.jpg'
 }
+// 新增：分页后的景点列表
+const paginatedSceneryList = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return sceneryList.value.slice(start, start + pageSize)
+})
+
+const handleProvinceChange = (province) => {
+  activeProvince.value = province
+  currentPage.value = 1 // 切换省份时重置到第一页
+}
 const goToProvince = (province) => {
   router.push({
     path: ROUTES.TOURISM_PROVINCE,
     query: { province: province.value },
   })
 }
-
-// 分页逻辑
-const currentPage = ref(1)
-const pageSize = 8
 </script>
 
 <template>
@@ -187,11 +78,17 @@ const pageSize = 8
 
     <h2 class="section-title">推荐景点</h2>
     <div class="scenery-list">
-      <SceneryCard v-for="scenery in sceneryList" :key="scenery.id" :scenery="scenery" />
+      <SceneryCard v-for="scenery in paginatedSceneryList" :key="scenery.id" :scenery="scenery" />
     </div>
 
     <div class="pagination">
-      <el-pagination background layout="prev, pager, next" :total="100" :page-size="12" />
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="sceneryList.length"
+        :page-size="pageSize"
+        v-model:current-page="currentPage"
+      />
     </div>
   </div>
 </template>
