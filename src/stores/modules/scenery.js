@@ -75,7 +75,8 @@ export const useSceneryStore = defineStore('scenery', () => {
     {
       id: 7,
       name: '长城',
-      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%8C%97%E4%BA%AC/%E5%85%AB%E8%BE%BE%E5%B2%AD%E9%95%BF%E5%9F%8E.jpeg',
+      image:
+        'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%8C%97%E4%BA%AC/%E5%85%AB%E8%BE%BE%E5%B2%AD%E9%95%BF%E5%9F%8E.jpeg',
       location: '北京',
       poem: '但使龙城飞将在，不教胡马度阴山。',
       poet: '王昌龄',
@@ -97,7 +98,8 @@ export const useSceneryStore = defineStore('scenery', () => {
     {
       id: 9,
       name: '南锣鼓巷',
-      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%8C%97%E4%BA%AC/%E5%8D%97%E9%94%A3%E9%BC%93%E6%B8%AF.png',
+      image:
+        'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%8C%97%E4%BA%AC/%E5%8D%97%E9%94%A3%E9%BC%93%E6%B8%AF.png',
       location: '北京',
       poem: '胡同深处旧时光，青砖灰瓦忆京腔。',
       poet: '现代',
@@ -119,7 +121,8 @@ export const useSceneryStore = defineStore('scenery', () => {
     {
       id: 11,
       name: '天安门',
-      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%8C%97%E4%BA%AC/%E5%A4%A9%E5%AE%89%E9%97%A8%E5%B9%BF%E5%9C%BA.jpeg',
+      image:
+        'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%8C%97%E4%BA%AC/%E5%A4%A9%E5%AE%89%E9%97%A8%E5%B9%BF%E5%9C%BA.jpeg',
       location: '北京',
       poem: '万国衣冠拜冕旒，天安门上看神州。',
       poet: '现代',
@@ -141,7 +144,8 @@ export const useSceneryStore = defineStore('scenery', () => {
     {
       id: 13,
       name: '颐和园',
-      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%8C%97%E4%BA%AC/%E9%A2%90%E5%92%8C%E5%9B%AD.jpeg',
+      image:
+        'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%8C%97%E4%BA%AC/%E9%A2%90%E5%92%8C%E5%9B%AD.jpeg',
       location: '北京',
       poem: '万树垂杨绕玉堤，昆明湖上画船稀。',
       poet: '清·洪亮吉',
@@ -152,7 +156,8 @@ export const useSceneryStore = defineStore('scenery', () => {
     {
       id: 14,
       name: '圆明园',
-      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%8C%97%E4%BA%AC/%E5%9C%86%E6%98%8E%E5%9B%AD.jpeg',
+      image:
+        'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%8C%97%E4%BA%AC/%E5%9C%86%E6%98%8E%E5%9B%AD.jpeg',
       location: '北京',
       poem: '劫后园林空断碧，残荷犹带旧时香。',
       poet: '现代',
@@ -331,7 +336,8 @@ export const useSceneryStore = defineStore('scenery', () => {
     {
       id: 30,
       name: '峨眉山',
-      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%9B%9B%E5%B7%9D/%E5%B3%A8%E7%9C%89%E5%B1%B1%E5%B8%82.jpeg',
+      image:
+        'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%9B%9B%E5%B7%9D/%E5%B3%A8%E7%9C%89%E5%B1%B1%E5%B8%82.jpeg',
       location: '四川·乐山',
       poem: '蜀国多仙山，峨眉邈难匹。',
       poet: '李白',
@@ -342,7 +348,8 @@ export const useSceneryStore = defineStore('scenery', () => {
     {
       id: 31,
       name: '九寨沟',
-      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%9B%9B%E5%B7%9D/%E4%B9%9D%E5%AF%A8%E6%B2%9F.png',
+      image:
+        'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%9B%9B%E5%B7%9D/%E4%B9%9D%E5%AF%A8%E6%B2%9F.png',
       location: '四川·阿坝',
       poem: '翠湖碧波映山色，彩林红叶舞秋风。',
       poet: '现代',
@@ -428,12 +435,177 @@ export const useSceneryStore = defineStore('scenery', () => {
       tags: ['群岛', '海滨城市', '浙江'],
       province: 'zhejiang',
     },
+    {
+      id: 39,
+      name: '苏州园林',
+      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/2.jpg',
+      location: '江苏·苏州',
+      poem: '吾庐独爱湖山好，况是林泉得自由。',
+      poet: '宋·苏轼',
+      description:
+        '苏州园林是中国古典园林的代表，以精巧的布局、雅致的建筑和丰富的文化内涵著称。拙政园、留园、网师园和环秀山庄被誉为苏州四大名园，已被列入世界文化遗产名录。',
+      history:
+        '苏州园林始于春秋时期，兴盛于明清两代。它们大多由文人雅士或退休官员所建，融合了诗、书、画等多种艺术形式，体现了中国传统文化的精髓。',
+      culturalValue:
+        '苏州园林是中国传统审美观念的集中体现，讲究"虽由人作，宛自天开"的意境，强调自然与人工的和谐统一。园中常有亭台楼阁、假山池沼、花木树石等元素，构成一幅幅立体的山水画卷。',
+      bestVisitTime: '春季和秋季是游览苏州园林的最佳时节，此时花木繁茂或红叶满园，景色最为优美。',
+      tags: ['园林', '世界遗产', '江南水乡', '江苏'],
+      province: 'jiangsu',
+      relatedPoems: [
+        {
+          title: '咏苏州园林',
+          content: '吾庐独爱湖山好，况是林泉得自由。\n小院回廊春寂寂，沉香亭北月悠悠。',
+          poet: '苏轼',
+          dynasty: '宋',
+        },
+        {
+          title: '题拙政园',
+          content: '谁谓城市无山水，园林处处皆自然。\n假山叠石通幽径，曲水回廊映远天。',
+          poet: '文征明',
+          dynasty: '明',
+        },
+      ],
+    },
+    {
+      id: 40,
+      name: '黄山详览',
+      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/4.jpg',
+      location: '安徽·黄山',
+      poem: '黄山何处好，好在不言中。\n四时皆可爱，晴雨各有容。',
+      poet: '清·张谔',
+      description:
+        '黄山位于安徽省南部，是中国十大名山之一，以"奇松、怪石、云海、温泉"四绝闻名于世。黄山的自然景观与人文景观完美结合，被誉为"天下第一奇山"。',
+      history:
+        '黄山原名"黟山"，因传说轩辕黄帝曾在此炼丹而改名为黄山。自唐代以来，黄山就是文人墨客向往的胜地，留下了无数诗词佳作。',
+      culturalValue:
+        '黄山不仅是自然景观的瑰宝，也是中国传统山水画的重要题材。"黄山派"绘画以描绘黄山奇特的自然景观而著称，对中国山水画的发展产生了深远影响。',
+      bestVisitTime:
+        '四季皆宜，春季可赏花，夏季可避暑，秋季可观红叶，冬季可赏雪景。其中以春秋两季最佳，尤其是云海出现的几率较高。',
+      tags: ['山岳', '自然景观', '世界遗产', '安徽'],
+      province: 'anhui',
+      images: [
+        'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%AE%89%E5%BE%BD/%E9%BB%84%E5%B1%B1%E8%AF%A6%E6%83%85.jpeg',
+        'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%AE%89%E5%BE%BD/%E9%BB%84%E5%B1%B1%E8%AF%A6%E6%83%852.jpeg',
+        'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/%E5%AE%89%E5%BE%BD/%E9%BB%84%E5%B1%B1%E8%AF%A6%E6%83%853.jpeg',
+      ],
+      relatedPoems: [
+        {
+          title: '登黄山',
+          content: '黄山四千仞，三十二莲峰。\n回峦叠嶂色溟蒙，紫霞浮动连沧海。',
+          poet: '李白',
+          dynasty: '唐',
+        },
+        {
+          title: '题黄山',
+          content: '黄山高，白云飞，黄山道，难上归。\n一登绝顶天下小，万里江山尽收眼底。',
+          poet: '徐霞客',
+          dynasty: '明',
+        },
+      ],
+    },
+    {
+      id: 41,
+      name: '三峡',
+      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/3.jpg',
+      location: '重庆·湖北',
+      poem: '两岸猿声啼不住，轻舟已过万重山。',
+      poet: '唐·李白',
+      description:
+        '长江三峡是长江上游段的瞿塘峡、巫峡和西陵峡的总称，全长约200公里，以雄伟壮丽的自然风光著称。峡谷两岸山峰陡峭，江水湍急，自古就是中国最著名的自然景观之一。',
+      history:
+        '三峡地区自古就是兵家必争之地，也是文人墨客吟咏的对象。唐代诗人李白的《早发白帝城》中"两岸猿声啼不住，轻舟已过万重山"就是描写三峡景色的名句。',
+      culturalValue:
+        '三峡不仅有壮丽的自然风光，还有丰富的历史文化遗产，如白帝城、张飞庙、屈原祠等。三峡也是巴楚文化的重要发源地，保存了许多珍贵的文化遗产。',
+      bestVisitTime: '春季（3-5月）和秋季（9-11月）是游览三峡的最佳时节，此时气候宜人，景色优美。',
+      tags: ['自然景观', '峡谷', '水域风光'],
+      province: 'chongqing',
+
+      relatedPoems: [
+        {
+          title: '早发白帝城',
+          content: '朝辞白帝彩云间，千里江陵一日还。\n两岸猿声啼不住，轻舟已过万重山。',
+          poet: '李白',
+          dynasty: '唐',
+        },
+        {
+          title: '巫山高',
+          content: '巫山高不极，合沓似多重。\n日没绝巴国，天清无一峰。',
+          poet: '杜甫',
+          dynasty: '唐',
+        },
+      ],
+    },
+    {
+      id: 42,
+      name: '敦煌',
+      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/1.jpg',
+      location: '甘肃·敦煌',
+      poem: '大漠孤烟直，长河落日圆。',
+      poet: '唐·王维',
+      description:
+        '敦煌位于甘肃省西部，是古丝绸之路上的重要城市，以莫高窟、鸣沙山、月牙泉等著名景点闻名于世。敦煌是中国历史上东西方文化交流的重要枢纽，保存了大量珍贵的文化遗产。',
+      history:
+        '敦煌自汉代起就是丝绸之路上的重要城市，莫高窟始建于十六国的前秦时期，历经千年的营建，形成了规模宏大的石窟艺术宝库。20世纪初，敦煌藏经洞的发现震惊了世界，大量珍贵文物流失海外。',
+      culturalValue:
+        '敦煌艺术是中国古代艺术的瑰宝，莫高窟的壁画和彩塑融合了汉、藏、印度等多种文化元素，是研究中国古代艺术、宗教和社会生活的重要资料。敦煌文书则是研究中国古代社会经济、文化、宗教的珍贵史料。',
+      bestVisitTime: '每年5-10月是游览敦煌的最佳时节，此时气候适宜，景色优美。',
+      tags: ['丝绸之路', '石窟艺术', '世界遗产', '甘肃'],
+      province: 'gansu',
+
+      relatedPoems: [
+        {
+          title: '使至塞上',
+          content:
+            '单车欲问边，属国过居延。\n征蓬出汉塞，归雁入胡天。\n大漠孤烟直，长河落日圆。\n萧关逢候骑，都护在燕然。',
+          poet: '王维',
+          dynasty: '唐',
+        },
+        {
+          title: '敦煌怀古',
+          content: '千年古道沙漠边，佛光壁画耀眼前。\n丝路驼铃声已远，文明瑰宝永流传。',
+          poet: '现代',
+          dynasty: '现代',
+        },
+      ],
+    },
+    {
+      id: 43,
+      name: '庐山',
+      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/5.jpg',
+      location: '江西·九江',
+      poem: '横看成岭侧成峰，远近高低各不同。',
+      poet: '宋·苏轼',
+      description:
+        '庐山位于江西省九江市，是中国著名的风景名胜区和避暑胜地。庐山以其雄奇秀丽的自然风光和丰富的人文景观著称，被誉为"匡庐奇秀甲天下"。',
+      history:
+        '庐山自古就是名山胜地，早在春秋战国时期就有人在此隐居修道。唐宋以来，庐山成为文人墨客向往的地方，留下了大量诗词佳作。近代以来，庐山也是重要的政治、文化活动场所。',
+      culturalValue:
+        '庐山不仅有壮丽的自然风光，还有丰富的历史文化遗产，如白鹿洞书院、东林寺等。庐山也是中国近现代史上的重要场所，多次举办过重要的政治会议。',
+      bestVisitTime: '夏季（6-8月）是游览庐山的最佳时节，此时气候凉爽，云雾缭绕，景色最为优美。',
+      tags: ['山岳', '避暑胜地', '世界遗产', '江西'],
+      province: 'jiangxi',
+
+      relatedPoems: [
+        {
+          title: '题西林壁',
+          content: '横看成岭侧成峰，远近高低各不同。\n不识庐山真面目，只缘身在此山中。',
+          poet: '苏轼',
+          dynasty: '宋',
+        },
+        {
+          title: '望庐山瀑布',
+          content: '日照香炉生紫烟，遥看瀑布挂前川。\n飞流直下三千尺，疑是银河落九天。',
+          poet: '李白',
+          dynasty: '唐',
+        },
+      ],
+    },
   ])
 
   // 按省份分类的景点
   const sceneryByProvince = computed(() => {
     const map = {}
-    allScenery.value.forEach(item => {
+    allScenery.value.forEach((item) => {
       if (!map[item.province]) map[item.province] = []
       map[item.province].push(item)
     })

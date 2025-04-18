@@ -62,7 +62,6 @@ const goToProvince = (province) => {
       </el-tabs>
     </div>
 
-    <!-- 优化后的省份快速访问区域 -->
     <h2 class="section-title">热门省份</h2>
     <div class="quick-access">
       <div

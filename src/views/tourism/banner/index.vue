@@ -1,57 +1,72 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import * as ROUTES from '@/constants/router.js'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const bannerList = ref([
-  {
-    id: 1,
-    title: '江南好，风景旧曾谙',
-    subtitle: '探访江南水乡',
-    image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/2.jpg',
-    poet: '白居易',
-    poem: '江南好，风景旧曾谙。日出江花红胜火，春来江水绿如蓝。',
-    location: '苏州园林',
-  },
-  {
-    id: 2,
-    title: '黄山归来不看岳',
-    subtitle: '徜徉黄山云海',
-    image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/4.jpg',
-    poet: '徐霞客',
-    poem: '黄山四千仞，三十二莲峰。丹崖夹石柱，削壁立芙蓉。',
-    location: '黄山',
-  },
-  {
-    id: 3,
-    title: '万里长江横渡',
-    subtitle: '探索三峡人文',
-    image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/3.jpg',
-    poet: '李白',
-    poem: '朝辞白帝彩云间，千里江陵一日还。两岸猿声啼不住，轻舟已过万重山。',
-    location: '三峡',
-  },
-  {
-    id: 4,
-    title: '大漠孤烟直',
-    subtitle: '丝绸之路探秘',
-    image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/1.jpg',
-    poet: '王维',
-    poem: '大漠孤烟直，长河落日圆。欲穷千里目，更上一层楼。',
-    location: '敦煌',
-  },
-  {
-    id: 5,
-    title: '庐山天下悠',
-    subtitle: '庐山烟雨行',
-    image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/5.jpg',
-    poet: '白居易',
-    poem: '庐山东南五老峰，青天削出金芙蓉。九江秀色可揽结，吾将此地巢云松。',
-    location: '庐山',
-  },
-])
+// 使用ref初始化空数组，稍后会填充数据
+const bannerList = ref([])
+
+// 景点ID映射表 - 将轮播图的位置与景点ID关联
+const sceneryIdMap = {
+  1: 39, // 苏州园林
+  2: 40, // 黄山详览
+  3: 41, // 三峡
+  4: 42, // 敦煌
+  5: 43, // 庐山
+}
+
+// 在组件挂载时获取景点数据
+onMounted(() => {
+  bannerList.value = [
+    {
+      id: sceneryIdMap[1],
+      title: '江南好，风景旧曾谙',
+      subtitle: '探访江南水乡',
+      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/2.jpg',
+      poet: '白居易',
+      poem: '江南好，风景旧曾谙。日出江花红胜火，春来江水绿如蓝。',
+      location: '苏州园林',
+    },
+    {
+      id: sceneryIdMap[2],
+      title: '黄山归来不看岳',
+      subtitle: '徜徉黄山云海',
+      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/4.jpg',
+      poet: '徐霞客',
+      poem: '黄山四千仞，三十二莲峰。丹崖夹石柱，削壁立芙蓉。',
+      location: '黄山',
+    },
+    {
+      id: sceneryIdMap[3],
+      title: '万里长江横渡',
+      subtitle: '探索三峡人文',
+      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/3.jpg',
+      poet: '李白',
+      poem: '朝辞白帝彩云间，千里江陵一日还。两岸猿声啼不住，轻舟已过万重山。',
+      location: '三峡',
+    },
+    {
+      id: sceneryIdMap[4],
+      title: '大漠孤烟直',
+      subtitle: '丝绸之路探秘',
+      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/1.jpg',
+      poet: '王维',
+      poem: '大漠孤烟直，长河落日圆。欲穷千里目，更上一层楼。',
+      location: '敦煌',
+    },
+    {
+      id: sceneryIdMap[5],
+      title: '庐山天下悠',
+      subtitle: '庐山烟雨行',
+      image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/tourist/banner/5.jpg',
+      poet: '白居易',
+      poem: '庐山东南五老峰，青天削出金芙蓉。九江秀色可揽结，吾将此地巢云松。',
+      location: '庐山',
+    },
+  ]
+})
 
 const handleBannerClick = (item) => {
   // 点击轮播图跳转到对应的景点详情页
