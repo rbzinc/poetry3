@@ -128,7 +128,7 @@ onMounted(getInitialData)
     <!-- 添加搜索状态提示 -->
     <div v-if="isSearchMode" class="search-status">
       <p>搜索"{{ userSearch.userInput }}"的结果，共 {{ pageTotal }} 条</p>
-      <el-button type="text" @click="clearSearch">清除搜索</el-button>
+      <el-button @click="clearSearch">清除搜索</el-button>
     </div>
 
     <div class="filter-box">

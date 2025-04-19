@@ -1,13 +1,11 @@
 <script setup>
 import { Lock, Message } from '@element-plus/icons-vue'
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
 import { getCodeService, userEmailService } from '@/api/modules/user'
 import { useUserInfoStore } from '@/stores/index.js'
 import { ElMessage } from 'element-plus'
 import { goHome } from '@/router/helpers.js'
 const userStore = useUserInfoStore() // 获取用户信息状态管理
-const router = useRouter() // 获取路由对象
 const form = ref(null) // 表单引用
 const countdown = ref(30) // 倒计时设置为30秒
 const disabled = ref(false) // 按钮禁用状态
@@ -118,7 +116,7 @@ const changePage = (event) => {
     </el-form-item>
 
     <el-form-item prop="password">
-      <el-input v-model="formModel.password" :prefix-icon="Lock" type="password" placeholder="请输入验证码"></el-input>
+      <el-input v-model="formModel.password" :prefix-icon="Lock" placeholder="请输入验证码"></el-input>
     </el-form-item>
     <el-form-item>
       <el-button

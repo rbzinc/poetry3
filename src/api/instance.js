@@ -28,16 +28,11 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
   (res) => {
-    if (res.data.code === 1) {
       return res.data
-    }
-    // 将alert替换为console.log
-    console.error('Error:', res.data)
-    return Promise.reject(res.data)
   },
   (err) => {
     if (err.response && err.response.status === 401) {
-      console.log('Unauthorized: Please login again')
+      alert('请登录之后再进行操作')
     }
     console.error(err) // 将错误记录到控制台
     return Promise.reject(err)

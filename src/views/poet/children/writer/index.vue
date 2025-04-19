@@ -23,16 +23,11 @@ const isSearchMode = ref(false)
 
 // 获取随机数据
 const getRandom = async () => {
-  try {
-    loading.value = true
-    const res = await getPoetRandomData(pageNum.value, pageSize.value)
-    randomList.value = res.data.records
-    pageTotal.value = res.data.total
-  } catch (error) {
-    console.error('获取随机数据失败:', error)
-  } finally {
-    loading.value = false
-  }
+  loading.value = true
+  const res = await getPoetRandomData(pageNum.value, pageSize.value)
+  randomList.value = res.data.records
+  pageTotal.value = res.data.total
+  loading.value = false
 }
 
 // 获取朝代数据
@@ -50,7 +45,6 @@ const fetchData = async (dynastyName, page) => {
     loading.value = false
   }
 }
-//TODO由于后端没有做分页，导致现在分页还不能用
 // 切换展开/收起
 const toggleSection = () => {
   isOpen.value = !isOpen.value
@@ -76,7 +70,6 @@ const clearSearch = () => {
 watch(
   () => userSearch.searchResults,
   (newResults) => {
-    console.log('搜索结果变化:', userSearch.searchResults)
     if (newResults && newResults.length > 0) {
       randomList.value = newResults
       pageTotal.value = userSearch.total
@@ -93,7 +86,7 @@ onMounted(getRandom)
   <div class="content-container">
     <div v-if="isSearchMode" class="search-status">
       <p>搜索"{{ userSearch.userInput }}"的结果，共 {{ pageTotal }} 条</p>
-      <el-button type="text" @click="clearSearch">清除搜索</el-button>
+      <el-button @click="clearSearch">清除搜索</el-button>
     </div>
     <div class="filter-box">
       <div class="filter-section">
