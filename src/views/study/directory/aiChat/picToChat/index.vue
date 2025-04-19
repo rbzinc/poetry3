@@ -15,7 +15,7 @@ const msg = ref('')
 const url = ref('')
 const previewImage = ref('')
 const configVisible = ref(false)
-
+const uploadRef = ref(null)
 // 处理图片上传的函数
 const handleSuccess = (res) => {
   imgUrl.value = res.data
@@ -177,6 +177,7 @@ const sendMessage = async () => {
     imgUrl.value = ''
     input.value = ''
     previewImage.value = ''
+    uploadRef.value?.clearFiles()
     configVisible.value = false
   } catch (error) {
     console.error('生成失败:', error)
@@ -401,6 +402,7 @@ const configSummary = computed(() => {
             <div class="form-label">图片</div>
             <div class="upload-area">
               <el-upload
+                ref="uploadRef" 
                 class="image-uploader"
                 :action="UPLOAD_ADDRESS"
                 :headers="headers"

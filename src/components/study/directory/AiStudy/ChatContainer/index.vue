@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, nextTick, defineProps, defineEmits, computed } from 'vue'
+import { ref, watch, nextTick, defineProps, defineEmits, computed, onMounted } from 'vue'
 import ChatMessage from '../ChatMessage/index.vue'
 
 const props = defineProps({
@@ -35,8 +35,8 @@ const props = defineProps({
   },
   modelValue: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 const emit = defineEmits(['send', 'image-click', 'update:modelValue'])
@@ -45,8 +45,11 @@ const inputMessage = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value),
 })
-// 消息容器引用
-const messagesContainer = ref(null)
+
+// 修改 ref 名称，指向 el-scrollbar 实例
+const messagesScrollbarRef = ref(null)
+// 新增 ref，指向内部消息容器 div
+const messagesInnerContainerRef = ref(null)
 
 // 发送消息
 const sendMessage = () => {
@@ -57,20 +60,15 @@ const sendMessage = () => {
   }
 }
 
-// 监听消息变化，自动滚动到底部
-watch(
-  () => props.messages.length,
-  async () => {
-    await nextTick()
-    scrollToBottom()
-  },
-)
-
-// 滚动到底部
-const scrollToBottom = () => {
-  if (messagesContainer.value) {
-    const container = messagesContainer.value.$el || messagesContainer.value
-    container.scrollTop = container.scrollHeight
+// 改进滚动到底部的函数
+const scrollToBottom = async () => {
+  // 使用 nextTick 确保 DOM 更新完成
+  await nextTick()
+  if (messagesScrollbarRef.value && messagesInnerContainerRef.value) {
+    // 获取内部容器的实际高度
+    const scrollHeight = messagesInnerContainerRef.value.scrollHeight
+    // 使用 el-scrollbar 的 scrollTo 方法进行滚动
+    messagesScrollbarRef.value.scrollTo({ top: scrollHeight, behavior: 'smooth' }) // 添加 behavior: 'smooth' 实现平滑滚动
   }
 }
 
@@ -78,13 +76,30 @@ const scrollToBottom = () => {
 const handleImageClick = (imageUrl) => {
   emit('image-click', imageUrl)
 }
+
+// 监听消息变化，并在 DOM 更新后滚动
+watch(
+  () => props.messages,
+  () => {
+    // 调用改进后的滚动函数
+    scrollToBottom()
+  },
+  { deep: true, immediate: true }, // immediate 保证初始加载时也尝试滚动
+)
+
+// 在组件挂载后也执行一次滚动，确保初始状态正确
+onMounted(() => {
+  scrollToBottom()
+})
 </script>
 
 <template>
   <div class="chat-container">
     <!-- 消息列表区域 -->
-    <el-scrollbar ref="messagesContainer" class="messages-scrollbar">
-      <div class="messages-container">
+    <!-- 更新 ref 名称 -->
+    <el-scrollbar ref="messagesScrollbarRef" class="messages-scrollbar">
+      <!-- 添加内部容器 div 并设置 ref -->
+      <div ref="messagesInnerContainerRef" class="messages-inner-container">
         <chat-message
           v-for="(message, index) in messages"
           :key="index"
@@ -102,7 +117,7 @@ const handleImageClick = (imageUrl) => {
       </div>
     </el-scrollbar>
 
-    <!-- 输入区域 -->
+    <!-- 输入区域 (保持不变) -->
     <div v-if="showInput" class="input-area">
       <slot name="input-prefix"></slot>
 
@@ -122,7 +137,7 @@ const handleImageClick = (imageUrl) => {
       </slot>
     </div>
 
-    <!-- 自定义输入区域 -->
+    <!-- 自定义输入区域 (保持不变) -->
     <slot name="custom-input"></slot>
   </div>
 </template>
@@ -139,10 +154,11 @@ const handleImageClick = (imageUrl) => {
 
   .messages-scrollbar {
     flex: 1;
-    overflow-y: auto;
-    padding: 16px;
+    overflow-y: auto; // el-scrollbar 会处理滚动，但保留无妨
 
-    .messages-container {
+    // 将原 .messages-container 的样式和内容移到这里
+    .messages-inner-container {
+      padding: 16px; // 将 padding 移到内部容器，避免滚动条覆盖
       display: flex;
       flex-direction: column;
 
