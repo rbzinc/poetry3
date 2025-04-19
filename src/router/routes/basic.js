@@ -121,6 +121,10 @@ export const tourismRouters = [
       },
     ],
   },
+  {
+    path: ROUTES.TOURISM_MAP,
+    component: () => import('@/views/tourism/map/index.vue'),
+  },
 ]
 
 const basicRoutes = [

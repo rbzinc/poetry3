@@ -63,7 +63,13 @@ const handleSelect = (key) => {
 
         <el-menu-item :index="ROUTES.FORUM">论坛</el-menu-item>
 
-        <el-menu-item :index="ROUTES.TOURISM_DOMESTIC">诗意之旅</el-menu-item>
+        <el-sub-menu :index="ROUTES.TOURISM_DOMESTIC" popper-class="custom-dropdown">
+           <template #title>
+             <span class="submenu-title">诗意之旅</span>
+           </template>
+           <el-menu-item :index="ROUTES.TOURISM_DOMESTIC">景点概览</el-menu-item>
+           <el-menu-item :index="ROUTES.TOURISM_MAP">诗途地图</el-menu-item>
+        </el-sub-menu>
 
         <template v-if="useUser.userInfo">
           <el-sub-menu :index="ROUTES.USER" popper-class="custom-dropdown">
@@ -112,7 +118,7 @@ const handleSelect = (key) => {
     line-height: 80px;
     font-size: 18px;
     color: #8d8c8c;
-    padding: 0 40px;
+    padding: 0 30px;
 
     &:hover,
     &.is-active {

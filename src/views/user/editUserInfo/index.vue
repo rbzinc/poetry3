@@ -92,7 +92,8 @@ const accountSettings = [
 
 // 头像上传成功回调
 const handleAvatarSuccess = (response) => {
-  if (response.code === 200) {
+  console.log('response', response)
+  if (response.code === 1) {
     userForm.value.touxiang = response.data
     ElMessage.success('头像上传成功')
   } else {

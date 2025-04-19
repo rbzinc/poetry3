@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@amap/amap-jsapi-loader": "^1.0.1",
     "@bytemd/plugin-breaks": "^1.22.0",
     "@bytemd/plugin-frontmatter": "^1.22.0",
     "@bytemd/plugin-gemoji": "^1.22.0",
