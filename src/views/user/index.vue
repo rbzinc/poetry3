@@ -106,7 +106,7 @@ const truncatedContent = computed(() => {
     content: item.content.length > 100 ? `${item.content.slice(0, 100)}...` : item.content,
   }))
 })
-
+console.log(userStore.userInfo)
 onMounted(() => {
   loadMore()
 })
@@ -128,7 +128,7 @@ onMounted(() => {
           </div>
           <div class="user-detail">
             <div class="user-header">
-              <h2 class="username">{{ userStore.userInfo.username }}</h2>
+              <h2 class="username">{{ userStore.userInfo.name }}</h2>
               <div class="action-buttons">
                 <el-button @click="goUserEdit" round>
                   <el-icon><Edit /></el-icon>
