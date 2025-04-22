@@ -42,6 +42,7 @@ const login = async () => {
   }
   try {
     const { data } = await userLoginService(formModel.value.username, formModel.value.password)
+    console.log('登录成功', data)
     useUser.setUserInfo(data)
     ElMessage.success('登录成功')
     await goHome()

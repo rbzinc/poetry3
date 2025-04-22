@@ -2,6 +2,12 @@
 import { ref, computed } from 'vue'
 import { goVrDetail } from '@/router/helpers.js'
 import { STUDY_BG } from '@/constants/bgUrl.js'
+import qjt from '@/assets/Panorama/qjt.jpg'
+import qjt2 from '@/assets/Panorama/qjt2.jpg'
+import qjt3 from '@/assets/Panorama/qjt3.jpg'
+import qjt4 from '@/assets/Panorama/qjt4.jpg'
+import qjt5 from '@/assets/Panorama/qjt5.jpg'
+import qjt6 from '@/assets/Panorama/qjt6.jpg'
 
 // 分页相关
 const currentPage = ref(1)
@@ -11,42 +17,42 @@ const searchQuery = ref('')
 const vrScenes = ref([
   {
     id: 1,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt.jpg',
+    url: qjt,
     poem: '大漠孤烟直，长河落日圆',
     author: '王维',
     title: '塞上风光',
   },
   {
     id: 2,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt2.jpg',
+    url: qjt2,
     poem: '青山横北郭，白水绕东城',
     author: '韦应物',
     title: '山水之景',
   },
   {
     id: 3,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt3.jpg',
+    url: qjt3,
     poem: '会当凌绝顶，一览众山小',
     author: '杜甫',
     title: '登高远眺',
   },
   {
     id: 4,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt4.jpg',
+    url: qjt4,
     poem: '落霞与孤鹜齐飞，秋水共长天一色',
     author: '王勃',
     title: '秋日晚景',
   },
   {
     id: 5,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt5.jpg',
+    url: qjt5,
     poem: '千山鸟飞绝，万径人踪灭',
     author: '柳宗元',
     title: '雪景山林',
   },
   {
     id: 6,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt6.jpg',
+    url: qjt6,
     poem: '一道残阳铺水中，半江瑟瑟半江红',
     author: '白居易',
     title: '江上夕阳',
