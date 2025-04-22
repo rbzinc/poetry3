@@ -8,6 +8,15 @@ import qjt3 from '@/assets/Panorama/qjt3.jpg'
 import qjt4 from '@/assets/Panorama/qjt4.jpg'
 import qjt5 from '@/assets/Panorama/qjt5.jpg'
 import qjt6 from '@/assets/Panorama/qjt6.jpg'
+import qjt7 from '@/assets/Panorama/1.jpg'
+import qjt8 from '@/assets/Panorama/2.jpg'
+import qjt9 from '@/assets/Panorama/3.jpg'
+import qjt10 from '@/assets/Panorama/4.jpg'
+import qjt11 from '@/assets/Panorama/5.jpg'
+import qjt12 from '@/assets/Panorama/6.jpg'
+import qjt13 from '@/assets/Panorama/7.jpg'
+import qjt14 from '@/assets/Panorama/8.jpg'
+import qjt15 from '@/assets/Panorama/9.jpg'
 
 // 分页相关
 const currentPage = ref(1)
@@ -59,64 +68,64 @@ const vrScenes = ref([
   },
   {
     id: 7,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt7.jpg',
-    poem: '日暮苍山远，天寒白屋贫',
+    url: qjt7,
+    poem: '白日依山尽，黄河入海流',
     author: '刘长卿',
     title: '山村暮景',
   },
   {
     id: 8,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt8.jpg',
-    poem: '月落乌啼霜满天，江枫渔火对愁眠',
+    url: qjt8,
+    poem: '海日生残夜，江春入旧年',
     author: '张继',
     title: '江边夜景',
   },
   {
     id: 9,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt9.jpg',
-    poem: '山际见来烟，竹中窥落日',
+    url: qjt9,
+    poem: '停车坐爱枫林晚，霜叶红于二月花',
     author: '王维',
     title: '竹林晚照',
   },
   {
     id: 10,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt10.jpg',
-    poem: '接天莲叶无穷碧，映日荷花别样红',
+    url: qjt10,
+    poem: '大漠孤烟直，长河落日圆',
     author: '杨万里',
     title: '荷塘胜景',
   },
   {
     id: 11,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt11.jpg',
-    poem: '水光潋滟晴方好，山色空蒙雨亦奇',
+    url: qjt11,
+    poem: '飞流直下三千尺，疑是银河落九天',
     author: '苏轼',
     title: '湖光山色',
   },
   {
     id: 12,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt12.jpg',
-    poem: '江流天地外，山色有无中',
+    url: qjt12,
+    poem: '忽如一夜春风来，千树万树梨花开',
     author: '王维',
     title: '江山胜境',
   },
   {
     id: 13,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt13.jpg',
-    poem: '疏影横斜水清浅，暗香浮动月黄昏',
+    url: qjt13,
+    poem: '会当凌绝顶，一览众山小',
     author: '林逋',
     title: '梅花夜景',
   },
   {
     id: 14,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt14.jpg',
-    poem: '竹外桃花三两枝，春江水暖鸭先知',
+    url: qjt14,
+    poem: '云霞出海曙，梅柳渡江春',
     author: '苏轼',
     title: '春江景色',
   },
   {
     id: 15,
-    url: 'https://takeaway-hei.oss-cn-hangzhou.aliyuncs.com/qjt15.jpg',
-    poem: '随风潜入夜，润物细无声',
+    url: qjt15,
+    poem: '孤山寺北贾亭西，水面初平云脚低',
     author: '杜甫',
     title: '春雨景致',
   },

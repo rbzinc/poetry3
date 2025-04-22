@@ -95,6 +95,7 @@ const handleAvatarSuccess = (response) => {
   console.log('response', response)
   if (response.code === 1) {
     userForm.value.touxiang = response.data
+    console.log('userForm.value.touxiang', userForm.value.touxiang)
     ElMessage.success('头像上传成功')
   } else {
     ElMessage.error('头像上传失败')
@@ -125,16 +126,16 @@ const handleSubmit = async () => {
     await ruleFormRef.value.validate()
     state.value.loading = true
 
+    console.log(userForm.value)
+
     const res = await userUpdatemessagebyidPutApi(userForm.value)
-    if (res.code === 200) {
-      ElMessage.success('保存成功')
-      userStore.setUserInfo({
-        ...userStore.userInfo,
-        ...userForm.value,
-      })
-    } else {
-      ElMessage.error(res.message || '保存失败')
-    }
+    console.log('res', res)
+
+    ElMessage.success('保存成功')
+    userStore.setUserInfo({
+      ...userStore.userInfo,
+      ...userForm.value,
+    })
   } catch (error) {
     console.error('保存失败:', error)
     ElMessage.error('表单验证失败，请检查输入')
