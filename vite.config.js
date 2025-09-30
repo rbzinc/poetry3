@@ -15,7 +15,7 @@ export default defineConfig({
     proxy: {
       '/api': {
         // target: "http://fuze1.nat300.top",
-        target: 'http://120.27.234.36:8080',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         pathRewrite: {
           '^/api': '', // 将 `/api` 替换为空字符串，以便后端能够正确识别路由

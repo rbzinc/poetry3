@@ -37,7 +37,7 @@ const handleReply = (commentItem) => {
     <!-- 直接遍历 props.secondComments -->
     <div class="sub-reply" v-for="item in props.secondComments" :key="item.id">
       <!-- 使用 item.id 作为 key -->
-      <div class="listbox-top-user">
+      <div class q="listbox-top-user">
         <!-- 头像部分，添加默认头像 -->
         <el-avatar v-if="item.touxiang" :size="30" :src="item.touxiang" />
         <el-avatar v-else :size="30" icon="UserFilled" />

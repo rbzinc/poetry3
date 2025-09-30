@@ -3,7 +3,7 @@ import { useUserInfoStore } from '@/stores/index.js'
 const userStore = useUserInfoStore()
 
 const instance = axios.create({
-  baseURL: 'http://120.27.234.36:8080', // 确保这里的URL是正确的，没有多余的字符
+  baseURL: 'http://localhost:8080', // 确保这里的URL是正确的，没有多余的字符
   headers: {
     'Content-Type': 'application/json',
     token: userStore.userInfo?.token,
@@ -28,7 +28,7 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
   (res) => {
-      return res.data
+    return res.data
   },
   (err) => {
     if (err.response && err.response.status === 401) {

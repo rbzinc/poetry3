@@ -93,7 +93,7 @@ const isButtonDisabled = computed(() => {
  * 控制登录按钮颜色
  * @type {ComputedRef<unknown>}
  */
-const isLoginButtonActive = computed(() => formModel.value.email !== '' && formModel.value.password !== '')
+const isResetButtonActive = computed(() => formModel.value.email !== '' && formModel.value.newpassword !== '' && formModel.value.captchword !== '')
 
 const emit = defineEmits(['changePage'])
 const changePage = (event) => {
@@ -102,85 +102,541 @@ const changePage = (event) => {
 </script>
 
 <template>
-  <el-form :model="formModel" :rules="rules" ref="form" size="large" autocomplete="off" class="form">
-    <el-form-item class="item">
-      <div class="title"></div>
-    </el-form-item>
-    <el-form-item prop="email" style="display: flex" class="item">
-      <el-input v-model="formModel.email" :prefix-icon="Message" placeholder="请输入邮箱" class="input"></el-input>
-      <el-button class="button" @click="captch">{{ ButtonText }}</el-button>
-    </el-form-item>
-
-    <el-form-item prop="captchword">
-      <el-input
-        v-model="formModel.captchword"
-        :prefix-icon="Lock"
-        type="password"
-        placeholder="请输入验证码"
-      ></el-input>
-    </el-form-item>
-    <el-form-item prop="newpassword">
-      <el-input
-        v-model="formModel.newpassword"
-        :prefix-icon="Lock"
-        type="password"
-        placeholder="请输入新密码"
-      ></el-input>
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        class="button"
-        @click="revisePassword"
-        type="primary"
-        style="color: white; background-color: #cbcaca; border-color: #cbcaca; margin: auto"
-        :style="{ backgroundColor: isLoginButtonActive ? '#409eff' : '#cbcaca' }"
-        :disabled="isButtonDisabled"
-        >修改</el-button
-      >
-    </el-form-item>
-    <div class="flex">
-      <div class="flex">
-        <p class="flex-item" @click="changePage(1)" style="margin-right: 20px">登录</p>
-        <p class="flex-item" @click="changePage(3)">注册</p>
+  <div class="modern-form-container">
+    <!-- 表单头部 -->
+    <div class="form-header">
+      <div class="welcome-back">
+        <h2 class="form-title">重置密码</h2>
+        <p class="form-subtitle">请按步骤重置您的密码</p>
       </div>
-      <p class="flex-item" @click="changePage(2)">邮箱注册</p>
     </div>
-  </el-form>
+
+    <!-- 步骤指示器 -->
+    <div class="step-indicator">
+      <div class="step-item active">
+        <div class="step-number">1</div>
+        <div class="step-text">验证邮箱</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-item">
+        <div class="step-number">2</div>
+        <div class="step-text">输入验证码</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-item">
+        <div class="step-number">3</div>
+        <div class="step-text">设置新密码</div>
+      </div>
+    </div>
+
+    <!-- 表单内容 -->
+    <el-form :model="formModel" :rules="rules" ref="form" size="large" autocomplete="off" class="modern-form">
+      <div class="input-group">
+        <!-- 邮箱输入和验证码发送 -->
+        <el-form-item prop="email" class="floating-label-item email-item">
+          <div class="email-input-wrapper">
+            <el-input 
+              v-model="formModel.email" 
+              :prefix-icon="Message" 
+              placeholder="请输入邮箱"
+              class="modern-input email-input"
+            ></el-input>
+            <el-button 
+              class="verify-btn" 
+              @click="captch"
+              :disabled="disabled"
+              :class="{ 'countdown': disabled }"
+            >
+              {{ ButtonText }}
+            </el-button>
+          </div>
+          <label class="floating-label">邮箱地址</label>
+        </el-form-item>
+
+        <!-- 验证码输入 -->
+        <el-form-item prop="captchword" class="floating-label-item">
+          <el-input
+            v-model="formModel.captchword"
+            :prefix-icon="Lock"
+            placeholder="请输入验证码"
+            class="modern-input"
+          ></el-input>
+          <label class="floating-label">验证码</label>
+        </el-form-item>
+
+        <!-- 新密码输入 -->
+        <el-form-item prop="newpassword" class="floating-label-item">
+          <el-input
+            v-model="formModel.newpassword"
+            :prefix-icon="Lock"
+            type="password"
+            placeholder="请输入新密码"
+            class="modern-input"
+          ></el-input>
+          <label class="floating-label">新密码</label>
+        </el-form-item>
+      </div>
+
+      <!-- 安全提示 -->
+      <div class="security-tip">
+        <div class="tip-icon">🔒</div>
+        <div class="tip-text">
+          <p>为了您的账户安全：</p>
+          <ul>
+            <li>密码长度至少6位，包含数字</li>
+            <li>请勿使用简单密码</li>
+            <li>建议定期更换密码</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 重置按钮 -->
+      <el-form-item class="button-item">
+        <el-button
+          @click="revisePassword"
+          class="modern-reset-btn"
+          type="primary"
+          :class="{ 'active': isResetButtonActive }"
+          :disabled="isButtonDisabled"
+          size="large"
+        >
+          <span class="btn-text">重置密码</span>
+        </el-button>
+      </el-form-item>
+    </el-form>
+
+    <!-- 底部链接 -->
+    <div class="form-footer">
+      <div class="auth-links">
+        <span class="link-item" @click="changePage(1)">返回登录</span>
+        <span class="link-divider">|</span>
+        <span class="link-item" @click="changePage(3)">立即注册</span>
+        <span class="link-divider">|</span>
+        <span class="link-item" @click="changePage(2)">邮箱登录</span>
+      </div>
+    </div>
+
+    <!-- 装饰元素 -->
+    <div class="form-decoration">
+      <div class="decoration-circle circle-1"></div>
+      <div class="decoration-circle circle-2"></div>
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-.form {
-  width: 400px;
-  height: 520px;
-  margin: 0 auto;
+.modern-form-container {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-radius: 0 20px 20px 0;
-  .item {
-    display: flex;
-  }
-  .title {
-    margin: 0 auto;
-  }
-  .button {
-    width: 100px;
-    display: flex;
-  }
-  .flex {
-    display: flex;
-    justify-content: space-between;
-    .flex-item {
-      cursor: pointer;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+
+  // 表单头部
+  .form-header {
+    text-align: center;
+    margin-bottom: 20px;
+
+    .welcome-back {
+      .form-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2C3E50;
+        margin-bottom: 6px;
+        background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .form-subtitle {
+        font-size: 16px;
+        color: #7F8C8D;
+        margin: 0;
+        font-weight: 400;
+      }
     }
   }
-  .input {
-    width: 300px;
+
+  // 步骤指示器
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    padding: 0 10px;
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+
+      .step-number {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #BDC3C7;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 12px;
+        margin-bottom: 6px;
+        transition: all 0.3s ease;
+      }
+
+      .step-text {
+        font-size: 10px;
+        color: #7F8C8D;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      &.active {
+        .step-number {
+          background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+          box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .step-text {
+          color: #E74C3C;
+        }
+      }
+    }
+
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: #ECF0F1;
+      margin: 0 15px;
+      position: relative;
+      top: -14px;
+    }
   }
-  .title {
+
+  // 现代化表单
+  .modern-form {
+    .input-group {
+      margin-bottom: 16px;
+
+      .floating-label-item {
+        position: relative;
+        margin-bottom: 16px;
+
+        :deep(.el-form-item__content) {
+          position: relative;
+        }
+
+        // 邮箱输入特殊处理
+        &.email-item {
+          .email-input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+
+            .email-input {
+              flex: 1;
+            }
+
+            .verify-btn {
+              height: 48px;
+              border-radius: 12px;
+              font-weight: 600;
+              border: 2px solid #E74C3C;
+              background: white;
+              color: #E74C3C;
+              transition: all 0.3s ease;
+              white-space: nowrap;
+              font-size: 13px;
+
+              &:hover:not(:disabled) {
+                background: #E74C3C;
+                color: white;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
+              }
+
+              &.countdown {
+                background: #ECF0F1;
+                border-color: #BDC3C7;
+                color: #7F8C8D;
+                cursor: not-allowed;
+              }
+            }
+          }
+        }
+
+        .modern-input {
+          :deep(.el-input__wrapper) {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #E8F4FD;
+            border-radius: 12px;
+            padding: 12px 16px;
+            box-sizing: border-box;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            height: 48px;
+
+            &:hover {
+              border-color: #E74C3C;
+              box-shadow: 0 8px 25px rgba(231, 76, 60, 0.15);
+            }
+
+            &.is-focus {
+              border-color: #C0392B;
+              box-shadow: 0 8px 25px rgba(192, 57, 43, 0.2);
+              background: white;
+            }
+          }
+
+          :deep(.el-input__inner) {
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #2C3E50;
+            padding-left: 12px;
+            box-sizing: border-box;
+            &::placeholder {
+              color: #BDC3C7;
+              font-size: 13px;
+            }
+          }
+
+          :deep(.el-input__prefix) {
+            color: #7F8C8D;
+            font-size: 16px;
+            box-sizing: border-box;
+          }
+        }
+
+        .floating-label {
+          position: absolute;
+          left: 44px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #7F8C8D;
+          font-size: 13px;
+          font-weight: 500;
+          pointer-events: none;
+          transition: all 0.3s ease;
+          background: white;
+          padding: 0 6px;
+          border-radius: 4px;
+          opacity: 0;
+          z-index: 1;
+          box-sizing: border-box;
+        }
+
+        &:focus-within .floating-label,
+        &.has-value .floating-label {
+          top: -2px;
+          font-size: 12px;
+          color: #E74C3C;
+          opacity: 1;
+        }
+      }
+    }
+
+    // 安全提示
+    .security-tip {
+      background: rgba(52, 152, 219, 0.1);
+      border: 1px solid rgba(52, 152, 219, 0.2);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+
+      .tip-icon {
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+
+      .tip-text {
+        flex: 1;
+
+        p {
+          margin: 0 0 6px 0;
+          font-size: 12px;
+          font-weight: 600;
+          color: #2C3E50;
+        }
+
+        ul {
+          margin: 0;
+          padding-left: 12px;
+          color: #7F8C8D;
+          font-size: 11px;
+
+          li {
+            margin-bottom: 3px;
+            line-height: 1.3;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+    }
+
+    // 重置按钮
+    .button-item {
+      margin-bottom: 0;
+
+      .modern-reset-btn {
+        width: 100%;
+        height: 48px;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        border: none;
+        background: linear-gradient(135deg, #BDC3C7 0%, #95A5A6 100%);
+        color: white;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+
+        &.active {
+          background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+          box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(231, 76, 60, 0.4);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+
+        &:disabled {
+          cursor: not-allowed;
+          transform: none !important;
+        }
+
+        .btn-text {
+          position: relative;
+          z-index: 2;
+        }
+
+        // 按钮波纹效果
+        &::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 0;
+          height: 0;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.3);
+          transition: width 0.6s, height 0.6s;
+          transform: translate(-50%, -50%);
+          z-index: 1;
+        }
+
+        &:active::before {
+          width: 300px;
+          height: 300px;
+        }
+      }
+    }
+  }
+
+  // 表单底部
+  .form-footer {
     text-align: center;
-    font-weight: bold;
-    font-size: 32px;
+    margin-top: 16px;
+
+    .auth-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+
+      .link-item {
+        color: #7F8C8D;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+
+        &:hover {
+          color: #E74C3C;
+        }
+      }
+
+      .link-divider {
+        color: #BDC3C7;
+        font-size: 12px;
+      }
+    }
+  }
+
+  // 装饰元素
+  .form-decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+
+    .decoration-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(192, 57, 43, 0.05) 100%);
+      animation: float 6s ease-in-out infinite;
+
+      &.circle-1 {
+        width: 100px;
+        height: 100px;
+        top: -50px;
+        right: -50px;
+        animation-delay: 0s;
+      }
+
+      &.circle-2 {
+        width: 60px;
+        height: 60px;
+        bottom: -30px;
+        left: -30px;
+        animation-delay: 3s;
+      }
+    }
+  }
+}
+
+// 动画
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+// 输入框聚焦时的浮动标签效果
+.floating-label-item {
+  &:focus-within,
+  &.has-value {
+    .floating-label {
+      top: -2px !important;
+      font-size: 12px !important;
+      color: #E74C3C !important;
+      opacity: 1 !important;
+    }
   }
 }
 </style>
