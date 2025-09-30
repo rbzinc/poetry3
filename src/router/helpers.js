@@ -99,6 +99,10 @@ export const goVrDetail = (id) => {
   })
 }
 
+export const goVrExhibition = () => {
+  router.push(ROUTES.VR_EXHIBITION)
+}
+
 /**
  * 跳转到论坛详情页
  * @param {string|number} id 论坛帖子ID

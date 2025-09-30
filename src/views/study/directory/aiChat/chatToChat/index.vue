@@ -97,96 +97,187 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="chat-to-chat-container">
-    <div class="main-content">
-      <!-- 使用通用聊天容器组件 -->
-      <ChatContainer
-        :messages="messages"
-        :loading="loading"
-        :user-avatar="userInfo.userInfo.touxiang"
-        :ai-avatar="PoemImg[poetId].url"
-        v-model="inputMessage"
-        placeholder="有什么想问的你都可以畅所欲言！"
-        @send="handleSend"
-      />
-    </div>
+    <!-- 诗人信息侧边栏 -->
+    <div class="sidebar-left">
+      <div class="poet-profile">
+        <div class="poet-avatar-wrapper">
+          <img :src="PoemImg[poetId].url" :alt="PoemImg[poetId].title" class="poet-avatar" />
+          <div class="online-indicator"></div>
+        </div>
+        <h3 class="poet-name">{{ PoemImg[poetId].title }}</h3>
+        <p class="poet-desc">{{ PoemImg[poetId].content.substring(0, 60) }}...</p>
+      </div>
 
-    <!-- 诗人名句侧边栏 -->
-    <el-scrollbar>
-      <div class="sidebar">
-        <el-card class="poem-card">
-          <template #header>
-            <div class="card-header">
-              <span>{{ PoemImg[poetId].title }} -- 经典名句</span>
-            </div>
-          </template>
+      <!-- 经典名句 -->
+      <div class="poems-section">
+        <div class="section-header">
+          <el-icon><Star /></el-icon>
+          <span>经典名句</span>
+        </div>
 
+        <el-scrollbar height="calc(100vh - 480px)">
           <div v-if="poetPoem.length > 0" class="poem-list">
             <div v-for="item in poetPoem" :key="item.id" class="poem-item">
-              <p class="poem-title">{{ item.fromm }}</p>
-              <p class="poem-content">{{ item.name }}</p>
+              <div class="poem-title">{{ item.fromm }}</div>
+              <div class="poem-content">{{ item.name }}</div>
             </div>
           </div>
 
           <div v-else class="no-poems">
-            <p>暂无经典名句</p>
+            <el-empty description="暂无经典名句" :image-size="80" />
           </div>
-        </el-card>
+        </el-scrollbar>
       </div>
-    </el-scrollbar>
+    </div>
+
+    <!-- 主聊天区域 -->
+    <div class="main-content">
+      <!-- 聊天头部 -->
+      <div class="chat-header">
+        <div class="header-left">
+          <img :src="PoemImg[poetId].url" :alt="PoemImg[poetId].title" class="header-avatar" />
+          <div class="header-info">
+            <h3 class="header-name">{{ PoemImg[poetId].title }}</h3>
+            <span class="header-status">
+              <span class="status-dot"></span>
+              在线
+            </span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <el-button circle>
+            <el-icon><More /></el-icon>
+          </el-button>
+        </div>
+      </div>
+
+      <!-- 聊天容器 -->
+      <div class="chat-content">
+        <ChatContainer
+          :messages="messages"
+          :loading="loading"
+          :user-avatar="userInfo.userInfo.touxiang"
+          :ai-avatar="PoemImg[poetId].url"
+          v-model="inputMessage"
+          placeholder="有什么想问的你都可以畅所欲言！"
+          @send="handleSend"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .chat-to-chat-container {
   display: flex;
-  width: 95%;
-  height: 80vh;
-  margin: 20px auto;
-  gap: 10px;
+  width: 100%;
+  height: calc(100vh - 160px);
+  background: white;
 
-  .main-content {
-    flex: 1;
-    height: 100%;
-    border-radius: 12px;
+  .sidebar-left {
+    width: 320px;
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+    border-right: 1px solid #e8e8e8;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
 
-  .sidebar {
-    width: 300px;
+    .poet-profile {
+      padding: 30px 24px;
+      text-align: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
 
-    .poem-card {
-      height: 100%;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      .poet-avatar-wrapper {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 16px;
 
-      .card-header {
+        .poet-avatar {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 4px solid rgba(255, 255, 255, 0.3);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .online-indicator {
+          position: absolute;
+          bottom: 8px;
+          right: 8px;
+          width: 20px;
+          height: 20px;
+          background: #52c41a;
+          border: 3px solid white;
+          border-radius: 50%;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+      }
+
+      .poet-name {
+        margin: 0 0 8px 0;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .poet-desc {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.6;
+        opacity: 0.9;
+      }
+    }
+
+    .poems-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow: hidden;
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
         font-size: 16px;
-        font-weight: bold;
+        font-weight: 600;
         color: #333;
+
+        .el-icon {
+          color: #f59e0b;
+          font-size: 18px;
+        }
       }
 
       .poem-list {
-        overflow-y: auto;
-
         .poem-item {
           margin-bottom: 20px;
-          padding-bottom: 15px;
-          border-bottom: 1px dashed #eee;
+          padding: 16px;
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+          border: 1px solid #f0f0f0;
+          transition: all 0.3s ease;
+          cursor: pointer;
 
-          &:last-child {
-            border-bottom: none;
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
           }
 
           .poem-title {
-            font-size: 16px;
-            font-weight: 550;
-            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
             color: #333;
+            margin-bottom: 8px;
           }
 
           .poem-content {
-            font-size: 14px;
+            font-size: 13px;
             color: #666;
             line-height: 1.6;
           }
@@ -195,23 +286,114 @@ onBeforeUnmount(() => {
 
       .no-poems {
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
         height: 100%;
         color: #999;
       }
+    }
+  }
+
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    overflow: hidden;
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: white;
+      border-bottom: 1px solid #e8e8e8;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      z-index: 10;
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .header-avatar {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid #e8e8e8;
+        }
+
+        .header-info {
+          .header-name {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+          }
+
+          .header-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #52c41a;
+
+            .status-dot {
+              width: 8px;
+              height: 8px;
+              background: #52c41a;
+              border-radius: 50%;
+              animation: pulse 2s infinite;
+            }
+          }
+        }
+      }
+
+      .header-actions {
+        :deep(.el-button) {
+          border: 1px solid #e8e8e8;
+          color: #666;
+
+          &:hover {
+            border-color: #667eea;
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+          }
+        }
+      }
+    }
+
+    .chat-content {
+      flex: 1;
+      overflow: hidden;
+      background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// 响应式
+@media (max-width: 1200px) {
+  .chat-to-chat-container {
+    .sidebar-left {
+      width: 280px;
     }
   }
 }
 
 @media (max-width: 992px) {
   .chat-to-chat-container {
-    flex-direction: column;
-
-    .sidebar {
-      width: 100%;
-      height: auto;
-      max-height: 300px;
+    .sidebar-left {
+      display: none;
     }
   }
 }
