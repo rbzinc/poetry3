@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
+import { Search, Close, ArrowDown, Document } from '@element-plus/icons-vue'
 import Poetryitem from '@/components/poet/poetryitem/index.vue'
 import {
   getpoemRandomData,
@@ -38,6 +39,16 @@ const isSearchMode = ref(false)
 // 切换展开/收起
 const toggleSection = (section) => {
   openStates.value[section] = !openStates.value[section]
+}
+
+// 获取筛选器图标
+const getFilterIcon = (type) => {
+  const icons = {
+    dynasty: '🏛️',
+    class: '📁',
+    poet: '✍️'
+  }
+  return icons[type] || '📌'
 }
 
 /**
@@ -127,40 +138,50 @@ const clearSearch = () => {
 </script>
 
 <template>
-  <div class="content-container">
-    <div v-if="isSearchMode" class="search-status">
-      <p>搜索"{{ userSearch.userInput }}"的结果，共 {{ pageTotal }} 条</p>
-      <el-button @click="clearSearch">清除搜索</el-button>
+  <div class="modern-content-container">
+    <!-- 搜索状态提示 -->
+    <div v-if="isSearchMode" class="search-status-banner">
+      <div class="status-content">
+        <el-icon class="status-icon" :size="20"><Search /></el-icon>
+        <span class="status-text">搜索 "<strong>{{ userSearch.userInput }}</strong>" 的结果，共找到 <strong>{{ pageTotal }}</strong> 条</span>
+      </div>
+      <el-button class="clear-btn" @click="clearSearch" size="small">
+        <el-icon><Close /></el-icon>
+        清除
+      </el-button>
     </div>
-    <div class="filter-box">
-      <div v-for="(config, type) in FILTER_CONFIG" :key="type" class="filter-section">
-        <div class="filter-row">
-          <span class="filter-title">{{ config.title }}:</span>
-          <div class="filter-options" :class="{ expanded: openStates[type] }">
-            <button
-              v-for="option in config.options"
-              :key="option"
-              class="option-btn"
-              :class="{ active: currentName === option }"
-              @click="fetchData(type, option)"
-            >
-              {{ option }}
-            </button>
+
+    <!-- 筛选器区域 -->
+    <div class="modern-filter-box">
+      <div v-for="(config, type) in FILTER_CONFIG" :key="type" class="modern-filter-section">
+        <div class="filter-header">
+          <div class="filter-title-wrapper">
+            <span class="filter-icon">{{ getFilterIcon(type) }}</span>
+            <span class="filter-title">{{ config.title }}</span>
           </div>
-          <button class="toggle-btn" @click="toggleSection(type)">
-            <img
-              :class="{ 'rotate-180': openStates[type] }"
-              src="https://ziyuan.guwendao.net/siteimg/jianBtn.png"
-              alt="toggle"
-              width="13"
-              height="13"
-            />
+          <button class="expand-btn" @click="toggleSection(type)">
+            <span class="expand-text">{{ openStates[type] ? '收起' : '展开' }}</span>
+            <el-icon class="expand-icon" :class="{ 'expanded': openStates[type] }">
+              <ArrowDown />
+            </el-icon>
           </button>
+        </div>
+        <div class="filter-options" :class="{ expanded: openStates[type] }">
+          <div
+            v-for="option in config.options"
+            :key="option"
+            class="filter-tag"
+            :class="{ active: currentName === option }"
+            @click="fetchData(type, option)"
+          >
+            {{ option }}
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="content-list" v-loading="loading">
+    <!-- 内容列表 -->
+    <div class="modern-content-list" v-loading="loading">
       <template v-if="randomList.length">
         <Poetryitem
           v-for="item in randomList"
@@ -172,185 +193,234 @@ const clearSearch = () => {
           @click="goPoetClassDetail(item.id)"
         />
       </template>
-      <div v-else class="empty-state">暂无数据</div>
+      <div v-else class="modern-empty-state">
+        <el-icon class="empty-icon" :size="64"><Document /></el-icon>
+        <p class="empty-text">暂无数据</p>
+        <p class="empty-hint">试试调整筛选条件或搜索关键词</p>
+      </div>
     </div>
 
-    <el-pagination
-      v-if="pageTotal > 0"
-      :current-page="pageNum"
-      :page-size="pageSize"
-      :total="pageTotal"
-      background
-      layout="prev, pager, next"
-      @current-change="handlePageChange"
-      class="pagination"
-    />
+    <!-- 分页 -->
+    <div class="pagination-wrapper" v-if="pageTotal > 0">
+      <el-pagination
+        :current-page="pageNum"
+        :page-size="pageSize"
+        :total="pageTotal"
+        background
+        layout="prev, pager, next, jumper"
+        @current-change="handlePageChange"
+        class="modern-pagination"
+      />
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.content-container {
-  .filter-box {
-    background: #f3f2f2;
-    border-radius: 8px;
-    padding: 0 10px;
-    margin-bottom: 20px;
-
-    .filter-section {
-      border-bottom: 1px solid #e0e0e0;
-      padding: 10px 0;
-
-      &:last-child {
-        border-bottom: none;
+.modern-content-container {
+  width: 100%;
+  
+  // 搜索状态提示
+  .search-status-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+    border-radius: 12px;
+    margin-bottom: 24px;
+    border-left: 4px solid #667eea;
+    
+    .status-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      
+      .status-icon {
+        color: #667eea;
       }
-
-      .filter-row {
+      
+      .status-text {
+        font-size: 14px;
+        color: #2C3E50;
+        
+        strong {
+          color: #667eea;
+          font-weight: 600;
+        }
+      }
+    }
+    
+    .clear-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 8px;
+    }
+  }
+  
+  // 现代化筛选器
+  .modern-filter-box {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    border: 1px solid #ECF0F1;
+    
+    .modern-filter-section {
+      margin-bottom: 20px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      .filter-header {
         display: flex;
         align-items: center;
-
-        .filter-title {
-          width: 60px;
-          font-size: 16px;
-          font-weight: 500;
-          flex-shrink: 0;
-        }
-
-        .filter-options {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-          height: 40px;
-          overflow: hidden;
-          transition: height 0.3s ease;
-
-          &.expanded {
-            height: auto;
-          }
-        }
-
-        .toggle-btn {
-          width: 40px;
-          height: 40px;
-          border: none;
-          cursor: pointer;
-          background: none;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        
+        .filter-title-wrapper {
           display: flex;
           align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-
-          img {
+          gap: 8px;
+          
+          .filter-icon {
+            font-size: 20px;
+          }
+          
+          .filter-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2C3E50;
+          }
+        }
+        
+        .expand-btn {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 6px 12px;
+          background: #F8F9FA;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          
+          .expand-text {
+            font-size: 13px;
+            color: #7F8C8D;
+          }
+          
+          .expand-icon {
+            color: #7F8C8D;
             transition: transform 0.3s ease;
-
-            &.rotate-180 {
-              transform: scaleY(-1);
+            
+            &.expanded {
+              transform: rotate(180deg);
             }
+          }
+          
+          &:hover {
+            background: #ECF0F1;
+          }
+        }
+      }
+      
+      .filter-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        max-height: 42px;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        
+        &.expanded {
+          max-height: 500px;
+        }
+        
+        .filter-tag {
+          padding: 8px 20px;
+          background: #F8F9FA;
+          border: 2px solid transparent;
+          border-radius: 20px;
+          font-size: 14px;
+          color: #7F8C8D;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          white-space: nowrap;
+          
+          &:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-color: rgba(102, 126, 234, 0.3);
+            color: #667eea;
+            transform: translateY(-2px);
+          }
+          
+          &.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
           }
         }
       }
     }
   }
-
-  .content-list {
-    .empty-state {
-      text-align: center;
-      padding: 40px;
-      color: #999;
+  
+  // 现代化内容列表
+  .modern-content-list {
+    min-height: 300px;
+    
+    .modern-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      
+      .empty-icon {
+        color: #BDC3C7;
+        margin-bottom: 16px;
+      }
+      
+      .empty-text {
+        font-size: 18px;
+        font-weight: 600;
+        color: #7F8C8D;
+        margin: 0 0 8px 0;
+      }
+      
+      .empty-hint {
+        font-size: 14px;
+        color: #BDC3C7;
+        margin: 0;
+      }
     }
   }
-
-  .option-btn {
-    height: 40px;
-    padding: 0 15px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    white-space: nowrap;
-    font-size: 15px;
-    transition: all 0.2s ease;
-
-    &:hover {
-      color: #409eff;
-    }
-
-    &.active {
-      color: #409eff;
-      font-weight: bold;
-    }
-  }
-
-  // 分页器样式
-  :deep(.el-pagination) {
-    margin-top: 30px;
+  
+  // 分页包装器
+  .pagination-wrapper {
+    display: flex;
     justify-content: center;
-
-    .btn-prev,
-    .btn-next {
-      background-color: #fff;
-      border: 1px solid #e0e0e0;
-      height: 32px;
-      line-height: 32px;
-      padding: 0 12px;
-      margin: 0 4px;
-      border-radius: 4px;
-
-      &:hover:not(.is-disabled) {
-        color: #409eff;
-        border-color: #409eff;
-      }
-
-      &.is-disabled {
-        color: #c0c4cc;
-        background-color: #f4f4f5;
-        border-color: #e0e0e0;
-        cursor: not-allowed;
-      }
-    }
-
-    .el-pager {
-      li {
-        background-color: #fff;
-        border: 1px solid #e0e0e0;
-        height: 32px;
-        min-width: 32px;
-        line-height: 32px;
-        padding: 0 6px;
-        margin: 0 4px;
-        border-radius: 4px;
-        font-weight: normal;
-        color: #606266;
-
-        &:hover:not(.is-active) {
-          color: #409eff;
-          border-color: #409eff;
-        }
-
-        &.is-active {
-          background-color: #409eff;
-          color: #fff !important;
-          border-color: #409eff;
-          position: relative;
-          z-index: 1;
-        }
-      }
-    }
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid #ECF0F1;
   }
 }
-.pagination {
-  margin-bottom: 20px;
-}
-.search-status {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: #f0f9ff;
-  border-radius: 8px;
-  margin-bottom: 20px;
 
-  p {
-    margin: 0;
-    color: #409eff;
+// 响应式
+@media (max-width: 768px) {
+  .modern-content-container {
+    .search-status-banner {
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    
+    .modern-filter-box {
+      padding: 16px;
+    }
   }
 }
 </style>

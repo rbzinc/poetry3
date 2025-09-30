@@ -1,80 +1,171 @@
 <script setup>
-import { defineProps, ref } from "vue";
+import { defineProps, ref } from 'vue'
+import { ArrowDown } from '@element-plus/icons-vue'
+
 const props = defineProps({
   title: String,
   content: String,
-});
-const isopen = ref(true);
-const change = () => {
-  isopen.value = !isopen.value;
-};
+})
+
+const isExpanded = ref(false)
+
+const toggleExpand = () => {
+  isExpanded.value = !isExpanded.value
+}
+
+// 判断内容是否需要展开按钮
+const needExpand = () => {
+  if (!props.content) return false
+  const plainText = props.content.replace(/<[^>]+>/g, '')
+  return plainText.length > 200
+}
 </script>
 
 <template>
-  <div class="content">
-    <div :class="[isopen ? 'before' : 'after']">
-      <p v-html="title"></p>
-      <div v-html="content"></div>
-    </div>
-    <div class="toggle" @click="change">
-      {{ isopen ? "点击此处展开" : "点击此处收起" }}
+  <div class="modern-writer-content">
+    <div class="content-card">
+      <h3 class="content-title" v-if="title" v-html="title"></h3>
+      
+      <div 
+        class="content-body"
+        :class="{ 'collapsed': !isExpanded && needExpand() }"
+      >
+        <div class="content-text" v-html="content"></div>
+      </div>
+      
+      <button 
+        v-if="needExpand()"
+        class="expand-btn"
+        @click="toggleExpand"
+      >
+        <span>{{ isExpanded ? '收起' : '展开全文' }}</span>
+        <el-icon class="expand-icon" :class="{ 'rotated': isExpanded }">
+          <ArrowDown />
+        </el-icon>
+      </button>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.content {
-  width: 1000px;
-  margin: 0 auto;
-  background: none;
-  box-sizing: border-box;
-  .before {
-    border-radius: 10px 10px 0 0;
-    transition: height 0.3s ease;
-    height: 200px;
-    overflow: hidden;
-    width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-    box-sizing: border-box;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
-    opacity: 70%;
-    p {
-      margin-bottom: 10px;
+.modern-writer-content {
+  width: 100%;
+  
+  .content-card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    .content-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #2C3E50;
+      margin: 0 0 20px 0;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #ECF0F1;
+      
+      :deep(strong) {
+        color: #667eea;
+      }
+    }
+    
+    .content-body {
+      transition: max-height 0.4s ease;
+      
+      &.collapsed {
+        max-height: 250px;
+        overflow: hidden;
+        position: relative;
+        
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 80px;
+          background: linear-gradient(to bottom, transparent, white);
+          pointer-events: none;
+        }
+      }
+      
+      .content-text {
+        font-size: 16px;
+        line-height: 2;
+        color: #34495e;
+        
+        :deep(p) {
+          margin: 0 0 16px 0;
+          text-indent: 2em;
+        }
+        
+        :deep(strong) {
+          color: #667eea;
+          font-weight: 600;
+        }
+        
+        :deep(em) {
+          color: #7F8C8D;
+          font-style: italic;
+        }
+      }
+    }
+    
+    .expand-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      background: #F8F9FA;
+      border: none;
+      border-radius: 12px;
       font-size: 15px;
+      color: #7F8C8D;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      .expand-icon {
+        transition: transform 0.3s ease;
+        
+        &.rotated {
+          transform: rotate(180deg);
+        }
+      }
+      
+      &:hover {
+        background: #ECF0F1;
+        color: #667eea;
+      }
     }
   }
-  .after {
-    border-radius: 10px 10px 0 0;
-    transition: height 0.3s ease;
-    width: 1000px;
-    height: auto;
-    margin: 0 auto;
-    padding: 20px;
-    box-sizing: border-box;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    opacity: 70%;
-    p {
-      margin: 0;
-      margin-bottom: 10px;
-      font-size: 15px;
+}
+
+// 响应式
+@media (max-width: 768px) {
+  .modern-writer-content {
+    .content-card {
+      padding: 24px 20px;
+      
+      .content-title {
+        font-size: 18px;
+      }
+      
+      .content-body {
+        .content-text {
+          font-size: 15px;
+        }
+      }
     }
-  }
-  .toggle {
-    width: 1000px;
-    height: 40px;
-    margin: 0 auto 30px;
-    cursor: pointer;
-    text-align: center;
-    padding: 10px;
-    background-color: #d1cfcf;
-    background: linear-gradient(to top, #d1cfcf, #fff);
-    box-sizing: border-box;
-    opacity: 60%;
-    border-radius: 0 0 10px 10px;
   }
 }
 </style>
