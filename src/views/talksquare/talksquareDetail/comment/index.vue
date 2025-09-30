@@ -295,138 +295,227 @@ const toggleReplyInput = (commentItem) => {
   </div>
 </template>
 
-<style lang="scss" scoped>
-$title-color: #333;
-$second-text: #666;
-$primary-color: #409eff;
-
+<style scoped lang="scss">
 .comments {
-  margin-top: 20px;
-  margin-bottom: 50px;
+  margin-top: 0;
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 
-  .el-card {
-    width: 100%;
+  :deep(.el-card) {
+    border: none;
+    box-shadow: none;
+
+    .el-card__header {
+      padding: 0 0 24px 0;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .el-card__body {
+      padding: 0;
+    }
   }
 
-  .editbox,
-  .listbox {
-    margin: 0 20px 20px 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
-  }
-  .listbox:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-    margin-bottom: 0;
+  .comments-header {
+    h3 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: #333;
+    }
   }
 
   .editbox {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 24px 0;
+    border-bottom: 2px solid #f0f0f0;
 
     .editbox-left {
       flex-shrink: 0;
     }
+
     .editbox-middle {
-      flex-grow: 1;
-      margin: 0 15px;
+      flex: 1;
+
+      :deep(.el-input__wrapper) {
+        border-radius: 12px;
+        padding: 12px 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+
+        &:hover {
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        &.is-focus {
+          box-shadow: 0 4px 16px rgba(102, 126, 234, 0.25);
+        }
+      }
     }
+
     .editbox-right {
       flex-shrink: 0;
+
+      .el-button {
+        height: 45px;
+        padding: 0 28px;
+        border-radius: 12px;
+        font-weight: 500;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+      }
     }
   }
 
   .listbox {
-    display: flex;
-    flex-direction: column;
+    padding: 24px 0;
+    border-bottom: 1px solid #f0f0f0;
 
-    .listbox-bottom {
-      font-size: 12px;
-      color: #9499a0;
-      margin: 8px 0 8px 53px;
-      display: flex;
-      align-items: center;
-
-      span {
-        display: block;
-        margin-right: 15px;
-      }
-
-      span:last-child {
-        cursor: pointer;
-        &:hover {
-          color: $primary-color;
-        }
-      }
-    }
-
-    .listbox-top-user {
-      display: flex;
-      align-items: center;
-
-      .el-avatar {
-        flex-shrink: 0;
-      }
-
-      p {
-        margin-left: 15px;
-        width: 100%;
-        position: relative;
-        line-height: 1.4;
-
-        span:first-child {
-          color: $second-text;
-          font-weight: 500;
-          font-size: 14px;
-        }
-      }
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
     }
 
     .top-level {
+      .listbox-top-user {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+
+        .el-avatar {
+          flex-shrink: 0;
+        }
+
+        p {
+          margin: 0;
+          
+          span {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+          }
+        }
+      }
+
       .listbox-middle-root {
-        margin: 5px 0 5px 53px;
-        font-size: 14px;
-        line-height: 1.6;
-        color: #303133;
+        margin-left: 50px;
+        font-size: 15px;
+        line-height: 1.8;
+        color: #555;
         word-wrap: break-word;
+        margin-bottom: 12px;
+      }
+
+      .listbox-bottom {
+        margin-left: 50px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 13px;
+        color: #999;
+
+        span {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          cursor: pointer;
+          transition: color 0.3s ease;
+
+          &:hover {
+            color: #667eea;
+          }
+
+          &:last-child {
+            color: #667eea;
+            font-weight: 500;
+
+            &:hover {
+              color: #764ba2;
+            }
+          }
+        }
       }
     }
 
     .view-more-toggle {
-      margin: 10px 0 10px 53px;
-      font-size: 13px;
-      color: $primary-color;
-      cursor: pointer;
+      margin: 16px 0 0 50px;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      padding: 8px 16px;
+      background: rgba(102, 126, 234, 0.08);
+      border-radius: 8px;
+      font-size: 13px;
+      color: #667eea;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      .el-icon {
+        font-size: 14px;
+      }
+
       &:hover {
-        opacity: 0.8;
+        background: rgba(102, 126, 234, 0.15);
+        transform: translateX(4px);
       }
     }
 
     .reply-box-container {
-      margin-left: 53px;
-      margin-top: 10px;
-    }
+      margin-left: 50px;
+      margin-top: 16px;
+      padding: 16px;
+      background: #f9f9f9;
+      border-radius: 12px;
 
-    .replybox {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      .replybox {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
 
-      .replybox-left {
-        flex-shrink: 0;
-      }
-      .replybox-middle {
-        flex-grow: 1;
-      }
-      .replybox-right {
-        height: 100%;
-        flex-shrink: 0;
+        .replybox-left {
+          flex-shrink: 0;
+        }
+
+        .replybox-middle {
+          flex: 1;
+
+          :deep(.el-input__wrapper) {
+            border-radius: 10px;
+            padding: 10px 14px;
+            background: white;
+          }
+        }
+
+        .replybox-right {
+          flex-shrink: 0;
+
+          .el-button {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            transition: all 0.3s ease;
+
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            }
+          }
+        }
       }
     }
   }

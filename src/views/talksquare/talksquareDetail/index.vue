@@ -207,284 +207,547 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="layout-container">
-    <!-- 左侧内容区 -->
-    <!-- 添加 v-loading 和错误状态处理 -->
-    <div style="width: 74%" v-loading="state.isLoading">
-      <el-card v-if="!state.isError && state.userLuntanXiangxi.id" class="article-card">
-        <div class="article-info">
-          <h1 class="article-title">{{ state.userLuntanXiangxi.title }}</h1>
-          <p class="article-meta">
-            作者: {{ state.userLuntanXiangxi.username }} · {{ state.userLuntanXiangxi.createTime }} · 点赞量
-            {{ state.userLuntanXiangxi.liked }}
-          </p>
-          <!-- 只有存在 poemWord 时才显示引用 -->
-          <p v-if="state.userLuntanXiangxi.poemWord" class="article-quote" @click="jumpToPoemDetail">
-            {{ state.userLuntanXiangxi.poemWord }}
-          </p>
-        </div>
-        <!-- 使用 state.content -->
-        <div style="margin-top: 20px; padding: 0 20px; min-height: 200px">
-          <!-- 添加最小高度防止加载时塌陷 -->
-          <Markdown v-if="state.pageContentMarkShow" :content="state.content" />
-        </div>
-      </el-card>
-      <!-- 错误提示 -->
-      <el-card v-else-if="state.isError" class="article-card error-card">
-        <el-empty description="加载帖子失败，请刷新页面或稍后再试" />
-      </el-card>
-
-      <!-- 评论区，添加 v-loading -->
-      <common
-        v-if="state.pageContentMarkShow && !state.isError"
-        :comments="state.commentsCount"
-        :comment-data="state.postAddCommentForm"
-        :is-loading-comments="state.isLoadingComments"
-        :blog-id="blogId"
-        @refresh-comments="fetchComments"
-      />
+  <div class="forum-detail-container">
+    <!-- 返回按钮 -->
+    <div class="back-button" @click="$router.back()">
+      <el-icon><ArrowLeft /></el-icon>
+      <span>返回论坛</span>
     </div>
 
-    <!-- 右侧作者信息与推荐 -->
-    <div class="author-container" style="width: 24%">
-      <!-- 作者信息卡片，添加 v-if 判断数据是否存在 -->
-      <el-card v-if="!state.isError && state.userLuntanXiangxi.id" class="author-card">
-        <div class="author-info">
-          <!-- 添加 v-if 防止头像为空 -->
-          <img
-            v-if="state.userLuntanXiangxi.touxiang"
-            :src="state.userLuntanXiangxi.touxiang"
-            alt="Avatar"
-            class="author-avatar"
-          />
-          <!-- 可以给个默认头像 -->
-          <el-avatar v-else :size="80" icon="UserFilled" class="author-avatar" />
-          <div>
-            <h3 style="margin-bottom: 5px">{{ state.userLuntanXiangxi.username }}</h3>
-            <p>{{ state.userLuntanXiangxi.nameTager }}</p>
+    <!-- 主要内容区 -->
+    <div class="detail-content">
+      <!-- 左侧内容区 -->
+      <div class="content-main" v-loading="state.isLoading">
+        <!-- 文章卡片 -->
+        <div v-if="!state.isError && state.userLuntanXiangxi.id" class="article-card">
+          <div class="article-header">
+            <h1 class="article-title">{{ state.userLuntanXiangxi.title }}</h1>
+            
+            <div class="article-meta">
+              <div class="meta-left">
+                <span class="author">
+                  <el-icon><User /></el-icon>
+                  {{ state.userLuntanXiangxi.username }}
+                </span>
+                <span class="time">
+                  <el-icon><Clock /></el-icon>
+                  {{ state.userLuntanXiangxi.createTime }}
+                </span>
+                <span class="likes">
+                  <el-icon><Star /></el-icon>
+                  {{ state.userLuntanXiangxi.liked }}
+                </span>
+              </div>
+            </div>
+
+            <!-- 诗词引用 -->
+            <div v-if="state.userLuntanXiangxi.poemWord" class="article-quote" @click="jumpToPoemDetail">
+              <el-icon><Document /></el-icon>
+              <span>引用诗词：{{ state.userLuntanXiangxi.poemWord }}</span>
+            </div>
+          </div>
+
+          <!-- 文章内容 -->
+          <div class="article-body">
+            <Markdown v-if="state.pageContentMarkShow" :content="state.content" />
           </div>
         </div>
-        <div class="author-stats">
-          <div class="author-content">
-            <p>{{ state.userLuntanXiangxi.liked || 0 }} 点赞量</p>
-            <p>{{ state.userLuntanXiangxi.fans || 0 }} 粉丝</p>
+
+        <!-- 错误提示 -->
+        <div v-else-if="state.isError" class="error-card">
+          <el-empty description="加载帖子失败，请刷新页面或稍后再试" />
+        </div>
+
+        <!-- 评论区 -->
+        <common
+          v-if="state.pageContentMarkShow && !state.isError"
+          :comments="state.commentsCount"
+          :comment-data="state.postAddCommentForm"
+          :is-loading-comments="state.isLoadingComments"
+          :blog-id="blogId"
+          @refresh-comments="fetchComments"
+        />
+      </div>
+
+      <!-- 右侧作者信息与推荐 -->
+      <aside class="sidebar">
+        <!-- 作者信息卡片 -->
+        <div v-if="!state.isError && state.userLuntanXiangxi.id" class="author-card">
+          <div class="author-header">
+            <img
+              v-if="state.userLuntanXiangxi.touxiang"
+              :src="state.userLuntanXiangxi.touxiang"
+              alt="Avatar"
+              class="author-avatar"
+            />
+            <el-avatar v-else :size="64" icon="UserFilled" class="author-avatar" />
+            
+            <div class="author-info">
+              <h3 class="author-name">{{ state.userLuntanXiangxi.username }}</h3>
+              <p class="author-tag">{{ state.userLuntanXiangxi.nameTager }}</p>
+            </div>
           </div>
-          <div class="buttons">
-            <!-- 添加 :loading 和 :disabled 状态 -->
+
+          <div class="author-stats">
+            <div class="stat-item">
+              <div class="stat-value">{{ state.userLuntanXiangxi.liked || 0 }}</div>
+              <div class="stat-label">点赞量</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <div class="stat-value">{{ state.userLuntanXiangxi.fans || 0 }}</div>
+              <div class="stat-label">粉丝</div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
             <el-button
               type="primary"
+              class="action-btn follow-btn"
               @click="updateFollow"
-              style="height: 40px; width: 120px"
               :loading="state.isLoadingFollow"
               :disabled="state.isLoadingFollow || state.isLoading"
             >
-              {{ state.isFollowed ? '取消关注' : '关注' }}
+              <el-icon><User /></el-icon>
+              <span>{{ state.isFollowed ? '取消关注' : '关注' }}</span>
             </el-button>
             <el-button
-              size="large"
-              style="height: 40px; width: 120px"
+              class="action-btn like-btn"
               @click="updateLike"
               :loading="state.isLoadingLike"
               :disabled="state.isLoadingLike || state.isLoading"
             >
-              {{ state.userLuntanXiangxi.blogLike ? '取消点赞' : '点赞' }}
+              <el-icon><Star /></el-icon>
+              <span>{{ state.userLuntanXiangxi.blogLike ? '已点赞' : '点赞' }}</span>
             </el-button>
           </div>
         </div>
-      </el-card>
-      <!-- 错误时可以不显示作者卡片或显示占位 -->
-      <el-card v-else-if="state.isError" class="author-card error-card">
-        <!-- 可以留空或显示错误提示 -->
-      </el-card>
 
-      <!-- 点赞排行卡片，添加 v-loading -->
-      <el-card class="contents-card" v-loading="state.isLoadingRank">
-        <template #header>
-          <span>文章点赞榜</span>
-          <!-- 修改标题 -->
-        </template>
-        <div>
-          <!-- 优化：使用 v-if 和 v-else 处理空状态 -->
-          <div v-if="state.userLuntanDianzanrankData.length > 0">
-            <div v-for="item in state.userLuntanDianzanrankData" :key="item.id" class="rank-item">
-              <!-- 添加 v-if 防止头像为空 -->
-              <img v-if="item.touxiang" :src="item.touxiang" class="rank-avatar" />
-              <el-avatar v-else :size="40" icon="UserFilled" class="rank-avatar" />
-              <p class="rank-name">{{ item.name }}</p>
-            </div>
+        <!-- 点赞排行卡片 -->
+        <div class="like-rank-card" v-loading="state.isLoadingRank">
+          <div class="card-header">
+            <el-icon class="header-icon"><TrendCharts /></el-icon>
+            <h3>点赞排行</h3>
           </div>
-          <!-- 使用 el-empty 显示空状态 -->
-          <el-empty v-else description="暂无用户点赞" :image-size="60" />
+          
+          <div class="rank-list">
+            <div v-if="state.userLuntanDianzanrankData.length > 0">
+              <div v-for="(item, index) in state.userLuntanDianzanrankData" :key="item.id" class="rank-item">
+                <div class="rank-badge" :class="'rank-' + (index + 1)">{{ index + 1 }}</div>
+                <img v-if="item.touxiang" :src="item.touxiang" class="rank-avatar" />
+                <el-avatar v-else :size="36" icon="UserFilled" class="rank-avatar" />
+                <span class="rank-name">{{ item.name }}</span>
+              </div>
+            </div>
+            <el-empty v-else description="暂无用户点赞" :image-size="60" />
+          </div>
         </div>
-      </el-card>
 
-      <!-- 推荐组件 -->
-      <ArticleRecommentDation />
-      <DayRecommend style="margin-top: 30px" />
+        <!-- 推荐组件 -->
+        <ArticleRecommentDation />
+        <DayRecommend />
+      </aside>
     </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.layout-container {
-  display: flex;
-  padding: 0 100px; // 考虑在大屏下是否过宽，可设置 max-width
-  justify-content: space-between;
-  margin-top: 30px;
-  gap: 20px; // 使用 gap 控制间距
+<style scoped lang="scss">
+.forum-detail-container {
+  position: relative;
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+  padding: 30px 40px;
 
-  // 左侧内容区
-  .article-card {
-    margin-bottom: 20px; // 与评论区拉开距离
-    &.error-card {
-      // 错误卡片样式
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 300px; // 给个最小高度
-    }
-    .article-info {
-      padding: 20px 20px 0; // 调整内边距
-    }
-    .article-title {
-      justify-content: center;
-      display: flex;
-      font-size: 28px; // 增大标题字号
-      font-weight: 600; // 调整字重
-      margin-bottom: 10px; // 调整间距
-      color: #303133;
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: white;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+    .el-icon {
+      font-size: 18px;
     }
 
-    .article-meta {
-      justify-content: center;
-      display: flex;
-      margin-top: 10px; // 调整间距
-      margin-bottom: 20px; // 调整间距
-      color: #909399; // 调整颜色
-      font-size: 14px; // 调整字号
-    }
-
-    .article-quote {
-      display: flex;
-      justify-content: center;
-      cursor: pointer;
-      background-color: #f8f9fa; // 添加背景色
-      padding: 10px 15px; // 添加内边距
-      border-radius: 4px; // 添加圆角
-      color: #606266; // 调整颜色
-      font-size: 15px; // 调整字号
-      margin: 0 20px 20px; // 调整外边距
-      border-left: 3px solid #409eff; // 添加左边框
-
-      &:hover {
-        background-color: #e9ecef; // 添加 hover 效果
-      }
+    &:hover {
+      color: #667eea;
+      transform: translateX(-4px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
     }
   }
 
-  // 右侧容器
-  .author-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px; // 使用 gap 控制卡片间距
+  .detail-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 30px;
 
-    .author-card {
-      // height: 220px; // 移除固定高度，让其自适应
-      padding-bottom: 15px; // 增加底部内边距
-      &.error-card {
-        // 错误卡片样式
-        min-height: 200px; // 给个最小高度
-      }
+    .content-main {
+      .article-card {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 
-      .author-info {
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px; // 调整间距
+        .article-header {
+          padding-bottom: 24px;
+          border-bottom: 2px solid #f0f0f0;
+          margin-bottom: 32px;
 
-        .author-avatar {
-          border-radius: 50%;
-          margin-right: 15px; // 调整间距
-          width: 70px; // 调整大小
-          height: 70px;
-          flex-shrink: 0; // 防止被压缩
-          // 添加边框或阴影效果
-          border: 2px solid #eee;
-        }
+          .article-title {
+            margin: 0 0 20px 0;
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            line-height: 1.4;
+          }
 
-        h3 {
-          margin: 0 0 5px; // 调整间距
-          font-size: 18px;
-          font-weight: 600; // 加粗
-        }
+          .article-meta {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 16px;
 
-        p {
-          color: #666;
-          font-size: 14px; // 调整字号
-          margin: 0;
-        }
-      }
+            .meta-left {
+              display: flex;
+              gap: 24px;
+              flex-wrap: wrap;
 
-      .author-stats {
-        .author-content {
-          display: flex;
-          justify-content: space-around;
-          font-size: 15px; // 调整字号
-          margin-bottom: 15px; // 调整间距
-          text-align: center; // 居中对齐
-          p {
-            margin: 0;
-            color: #303133;
-            font-weight: 500; // 调整字重
+              span {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 14px;
+                color: #999;
+
+                .el-icon {
+                  font-size: 16px;
+                }
+
+                &.author {
+                  color: #667eea;
+                  font-weight: 500;
+                }
+
+                &.likes {
+                  color: #f39c12;
+                }
+              }
+            }
+          }
+
+          .article-quote {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            .el-icon {
+              font-size: 18px;
+              color: #667eea;
+            }
+
             span {
-              // 如果有点赞量/粉丝数标签
-              display: block;
-              font-size: 13px;
-              color: #909399;
-              margin-top: 3px;
+              color: #667eea;
+              font-weight: 500;
+              font-size: 14px;
+            }
+
+            &:hover {
+              background: linear-gradient(135deg, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.12));
+              transform: translateX(4px);
             }
           }
         }
 
-        .buttons {
-          margin-top: 10px;
-          display: flex;
-          justify-content: space-between;
-          gap: 10px; // 使用 gap 控制按钮间距
+        .article-body {
+          min-height: 300px;
+          line-height: 1.8;
+          font-size: 16px;
+          color: #333;
+        }
+      }
 
-          .el-button {
-            // 统一设置按钮样式
-            flex: 1; // 让按钮平分空间
-            height: 38px; // 调整高度
-            // 移除内联的 width
+      .error-card {
+        background: white;
+        border-radius: 16px;
+        padding: 60px 20px;
+        text-align: center;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      }
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      .author-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+
+        .author-header {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          margin-bottom: 24px;
+          padding-bottom: 20px;
+          border-bottom: 2px solid #f0f0f0;
+
+          .author-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 3px solid #f0f0f0;
+            flex-shrink: 0;
+          }
+
+          .author-info {
+            flex: 1;
+
+            .author-name {
+              margin: 0 0 6px 0;
+              font-size: 18px;
+              font-weight: 600;
+              color: #333;
+            }
+
+            .author-tag {
+              margin: 0;
+              font-size: 13px;
+              color: #999;
+            }
+          }
+        }
+
+        .author-stats {
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          margin-bottom: 24px;
+          padding: 20px 0;
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+          border-radius: 12px;
+
+          .stat-item {
+            text-align: center;
+
+            .stat-value {
+              font-size: 24px;
+              font-weight: 700;
+              color: #667eea;
+              margin-bottom: 6px;
+            }
+
+            .stat-label {
+              font-size: 13px;
+              color: #999;
+            }
+          }
+
+          .stat-divider {
+            width: 1px;
+            height: 40px;
+            background: #e0e0e0;
+          }
+        }
+
+        .action-buttons {
+          display: flex;
+          gap: 12px;
+
+          .action-btn {
+            flex: 1;
+            height: 44px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+
+            &.follow-btn {
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              border: none;
+              color: white;
+
+              &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+              }
+            }
+
+            &.like-btn {
+              border: 2px solid #667eea;
+              color: #667eea;
+
+              &:hover {
+                background: rgba(102, 126, 234, 0.1);
+                transform: translateY(-2px);
+              }
+            }
+          }
+        }
+      }
+
+      .like-rank-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+
+        .card-header {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 20px;
+          padding-bottom: 16px;
+          border-bottom: 2px solid #f0f0f0;
+
+          .header-icon {
+            font-size: 24px;
+            color: #667eea;
+          }
+
+          h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+          }
+        }
+
+        .rank-list {
+          .rank-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+
+            &:hover {
+              background: rgba(102, 126, 234, 0.08);
+              transform: translateX(4px);
+            }
+
+            .rank-badge {
+              width: 28px;
+              height: 28px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 8px;
+              font-size: 14px;
+              font-weight: 700;
+              color: white;
+              flex-shrink: 0;
+              background: #999;
+
+              &.rank-1 {
+                background: linear-gradient(135deg, #f39c12, #e67e22);
+              }
+
+              &.rank-2 {
+                background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+              }
+
+              &.rank-3 {
+                background: linear-gradient(135deg, #d35400, #c0392b);
+              }
+            }
+
+            .rank-avatar {
+              width: 36px;
+              height: 36px;
+              border-radius: 50%;
+              flex-shrink: 0;
+            }
+
+            .rank-name {
+              flex: 1;
+              font-size: 14px;
+              color: #666;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
           }
         }
       }
     }
+  }
+}
 
-    .contents-card {
-      // margin-top: 30px; // 由 gap 控制
-      .rank-item {
-        // 点赞排行项样式
-        display: flex;
-        align-items: center;
-        margin-bottom: 12px; // 调整间距
-        padding: 5px 0; // 增加垂直内边距
+// 响应式适配
+@media (max-width: 1200px) {
+  .forum-detail-container {
+    padding: 20px;
 
-        .rank-avatar {
-          width: 35px; // 调整头像大小
-          height: 35px;
-          border-radius: 50%;
-          margin-right: 10px; // 调整间距
-          flex-shrink: 0;
+    .detail-content {
+      grid-template-columns: 1fr;
+
+      .sidebar {
+        .author-card,
+        .like-rank-card {
+          display: none;
         }
-        .rank-name {
-          margin: 0;
-          font-size: 15px; // 调整字号
-          color: #606266;
-          // 限制名字长度，防止过长
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .forum-detail-container {
+    padding: 15px;
+
+    .back-button {
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+
+    .detail-content {
+      .content-main {
+        .article-card {
+          padding: 24px 20px;
+
+          .article-header {
+            .article-title {
+              font-size: 24px;
+            }
+
+            .article-meta {
+              flex-direction: column;
+              gap: 12px;
+
+              .meta-left {
+                gap: 16px;
+              }
+            }
+          }
+
+          .article-body {
+            font-size: 15px;
+          }
         }
       }
     }

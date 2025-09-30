@@ -88,60 +88,119 @@ onMounted(fetchForumData)
 </script>
 
 <template>
-  <div class="forum-container" :style="{ backgroundImage: `url(${FORUM_BG})` }">
-    <div class="forum-content">
-      <!-- 左侧菜单 -->
-      <aside class="forum-sidebar">
-        <!-- 使用 state.activeIndex 作为 default-active -->
-        <el-menu mode="vertical" :default-active="state.activeIndex">
-          <el-menu-item v-for="item in menuData" :key="item.id" :index="item.id" @click="handleMenuClick(item)">
+  <div class="forum-container">
+    <!-- 背景装饰 -->
+    <div class="background-decoration" :style="{ backgroundImage: `url(${FORUM_BG})` }"></div>
+
+    <!-- 页面头部 -->
+    <div class="forum-header">
+      <div class="header-content">
+        <div class="header-title">
+          <el-icon class="title-icon"><ChatLineSquare /></el-icon>
+          <div>
+            <h1>诗词论坛</h1>
+            <p class="subtitle">分享交流，品味诗词文化之美</p>
+          </div>
+        </div>
+        
+        <!-- 分类标签 -->
+        <div class="category-tabs">
+          <div
+            v-for="item in menuData"
+            :key="item.id"
+            class="category-tab"
+            :class="{ active: state.activeIndex === item.id }"
+            @click="handleMenuClick(item)"
+          >
             <i :class="item.icon" />
             <span>{{ item.name }}</span>
-          </el-menu-item>
-        </el-menu>
-      </aside>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <!-- 中间内容区 -->
+    <!-- 主要内容区 -->
+    <div class="forum-content">
+      <!-- 左侧内容区 -->
       <main class="forum-main" v-loading="state.isLoading">
-        <el-tabs v-model="state.activeName">
-          <el-tab-pane label="最新" name="new">
-            <el-empty v-if="state.isError" description="加载失败，请稍后重试" />
-            <el-empty v-else-if="isListEmpty" description="暂无帖子" />
-            <div v-else class="article-list">
-              <div v-for="item in truncatedContent" :key="item.id" class="article-item" @click="goForumDetail(item.id)">
-                <div class="article-content">
+        <!-- 排序标签 -->
+        <div class="sort-tabs">
+          <div
+            class="sort-tab"
+            :class="{ active: state.activeName === 'new' }"
+            @click="state.activeName = 'new'"
+          >
+            <el-icon><Clock /></el-icon>
+            <span>最新</span>
+          </div>
+          <div
+            class="sort-tab"
+            :class="{ active: state.activeName === 'heat' }"
+            @click="state.activeName = 'heat'"
+          >
+            <el-icon><TrendCharts /></el-icon>
+            <span>最热</span>
+          </div>
+        </div>
+
+        <!-- 帖子列表 -->
+        <div v-if="state.activeName === 'new'">
+          <el-empty v-if="state.isError" description="加载失败，请稍后重试" />
+          <el-empty v-else-if="isListEmpty" description="暂无帖子" />
+          <div v-else class="article-list">
+            <div v-for="item in truncatedContent" :key="item.id" class="article-card" @click="goForumDetail(item.id)">
+              <div class="card-content">
+                <div class="card-header">
                   <h3 class="title">{{ item.title }}</h3>
-                  <p class="content">{{ item.content }}</p>
-                  <div class="meta">
-                    <span class="author">作者: {{ item.username }}</span>
-                    <span class="likes">赞 {{ item.liked }}</span>
-                    <span class="comments">评 {{ item.conmments }}</span>
-                    <span
-                      v-if="item.poemWord && item.poemId"
-                      class="quote"
-                      @click.stop="goPoetClassDetail(item.poemId)"
-                    >
-                      引用 "{{ item.poemWord }}"
-                    </span>
+                  <div class="author-info">
+                    <span class="author-name">{{ item.username }}</span>
+                    <span class="post-time">发布于 {{ item.createTime || '最近' }}</span>
                   </div>
                 </div>
-                <div class="article-image" v-if="item.images">
-                  <el-image :src="item.images" fit="cover" loading="lazy">
-                    <template #error>
-                      <div class="image-slot">
-                        <el-icon><Picture /></el-icon>
-                      </div>
-                    </template>
-                  </el-image>
+                
+                <p class="content">{{ item.content }}</p>
+                
+                <div class="card-footer">
+                  <div class="meta-left">
+                    <span class="meta-item likes">
+                      <el-icon><Star /></el-icon>
+                      {{ item.liked }}
+                    </span>
+                    <span class="meta-item comments">
+                      <el-icon><ChatDotRound /></el-icon>
+                      {{ item.conmments }}
+                    </span>
+                    <span
+                      v-if="item.poemWord && item.poemId"
+                      class="meta-item quote"
+                      @click.stop="goPoetClassDetail(item.poemId)"
+                    >
+                      <el-icon><Document /></el-icon>
+                      {{ item.poemWord }}
+                    </span>
+                  </div>
+                  
+                  <div v-if="item.images" class="article-thumbnail">
+                    <el-image :src="item.images" fit="cover" loading="lazy">
+                      <template #error>
+                        <div class="image-error">
+                          <el-icon><Picture /></el-icon>
+                        </div>
+                      </template>
+                    </el-image>
+                  </div>
                 </div>
               </div>
             </div>
-          </el-tab-pane>
-          <el-tab-pane label="最热" name="heat">
-            <el-empty description="“最热”功能正在开发中..." />
-          </el-tab-pane>
-        </el-tabs>
+          </div>
+        </div>
 
+        <!-- 最热功能开发中 -->
+        <div v-else-if="state.activeName === 'heat'" class="empty-state">
+          <el-empty description="最热功能正在开发中..." />
+        </div>
+
+        <!-- 分页 -->
         <el-pagination
           v-if="!state.isError && state.totalPage > state.pageSize"
           v-model:current-page="state.currentPage"
@@ -154,210 +213,485 @@ onMounted(fetchForumData)
         />
       </main>
 
-      <!-- 右侧推荐 (保持不变) -->
+      <!-- 右侧推荐 -->
       <aside class="forum-aside">
         <ArticleRecommendation />
         <DayRecommend />
       </aside>
     </div>
 
-    <!-- 发布按钮 (保持不变) -->
+    <!-- 发布按钮 -->
     <el-button class="publish-btn" type="primary" circle @click="goForumEdit">
       <el-icon><CirclePlusFilled /></el-icon>
     </el-button>
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .forum-container {
-  min-height: 100vh;
-  background-size: cover;
-  background-attachment: fixed;
-  padding: 10px;
-  box-sizing: border-box;
+  position: relative;
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
 
-  .forum-content {
-    display: grid;
-    grid-template-columns: 250px 1fr 300px;
-    gap: 20px;
+  .background-decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.03;
+    z-index: 0;
+  }
 
-    max-width: 1400px;
-    margin: 0 auto;
-    border-radius: 8px; // 重新应用圆角
-    padding: 20px; // 重新应用内边距
+  // 页面头部
+  .forum-header {
+    position: relative;
+    z-index: 1;
+    background: white;
+    border-bottom: 1px solid #e8e8e8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 
-    .forum-sidebar {
-      background-color: #fff;
-      border-radius: 4px;
-      padding: 10px 0;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      height: fit-content;
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 40px;
 
-      .el-menu {
-        border-right: none;
+      .header-title {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 28px;
+
+        .title-icon {
+          font-size: 48px;
+          color: #667eea;
+          filter: drop-shadow(0 2px 8px rgba(102, 126, 234, 0.3));
+        }
+
+        h1 {
+          margin: 0 0 4px 0;
+          font-size: 32px;
+          font-weight: 700;
+          color: #333;
+        }
+
+        .subtitle {
+          margin: 0;
+          font-size: 14px;
+          color: #999;
+        }
       }
 
-      .el-menu-item {
-        i {
-          margin-right: 8px;
-          font-size: 18px;
-        }
-        height: 45px;
-        line-height: 45px;
-        &:hover {
-          background-color: #ecf5ff;
-        }
-        &.is-active {
-          color: #409eff;
-          background-color: #e8f4ff; // 激活项背景色
+      .category-tabs {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+
+        .category-tab {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 12px 24px;
+          background: #f5f5f5;
+          border-radius: 12px;
+          font-size: 15px;
+          color: #666;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          border: 2px solid transparent;
+
+          i {
+            font-size: 18px;
+          }
+
+          &:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+          }
+
+          &.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+          }
         }
       }
     }
+  }
+
+  // 主要内容区
+  .forum-content {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 40px;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 30px;
 
     .forum-main {
-      // 新增：主内容区样式优化
-      background-color: #fff;
-      border-radius: 4px;
-      padding: 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      // 排序标签
+      .sort-tabs {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
 
-      .article-list {
-        .article-item {
+        .sort-tab {
           display: flex;
-          padding: 15px 10px; // 增加垂直内边距
-          border-bottom: 1px solid #eee;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 20px;
+          background: white;
+          border: 2px solid #e8e8e8;
+          border-radius: 12px;
+          font-size: 14px;
+          color: #666;
           cursor: pointer;
-          transition: background-color 0.3s; // 优化过渡效果
+          transition: all 0.3s ease;
+
+          .el-icon {
+            font-size: 16px;
+          }
 
           &:hover {
-            background-color: #f9fafc; // 调整 hover 背景色
+            border-color: #667eea;
+            color: #667eea;
           }
 
-          &:last-child {
-            border-bottom: none; // 移除最后一项的边框
+          &.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+          }
+        }
+      }
+
+      // 帖子列表
+      .article-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .article-card {
+          position: relative;
+          background: white;
+          border-radius: 16px;
+          overflow: hidden;
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
           }
 
-          .article-content {
-            flex: 1;
-            margin-right: 20px;
-            display: flex; // 使用 flex 布局内部元素
-            flex-direction: column; // 垂直排列
+          &:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.15);
+
+            &::before {
+              opacity: 1;
+            }
 
             .title {
-              font-size: 18px;
-              color: #303133; // 调整标题颜色
-              margin-bottom: 8px; // 调整间距
-              font-weight: 500; // 轻微加粗
-              // 新增：限制标题行数，防止过长
-              display: -webkit-box;
-              -webkit-line-clamp: 1;
-              -webkit-box-orient: vertical;
-              overflow: hidden;
-              text-overflow: ellipsis;
+              color: #667eea;
+            }
+          }
+
+          .card-content {
+            padding: 24px;
+
+            .card-header {
+              margin-bottom: 16px;
+
+              .title {
+                margin: 0 0 12px 0;
+                font-size: 20px;
+                font-weight: 600;
+                color: #333;
+                transition: color 0.3s ease;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                line-height: 1.5;
+              }
+
+              .author-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-size: 13px;
+
+                .author-name {
+                  color: #667eea;
+                  font-weight: 500;
+                }
+
+                .post-time {
+                  color: #999;
+                }
+              }
             }
 
             .content {
-              color: #606266; // 调整内容颜色
-              line-height: 1.7; // 调整行高
-              margin-bottom: 12px; // 调整间距
-              font-size: 14px; // 调整字体大小
-              // 新增：限制内容行数
+              color: #666;
+              line-height: 1.8;
+              margin-bottom: 16px;
+              font-size: 14px;
               display: -webkit-box;
-              -webkit-line-clamp: 2; // 显示两行
+              -webkit-line-clamp: 3;
+              line-clamp: 3;
               -webkit-box-orient: vertical;
               overflow: hidden;
               text-overflow: ellipsis;
-              flex-grow: 1; // 占据剩余空间，将 meta 推到底部
             }
 
-            .meta {
+            .card-footer {
               display: flex;
+              justify-content: space-between;
               align-items: center;
-              gap: 15px;
-              color: #909399; // 调整元信息颜色
-              font-size: 13px; // 调整字体大小
-              margin-top: auto; // 将 meta 推到底部
+              padding-top: 16px;
+              border-top: 1px solid #f0f0f0;
 
-              .quote {
-                color: #409eff;
-                cursor: pointer;
+              .meta-left {
+                display: flex;
+                gap: 20px;
+                align-items: center;
 
-                &:hover {
-                  text-decoration: underline;
+                .meta-item {
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+                  font-size: 14px;
+                  color: #999;
+                  transition: color 0.3s ease;
+
+                  .el-icon {
+                    font-size: 16px;
+                  }
+
+                  &.likes:hover {
+                    color: #f39c12;
+                  }
+
+                  &.comments:hover {
+                    color: #667eea;
+                  }
+
+                  &.quote {
+                    color: #667eea;
+                    cursor: pointer;
+                    max-width: 200px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+
+                    &:hover {
+                      color: #764ba2;
+                      text-decoration: underline;
+                    }
+                  }
+                }
+              }
+
+              .article-thumbnail {
+                width: 80px;
+                height: 80px;
+                border-radius: 12px;
+                overflow: hidden;
+                flex-shrink: 0;
+
+                .el-image {
+                  width: 100%;
+                  height: 100%;
+                  display: block;
+                }
+
+                .image-error {
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  width: 100%;
+                  height: 100%;
+                  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+                  color: #667eea;
+                  font-size: 24px;
                 }
               }
             }
           }
+        }
+      }
 
-          .article-image {
-            width: 100px; // 调整图片尺寸
-            height: 100px; // 调整图片尺寸
-            border-radius: 4px;
-            overflow: hidden;
-            flex-shrink: 0; // 防止图片被压缩
+      .empty-state {
+        background: white;
+        border-radius: 16px;
+        padding: 60px 20px;
+        text-align: center;
+      }
 
-            .el-image {
-              width: 100%;
-              height: 100%;
-              display: block; // 修复图片底部可能存在的空隙
+      .pagination {
+        margin-top: 32px;
+        display: flex;
+        justify-content: center;
+      }
+    }
 
-              .image-slot {
-                // 图片加载失败占位样式
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 100%;
-                height: 100%;
-                background: #f5f7fa;
-                color: #c0c4cc;
-                font-size: 24px;
+    // 右侧边栏
+    .forum-aside {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+  }
+
+  // 发布按钮
+  .publish-btn {
+    width: 64px;
+    height: 64px;
+    position: fixed;
+    right: 40px;
+    bottom: 40px;
+    font-size: 28px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    z-index: 999;
+
+    &:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5);
+    }
+
+    &:active {
+      transform: translateY(-2px) scale(1.02);
+    }
+  }
+}
+
+// 响应式适配
+@media (max-width: 1200px) {
+  .forum-container {
+    .forum-header {
+      .header-content {
+        padding: 24px 20px;
+      }
+    }
+
+    .forum-content {
+      grid-template-columns: 1fr;
+      padding: 20px;
+
+      .forum-aside {
+        display: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .forum-container {
+    .forum-header {
+      .header-content {
+        padding: 20px 15px;
+
+        .header-title {
+          .title-icon {
+            font-size: 36px;
+          }
+
+          h1 {
+            font-size: 24px;
+          }
+        }
+
+        .category-tabs {
+          gap: 8px;
+
+          .category-tab {
+            padding: 8px 16px;
+            font-size: 13px;
+
+            i {
+              font-size: 16px;
+            }
+          }
+        }
+      }
+    }
+
+    .forum-content {
+      padding: 15px;
+
+      .forum-main {
+        .sort-tabs {
+          gap: 8px;
+
+          .sort-tab {
+            padding: 8px 16px;
+            font-size: 13px;
+          }
+        }
+
+        .article-list {
+          gap: 15px;
+
+          .article-card {
+            .card-content {
+              padding: 20px;
+
+              .card-header {
+                .title {
+                  font-size: 18px;
+                }
+              }
+
+              .content {
+                font-size: 13px;
+              }
+
+              .card-footer {
+                flex-direction: column-reverse;
+                gap: 16px;
+                align-items: flex-start;
+
+                .meta-left {
+                  width: 100%;
+                  flex-wrap: wrap;
+                }
+
+                .article-thumbnail {
+                  align-self: flex-end;
+                }
               }
             }
           }
         }
       }
-      // 新增：为 el-tabs 添加一些底部间距
-      .el-tabs {
-        margin-bottom: 20px;
-      }
-
-      .pagination {
-        margin-top: 30px;
-        display: flex;
-        justify-content: center;
-      }
     }
-    // 新增：右侧边栏样式优化
-    .forum-aside {
-      display: flex;
-      flex-direction: column;
-      gap: 20px; // 为推荐组件之间添加间距
 
-      // 可以为推荐组件添加统一的背景和圆角
-      & > div {
-        // 假设推荐组件是 div
-        background-color: #fff;
-        border-radius: 4px;
-        padding: 15px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      }
-    }
-  }
-  .publish-btn {
-    width: 56px;
-    height: 56px;
-    // background-color: #181b1b; // 使用 Element Plus 的 primary 颜色
-    // border-radius: 28px; // el-button circle 属性会自动处理
-    position: fixed;
-    right: 40px; // 调整位置
-    bottom: 40px; // 调整位置
-    transition: all 0.3s;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); // 添加阴影
-    font-size: 24px; // 调整图标大小
-
-    &:hover {
-      transform: scale(1.05); // 添加 hover 效果
+    .publish-btn {
+      width: 56px;
+      height: 56px;
+      right: 20px;
+      bottom: 20px;
+      font-size: 24px;
     }
   }
 }

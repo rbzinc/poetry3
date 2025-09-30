@@ -19,28 +19,125 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-card class="contents-card">
-    <div>
-      <h2>文章推荐</h2>
+  <div class="article-recommendation">
+    <div class="card-header">
+      <el-icon class="header-icon"><Star /></el-icon>
+      <h3>文章推荐</h3>
     </div>
-    <el-divider style="margin: 16px 0" />
-    <div
-      v-for="item in RecommendationData"
-      :key="item.blogid"
-      style="margin-bottom: 16px; margin-left: 5px; cursor: pointer"
-      @click="goToDetail(item)"
-    >
-      <h3 style="margin-bottom: 10px">{{ item.title }}</h3>
-      <div style="display: flex; color: #666; justify-content: flex-end">
-        <p style="margin-right: 16px">评论 : {{ item.conmments }}</p>
-        <p><i class="iconfont icon-dianzan1"></i> {{ item.liked }}</p>
+    
+    <div class="recommendation-list">
+      <div
+        v-for="item in RecommendationData"
+        :key="item.blogid"
+        class="recommendation-item"
+        @click="goToDetail(item)"
+      >
+        <h4 class="item-title">{{ item.title }}</h4>
+        <div class="item-meta">
+          <span class="meta-item comments">
+            <el-icon><ChatDotRound /></el-icon>
+            {{ item.conmments }}
+          </span>
+          <span class="meta-item likes">
+            <el-icon><Star /></el-icon>
+            {{ item.liked }}
+          </span>
+        </div>
       </div>
     </div>
-  </el-card>
+  </div>
 </template>
 
-<style lang="scss" scoped>
-.contents-card {
-  margin-bottom: 30px;
+<style scoped lang="scss">
+.article-recommendation {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+
+    .header-icon {
+      font-size: 24px;
+      color: #667eea;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+  }
+
+  .recommendation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .recommendation-item {
+      padding: 16px;
+      background: #f9f9f9;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+
+      &:hover {
+        background: rgba(102, 126, 234, 0.05);
+        border-color: #667eea;
+        transform: translateX(4px);
+
+        .item-title {
+          color: #667eea;
+        }
+      }
+
+      .item-title {
+        margin: 0 0 12px 0;
+        font-size: 15px;
+        font-weight: 500;
+        color: #333;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: color 0.3s ease;
+      }
+
+      .item-meta {
+        display: flex;
+        gap: 16px;
+        font-size: 13px;
+
+        .meta-item {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          color: #999;
+
+          .el-icon {
+            font-size: 14px;
+          }
+
+          &.comments {
+            color: #667eea;
+          }
+
+          &.likes {
+            color: #f39c12;
+          }
+        }
+      }
+    }
+  }
 }
 </style>
