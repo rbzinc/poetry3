@@ -50,6 +50,9 @@ const handleMouseLeave = () => {
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
+    <!-- 顶部渐变装饰条 -->
+    <div class="card-top-decoration"></div>
+    
     <!-- 卡片背景装饰 -->
     <div class="card-background">
       <div class="gradient-overlay"></div>
@@ -110,7 +113,6 @@ const handleMouseLeave = () => {
 .poetry-modern-card {
   position: relative;
   width: 100%;
-  margin-bottom: 20px;
   background: white;
   border-radius: 16px;
   overflow: hidden;
@@ -119,8 +121,12 @@ const handleMouseLeave = () => {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 16px 50px rgba(102, 126, 234, 0.25);
+    
+    .card-top-decoration {
+      opacity: 1;
+    }
     
     .gradient-overlay {
       opacity: 1;
@@ -133,6 +139,18 @@ const handleMouseLeave = () => {
     .poem-title {
       color: #667eea;
     }
+  }
+  
+  .card-top-decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 2;
   }
   
   .card-background {

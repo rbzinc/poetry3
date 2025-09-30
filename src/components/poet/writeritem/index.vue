@@ -111,7 +111,12 @@ const getDynastyColor = () => {
     }
     
     .avatar-circle {
-      transform: scale(1.1) rotate(5deg);
+      transform: scale(1.1);
+      box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+      
+      .avatar-icon {
+        transform: rotate(360deg) scale(1.1);
+      }
     }
   }
   
@@ -150,15 +155,16 @@ const getDynastyColor = () => {
       .avatar-circle {
         width: 70px;
         height: 70px;
-        border-radius: 50%;
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
         box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
-        transition: all 0.4s ease;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         
         .avatar-icon {
           color: white;
+          transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
       }
       

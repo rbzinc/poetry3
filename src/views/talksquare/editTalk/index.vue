@@ -1,12 +1,15 @@
 <script setup>
 import { ref, watch, computed, reactive } from 'vue' // 引入 reactive
-import { ElForm, ElFormItem, ElInput, ElButton, ElMessage } from 'element-plus' // 引入 ElMessageBox
+import { ElMessage } from 'element-plus'
 import { useUserInfoStore } from '@/stores/index.js'
 import { userLuntanFabutieziPostApi, userLuntanSearchGetApi } from '@/api/modules/talkSquare.js'
 import { getpoemRandomData } from '@/api/index.js'
 import { goForum, goHome } from '@/router/helpers.js'
 import { UPLOAD_ADDRESS } from '@/constants/upload.js'
-import { Search } from '@element-plus/icons-vue'
+import { 
+  Search, ArrowLeftBold, Document, Setting, FolderOpened, Promotion, Loading,
+  EditPen, ArrowDown, Check, Plus, InfoFilled, Reading, Close, ArrowRight
+} from '@element-plus/icons-vue'
 
 // --- 状态管理 ---
 const editorFormRef = ref(null) // 发文设置表单引用
@@ -299,39 +302,123 @@ const load = () => {
 </script>
 
 <template>
-  <div id="editor">
-    <mavon-editor v-model="editForm.content" style="height: calc(100vh - 80px)" placeholder="开始写作..." />
-    <div class="blog-post">
-      <div class="foot-left">
-        <p style="margin-right: 20px; cursor: pointer; color: #409eff" @click="toLayoutHome">
-          <el-icon><ArrowLeftBold /></el-icon> 返回首页
-        </p>
-        <p style="margin-right: 20px; color: #909399">共 {{ state.contentLength }} 字</p>
-        <el-button
-          size="large"
-          type="primary"
-          round
+  <div class="modern-editor-container">
+    <!-- Markdown 编辑器 -->
+    <mavon-editor 
+      v-model="editForm.content" 
+      class="modern-mavon-editor" 
+      placeholder="开始你的创作...✍️" 
+    />
+    
+    <!-- 现代化底部工具栏 -->
+    <div class="modern-toolbar">
+      <div class="toolbar-left">
+        <!-- 返回按钮 -->
+        <button class="back-btn" @click="toLayoutHome">
+          <el-icon :size="18"><ArrowLeftBold /></el-icon>
+          <span>返回首页</span>
+        </button>
+        
+        <!-- 字数统计 -->
+        <div class="word-count-badge">
+          <el-icon :size="16"><Document /></el-icon>
+          <span class="count-number">{{ state.contentLength }}</span>
+          <span class="count-label">字</span>
+        </div>
+        
+        <!-- 发文设置按钮 -->
+        <button 
+          class="settings-btn"
           @click="state.isSettingsDialogVisible = true"
-          :class="{ shake: state.isShakeButton }"
+          :class="{ 'shake': state.isShakeButton }"
         >
-          发文设置
-        </el-button>
+          <el-icon :size="18"><Setting /></el-icon>
+          <span>发文设置</span>
+        </button>
       </div>
-      <div class="foot-right">
-        <el-button size="large" round @click="saveDraft">保存草稿</el-button>
-        <el-button size="large" type="primary" round @click="submitForm" :loading="state.isLoadingSubmit">
-          {{ state.isLoadingSubmit ? '发布中...' : '发布博客' }}
-        </el-button>
+      
+      <div class="toolbar-right">
+        <!-- 保存草稿按钮 -->
+        <button class="action-btn secondary" @click="saveDraft">
+          <el-icon :size="18"><FolderOpened /></el-icon>
+          <span>保存草稿</span>
+        </button>
+        
+        <!-- 发布按钮 -->
+        <button 
+          class="action-btn primary"
+          @click="submitForm" 
+          :disabled="state.isLoadingSubmit"
+        >
+          <el-icon v-if="!state.isLoadingSubmit" :size="18"><Promotion /></el-icon>
+          <el-icon v-else class="is-loading" :size="18"><Loading /></el-icon>
+          <span>{{ state.isLoadingSubmit ? '发布中...' : '发布博客' }}</span>
+        </button>
       </div>
     </div>
   </div>
 
-  <el-dialog v-model="state.isSettingsDialogVisible" title="发文设置" width="600px" :close-on-click-modal="false">
-    <el-form ref="editorFormRef" :model="editForm" :rules="rules" label-width="80px">
+  <!-- 现代化发文设置对话框 -->
+  <el-dialog 
+    v-model="state.isSettingsDialogVisible" 
+    width="680px" 
+    :close-on-click-modal="false"
+    class="modern-settings-dialog"
+  >
+    <template #header>
+      <div class="dialog-gradient-header">
+        <el-icon :size="28"><Setting /></el-icon>
+        <span class="header-title">发文设置</span>
+      </div>
+    </template>
+    
+    <div class="dialog-body-content">
+      <el-form ref="editorFormRef" :model="editForm" :rules="rules" label-width="90px" label-position="left">
+        <!-- 文章标题 -->
       <el-form-item label="文章标题" prop="title">
-        <el-input v-model="editForm.title" placeholder="请输入标题" />
+          <el-input 
+            v-model="editForm.title" 
+            placeholder="输入一个吸引人的标题..."
+            size="large"
+            clearable
+          >
+            <template #prefix>
+              <el-icon><EditPen /></el-icon>
+            </template>
+          </el-input>
       </el-form-item>
+        
+        <!-- 文章分类 -->
+        <el-form-item label="文章分类" prop="type">
+          <el-popover placement="bottom-start" :width="360" trigger="click">
+            <template #reference>
+              <button class="category-select-btn">
+                <span class="selected-category">{{ selectedTagName }}</span>
+                <el-icon class="arrow-icon"><ArrowDown /></el-icon>
+              </button>
+            </template>
+            <div class="tag-selector-content">
+              <div class="tag-selector-title">选择分类</div>
+              <div class="tag-grid">
+                <button
+                  v-for="item in tagData"
+                  :key="item.id"
+                  class="tag-item"
+                  :class="{ 'active': item.id === state.selectedTagId }"
+                  @click="toggleTag(item)"
+                >
+                  <span class="tag-icon">📁</span>
+                  <span class="tag-name">{{ item.name }}</span>
+                  <el-icon v-if="item.id === state.selectedTagId" class="check-icon"><Check /></el-icon>
+                </button>
+              </div>
+            </div>
+          </el-popover>
+        </el-form-item>
+        
+        <!-- 添加封面 -->
       <el-form-item label="添加封面" prop="images">
+          <div class="upload-wrapper">
         <el-upload
           ref="uploadRef"
           :action="UPLOAD_ADDRESS"
@@ -343,88 +430,130 @@ const load = () => {
           :on-remove="handleUploadRemove"
           :on-exceed="handleUploadExceed"
           :auto-upload="true"
-        >
-          <el-icon><Plus /></el-icon>
-          <template #tip>
-            <div class="el-upload__tip">只能上传一张 jpg/png 文件，且不超过 5MB</div>
-          </template>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="文章分类" prop="type">
-        <el-popover placement="bottom-start" :width="300" trigger="click">
-          <template #reference>
-            <el-button>
-              {{ selectedTagName }} <el-icon style="margin-left: 5px"><ArrowDown /></el-icon>
-            </el-button>
-          </template>
-          <div class="tag-popover-content">
-            <el-check-tag
-              v-for="item in tagData"
-              :key="item.id"
-              style="margin: 5px"
-              :checked="item.id === state.selectedTagId"
-              @change="toggleTag(item)"
+              class="modern-upload"
             >
-              {{ item.name }}
-            </el-check-tag>
+              <div class="upload-trigger">
+                <el-icon :size="32"><Plus /></el-icon>
+                <div class="upload-text">上传封面</div>
+              </div>
+        </el-upload>
+            <div class="upload-tip">
+              <el-icon :size="14"><InfoFilled /></el-icon>
+              <span>支持 jpg/png 格式，不超过 5MB</span>
           </div>
-        </el-popover>
+          </div>
       </el-form-item>
+        
+        <!-- 引用古诗 -->
       <el-form-item label="引用古诗">
-        <el-button @click="choosePoem">{{ state.choicePoemContent }}</el-button>
+          <button class="poem-select-btn" @click="choosePoem">
+            <el-icon :size="18"><Reading /></el-icon>
+            <span>{{ state.choicePoemContent }}</span>
+          </button>
       </el-form-item>
+        
+        <!-- 古诗节选 -->
       <el-form-item label="古诗节选" prop="poemWord">
         <el-input
           v-model="editForm.poemWord"
           type="textarea"
-          :rows="3"
+            :rows="4"
           :disabled="state.isExcerptDisabled"
-          placeholder="选择古诗后，可在此编辑引用的内容"
+            placeholder="选择古诗后，可在此编辑引用的内容..."
+            class="poem-excerpt-textarea"
         />
       </el-form-item>
     </el-form>
+    </div>
+    
     <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="state.isSettingsDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="saveEditSettings"> 确认设置 </el-button>
-      </span>
+      <div class="dialog-footer-actions">
+        <button class="footer-btn cancel-btn" @click="state.isSettingsDialogVisible = false">
+          <el-icon><Close /></el-icon>
+          <span>取消</span>
+        </button>
+        <button class="footer-btn confirm-btn" @click="saveEditSettings">
+          <el-icon><Check /></el-icon>
+          <span>确认设置</span>
+        </button>
+      </div>
     </template>
   </el-dialog>
 
-  <el-drawer v-model="state.isPoemDrawerVisible" title="选择引用古诗" direction="rtl" size="450px">
-    <div class="poem-drawer-content">
+  <!-- 现代化古诗选择抽屉 -->
+  <el-drawer 
+    v-model="state.isPoemDrawerVisible" 
+    direction="rtl" 
+    size="500px"
+    class="modern-poem-drawer"
+  >
+    <template #header>
+      <div class="drawer-gradient-header">
+        <el-icon :size="28"><Reading /></el-icon>
+        <span class="header-title">选择引用古诗</span>
+      </div>
+    </template>
+    
+    <div class="drawer-body-content">
+      <!-- 搜索框 -->
+      <div class="search-box-wrapper">
       <el-input
         ref="poemSearchInputRef"
         v-model="state.poemSearchValue"
-        placeholder="输入诗词名、作者搜索"
-        class="input-with-select"
+          placeholder="输入诗词名、作者搜索..."
+          size="large"
         clearable
         @keyup.enter="searchPoemByKey"
+          class="poem-search-input"
       >
+          <template #prefix>
+            <el-icon><Search /></el-icon>
+          </template>
         <template #append>
-          <el-button :icon="Search" @click="searchPoemByKey" :loading="state.isLoadingPoems" />
+            <button class="search-btn" @click="searchPoemByKey" :disabled="state.isLoadingPoems">
+              <el-icon v-if="!state.isLoadingPoems"><Search /></el-icon>
+              <el-icon v-else class="is-loading"><Loading /></el-icon>
+            </button>
         </template>
       </el-input>
+      </div>
 
+      <!-- 诗词列表 -->
       <div
         v-loading="state.isLoadingPoems"
         v-infinite-scroll="load"
-        class="infinite-list"
-        style="overflow: auto; margin-top: 15px"
+        class="poem-list-container"
         :infinite-scroll-disabled="state.isLoadingPoems"
         :infinite-scroll-delay="500"
       >
-        <el-empty v-if="!state.isLoadingPoems && state.poemData.length === 0" description="暂无诗词或未搜索到结果" />
+        <el-empty 
+          v-if="!state.isLoadingPoems && state.poemData.length === 0" 
+          description="暂无诗词或未搜索到结果"
+          :image-size="120"
+        >
+          <template #image>
+            <el-icon :size="80" color="#BDC3C7"><Document /></el-icon>
+          </template>
+        </el-empty>
+        
         <div
           v-else
           v-for="item in state.poemData"
           :key="item.id"
           @click="getPoemContent(item)"
-          class="infinite-list-item"
+          class="poem-card-item"
         >
-          <h3 class="title">{{ item.title }}</h3>
-
-          <pre class="content">{{ item.content }}</pre>
+          <div class="poem-card-header">
+            <h3 class="poem-title">{{ item.title }}</h3>
+            <div class="poem-badge">
+              <el-icon :size="14"><Reading /></el-icon>
+            </div>
+          </div>
+          <pre class="poem-content">{{ item.content }}</pre>
+          <div class="poem-card-footer">
+            <span class="select-hint">点击选择</span>
+            <el-icon class="arrow-icon"><ArrowRight /></el-icon>
+          </div>
         </div>
       </div>
     </div>
@@ -432,93 +561,699 @@ const load = () => {
 </template>
 
 <style scoped lang="scss">
-#editor {
+// 现代化编辑器容器
+.modern-editor-container {
   width: 100%;
-  height: 100vh; // 让编辑器容器占满视口高度
-  display: flex;
-  flex-direction: column; // 垂直布局
-
-  .v-md-editor {
-    // 假设 mavon-editor 渲染后的类名，或直接作用于组件
-    flex-grow: 1; // 编辑器占据剩余空间
-    height: auto !important; // 覆盖可能存在的内联高度
-  }
-
-  .blog-post {
-    display: flex;
-    align-items: center; // 垂直居中对齐
-    padding: 10px 20px; // 调整内边距
-    height: 60px; // 固定底部栏高度
-    border-top: 1px solid #eee; // 添加上边框
-    background-color: #fff; // 添加背景色
-    flex-shrink: 0; // 防止底部栏被压缩
-
-    .foot-left {
-      display: flex;
-      align-items: center;
-      gap: 15px; // 使用 gap 控制间距
-      p {
-        margin: 0; // 移除默认 margin
-        display: flex; // 让 icon 和文字对齐
-        align-items: center;
-        gap: 5px;
-      }
-    }
-    .foot-right {
-      margin-left: auto; // 将右侧按钮推到最右边
-      display: flex;
-      gap: 10px;
-    }
-  }
-}
-
-// 弹窗和抽屉样式优化
-.tag-popover-content {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.poem-drawer-content {
-  padding: 15px;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #F8F9FA;
+  
+  // Mavon Editor 样式
+  .modern-mavon-editor {
+    flex: 1;
+    height: auto !important;
+    
+    :deep(.v-note-wrapper) {
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+  }
+  
+  // 现代化工具栏
+  .modern-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: white;
+    border-top: 1px solid #ECF0F1;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+    height: 80px;
+    flex-shrink: 0;
+    
+    .toolbar-left,
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    // 返回按钮
+    .back-btn {
+      display: flex;
+        align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: #F8F9FA;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      color: #667eea;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+        transform: translateX(-4px);
+      }
+    }
+    
+    // 字数统计徽章
+    .word-count-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+      border-radius: 20px;
+      
+      .el-icon {
+        color: #667eea;
+      }
+      
+      .count-number {
+        font-size: 18px;
+        font-weight: 600;
+        color: #667eea;
+      }
+      
+      .count-label {
+        font-size: 13px;
+        color: #7F8C8D;
+      }
+    }
+    
+    // 发文设置按钮
+    .settings-btn {
+  display: flex;
+      align-items: center;
+  gap: 8px;
+      padding: 10px 24px;
+      background: white;
+      border: 2px solid #667eea;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #667eea;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+        transform: translateY(-2px);
+      }
+      
+      &.shake {
+        animation: shake 0.5s ease;
+      }
+    }
+    
+    // 操作按钮
+    .action-btn {
+  display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &.secondary {
+        background: white;
+        color: #7F8C8D;
+        border: 2px solid #ECF0F1;
+        
+        &:hover {
+          background: #F8F9FA;
+          border-color: #BDC3C7;
+          color: #34495E;
+          transform: translateY(-2px);
+        }
+      }
+      
+      &.primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+        
+        &:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+      }
+      
+      .is-loading {
+        animation: spin 1s linear infinite;
+      }
+    }
+  }
+}
 
-  .infinite-list {
-    flex-grow: 1; // 列表占据剩余空间
-    height: auto; // 高度自适应
+// 抖动动画
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+// 旋转动画
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// 现代化对话框样式
+.modern-settings-dialog {
+  :deep(.el-dialog) {
+    border-radius: 20px;
+    overflow: hidden;
+    
+    .el-dialog__header {
     padding: 0;
     margin: 0;
-    list-style: none;
-
-    .infinite-list-item {
-      padding: 10px 10px;
-      background: #f8f9fa;
-      margin-bottom: 10px;
-      border-radius: 4px;
+      border: none;
+    }
+    
+    .el-dialog__body {
+      padding: 0;
+    }
+    
+    .el-dialog__footer {
+      padding: 0;
+      border: none;
+    }
+  }
+  
+  .dialog-gradient-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 32px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    
+    .header-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+  }
+  
+  .dialog-body-content {
+    padding: 32px;
+    background: #F8F9FA;
+    
+    :deep(.el-form-item__label) {
+      font-weight: 500;
+      color: #2C3E50;
+    }
+    
+    :deep(.el-input) {
+      border-radius: 12px;
+      
+      .el-input__wrapper {
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        
+        &:hover {
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+        
+        &.is-focus {
+          box-shadow: 0 4px 16px rgba(102, 126, 234, 0.25);
+        }
+      }
+    }
+  }
+  
+  // 分类选择按钮
+  .category-select-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 20px;
+    background: white;
+    border: 2px solid #ECF0F1;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #2C3E50;
       cursor: pointer;
-      transition: background-color 0.2s;
+    transition: all 0.3s ease;
 
       &:hover {
-        background-color: #e9ecef; // 添加 hover 效果
-      }
-
-      .title {
-        font-size: 16px; // 调整字体大小
-        margin-bottom: 8px; // 调整间距
-        color: #343a40;
-        text-align: center; // 居中
-      }
-
-      .content {
+      border-color: #667eea;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+    }
+    
+    .selected-category {
+      font-weight: 500;
+    }
+    
+    .arrow-icon {
+      color: #7F8C8D;
+    }
+  }
+  
+  // 标签选择器
+  .tag-selector-content {
+    .tag-selector-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #2C3E50;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #ECF0F1;
+    }
+    
+    .tag-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      
+      .tag-item {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        background: #F8F9FA;
+        border: 2px solid transparent;
+        border-radius: 12px;
         font-size: 14px;
-        line-height: 1;
-        color: #495057;
-        white-space: pre-wrap; // 保留换行和空格
-        word-break: break-all; // 长单词换行
-        text-align: center; // 居中
+        color: #2C3E50;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        
+        .tag-icon {
+          font-size: 18px;
+        }
+        
+        .tag-name {
+          flex: 1;
+          font-weight: 500;
+        }
+        
+        .check-icon {
+          color: white;
+        }
+        
+        &:hover {
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+          border-color: #667eea;
+          transform: translateY(-2px);
+        }
+        
+        &.active {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-color: #667eea;
+          color: white;
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
       }
+    }
+  }
+  
+  // 上传包装器
+  .upload-wrapper {
+    .modern-upload {
+      :deep(.el-upload--picture-card) {
+        border-radius: 12px;
+        border: 2px dashed #BDC3C7;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          border-color: #667eea;
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.02) 100%);
+        }
+        
+        .upload-trigger {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          
+          .el-icon {
+            color: #667eea;
+          }
+          
+          .upload-text {
+            font-size: 13px;
+            color: #7F8C8D;
+          }
+        }
+      }
+    }
+    
+    .upload-tip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      font-size: 13px;
+      color: #7F8C8D;
+      
+      .el-icon {
+        color: #BDC3C7;
+      }
+    }
+  }
+  
+  // 古诗选择按钮
+  .poem-select-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: white;
+    border: 2px solid #ECF0F1;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #2C3E50;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      border-color: #667eea;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.02) 100%);
+    }
+    
+    .el-icon {
+      color: #667eea;
+    }
+  }
+  
+  // 诗词节选文本框
+  .poem-excerpt-textarea {
+    :deep(.el-textarea__inner) {
+      border-radius: 12px;
+      border: 2px solid #ECF0F1;
+      font-family: 'STKaiti', '楷体', serif;
+      line-height: 1.8;
+      
+      &:hover {
+        border-color: #BDC3C7;
+      }
+      
+      &:focus {
+        border-color: #667eea;
+        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+      }
+    }
+  }
+  
+  // 底部操作按钮
+  .dialog-footer-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 24px 32px;
+    background: white;
+    
+    .footer-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 32px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &.cancel-btn {
+        background: #F8F9FA;
+        color: #7F8C8D;
+        
+        &:hover {
+          background: #ECF0F1;
+          color: #34495E;
+        }
+      }
+      
+      &.confirm-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+      }
+    }
+  }
+}
+
+// 现代化抽屉样式
+.modern-poem-drawer {
+  :deep(.el-drawer__header) {
+    padding: 0;
+    margin: 0;
+  }
+  
+  :deep(.el-drawer__body) {
+    padding: 0;
+  }
+  
+  .drawer-gradient-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    
+    .header-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+  
+  .drawer-body-content {
+    padding: 24px;
+    height: calc(100% - 72px);
+    display: flex;
+    flex-direction: column;
+    background: #F8F9FA;
+    
+    .search-box-wrapper {
+      margin-bottom: 20px;
+      
+      .poem-search-input {
+        :deep(.el-input__wrapper) {
+          border-radius: 12px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+          
+          &:hover {
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+          }
+          
+          &.is-focus {
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.25);
+          }
+        }
+        
+        :deep(.el-input-group__append) {
+          padding: 0;
+          border: none;
+          background: transparent;
+          
+          .search-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 0 10px 10px 0;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            
+            &:hover:not(:disabled) {
+              background: linear-gradient(135deg, #5568d3 0%, #6a4190 100%);
+            }
+            
+            &:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
+            
+            .is-loading {
+              animation: spin 1s linear infinite;
+            }
+          }
+        }
+      }
+    }
+    
+    .poem-list-container {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 8px;
+      
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: #BDC3C7;
+        border-radius: 3px;
+        
+        &:hover {
+          background: #7F8C8D;
+        }
+      }
+      
+      .poem-card-item {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        
+        &:hover {
+          transform: translateX(-4px);
+          box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+          
+          .poem-card-footer {
+            .select-hint {
+              color: #667eea;
+            }
+            
+            .arrow-icon {
+              color: #667eea;
+              transform: translateX(4px);
+            }
+          }
+        }
+        
+        .poem-card-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 16px;
+          padding-bottom: 12px;
+          border-bottom: 1px solid #ECF0F1;
+          
+          .poem-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2C3E50;
+            margin: 0;
+          }
+          
+          .poem-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-radius: 8px;
+            color: #667eea;
+          }
+        }
+        
+        .poem-content {
+          font-size: 15px;
+          line-height: 2;
+          color: #34495E;
+          font-family: 'STKaiti', '楷体', serif;
+          white-space: pre-wrap;
+          word-break: break-all;
+          text-align: center;
+          margin: 0 0 16px 0;
+        }
+        
+        .poem-card-footer {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 6px;
+          
+          .select-hint {
+            font-size: 13px;
+            color: #7F8C8D;
+            transition: color 0.3s ease;
+          }
+          
+          .arrow-icon {
+            color: #BDC3C7;
+            transition: all 0.3s ease;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .modern-editor-container {
+    .modern-toolbar {
+      flex-direction: column;
+      height: auto;
+      padding: 12px 16px;
+      gap: 12px;
+      
+      .toolbar-left,
+      .toolbar-right {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .word-count-badge {
+        order: -1;
+      }
+      
+      .action-btn {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+  }
+  
+  .modern-settings-dialog {
+    :deep(.el-dialog) {
+      width: 95% !important;
+      margin: 20px auto;
+    }
+    
+    .dialog-body-content {
+      padding: 20px;
+    }
+    
+    .tag-selector-content {
+      .tag-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+  
+  .modern-poem-drawer {
+    :deep(.el-drawer) {
+      width: 90% !important;
     }
   }
 }

@@ -1,9 +1,10 @@
 <script setup>
-import { User, Search, Bell, Setting } from '@element-plus/icons-vue'
+import { User, Search, Bell, Setting, ChatDotRound, Star, Message, WarningFilled } from '@element-plus/icons-vue'
 import { useUserInfoStore } from '@/stores/index.js'
 import { ref, watch, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import * as ROUTES from '@/constants/router.js'
+import { ElMessage } from 'element-plus'
 
 const useUser = useUserInfoStore()
 const route = useRoute()
@@ -12,6 +13,96 @@ const activeIndex = ref(ROUTES.HOME)
 const searchQuery = ref('')
 const isScrolled = ref(false)
 const showMobileMenu = ref(false)
+
+// 通知系统 - 假数据
+const notifications = ref([
+  {
+    id: 1,
+    type: 'like',
+    icon: Star,
+    iconColor: '#FFC107',
+    title: '新的点赞',
+    content: '用户"诗词爱好者"赞了你的帖子《春江花月夜赏析》',
+    time: '2分钟前',
+    isRead: false
+  },
+  {
+    id: 2,
+    type: 'comment',
+    icon: ChatDotRound,
+    iconColor: '#667eea',
+    title: '新的评论',
+    content: '用户"李白粉丝"评论了你的帖子：写得真好，受益匪浅！',
+    time: '15分钟前',
+    isRead: false
+  },
+  {
+    id: 3,
+    type: 'system',
+    icon: Bell,
+    iconColor: '#E74C3C',
+    title: '系统通知',
+    content: '你的学习积分已达到1000分，获得"诗词学者"称号！',
+    time: '1小时前',
+    isRead: false
+  },
+  {
+    id: 4,
+    type: 'message',
+    icon: Message,
+    iconColor: '#3498DB',
+    title: '私信提醒',
+    content: '用户"杜甫研究"向你发送了一条私信',
+    time: '3小时前',
+    isRead: true
+  },
+  {
+    id: 5,
+    type: 'system',
+    icon: WarningFilled,
+    iconColor: '#F39C12',
+    title: '学习提醒',
+    content: '你已经3天没有完成每日诗词学习任务，继续加油！',
+    time: '昨天',
+    isRead: true
+  },
+  {
+    id: 6,
+    type: 'like',
+    icon: Star,
+    iconColor: '#FFC107',
+    title: '收藏提醒',
+    content: '你收藏的诗词《将进酒》有新的赏析内容更新',
+    time: '2天前',
+    isRead: true
+  }
+])
+
+// 计算未读通知数量
+const unreadCount = computed(() => {
+  return notifications.value.filter(n => !n.isRead).length
+})
+
+// 标记单条通知为已读
+const markAsRead = (notificationId) => {
+  const notification = notifications.value.find(n => n.id === notificationId)
+  if (notification) {
+    notification.isRead = true
+    ElMessage.success('已标记为已读')
+  }
+}
+
+// 全部标记为已读
+const markAllAsRead = () => {
+  notifications.value.forEach(n => n.isRead = true)
+  ElMessage.success('所有通知已标记为已读')
+}
+
+// 清空所有通知
+const clearAllNotifications = () => {
+  notifications.value = []
+  ElMessage.success('已清空所有通知')
+}
 
 // 监听路由变化，更新激活菜单
 onMounted(() => {
@@ -63,26 +154,26 @@ const userNickname = computed(() => {
 
 // 导航菜单配置
 const menuItems = [
-  { index: ROUTES.HOME, label: '首页', icon: '🏠' },
-  { index: ROUTES.POET, label: '书阁', icon: '📚' },
+  { index: ROUTES.HOME, label: '主页', icon: '🏠' },
+  { index: ROUTES.POET, label: '典藏', icon: '📜' },
   { 
     index: ROUTES.STUDY, 
-    label: '学习', 
-    icon: '🎓',
+    label: '学堂', 
+    icon: '🎯',
     children: [
-      { index: ROUTES.STUDY_AI, label: 'AI助学' },
-      { index: ROUTES.DICTIONARY, label: '游戏助学' },
-      { index: ROUTES.VR, label: 'VR助学' }
+      { index: ROUTES.STUDY_AI, label: '智能对话' },
+      { index: ROUTES.DICTIONARY, label: '互动闯关' },
+      { index: ROUTES.VR, label: '沉浸体验' }
     ]
   },
-  { index: ROUTES.FORUM, label: '论坛', icon: '💬' },
+  { index: ROUTES.FORUM, label: '社区', icon: '💭' },
   { 
     index: ROUTES.TOURISM_DOMESTIC, 
-    label: '诗意之旅', 
-    icon: '🗺️',
+    label: '漫游', 
+    icon: '🧭',
     children: [
-      { index: ROUTES.TOURISM_DOMESTIC, label: '景点概览' },
-      { index: ROUTES.TOURISM_MAP, label: '诗途地图' }
+      { index: ROUTES.TOURISM_DOMESTIC, label: '胜地探索' },
+      { index: ROUTES.TOURISM_MAP, label: '文化地图' }
     ]
   }
 ]
@@ -93,10 +184,10 @@ const menuItems = [
     <div class="header-container">
       <!-- Logo 和品牌 -->
       <div class="header-brand" @click="handleSelect(ROUTES.HOME)">
-        <div class="brand-icon">📖</div>
+        <div class="brand-icon">🎐</div>
         <div class="brand-info">
-          <h1 class="brand-title">古韵传习堂</h1>
-          <p class="brand-slogan">诗词学习平台</p>
+          <h1 class="brand-title">墨韵书院</h1>
+          <p class="brand-slogan">传承经典·启迪智慧</p>
         </div>
       </div>
 
@@ -162,11 +253,70 @@ const menuItems = [
         </div>
 
         <!-- 通知图标 -->
-        <div class="action-icon desktop-only" v-if="useUser.userInfo">
-          <el-badge :value="3" class="notification-badge">
-            <el-icon :size="20"><Bell /></el-icon>
-          </el-badge>
-        </div>
+        <el-dropdown v-if="useUser.userInfo" trigger="click" class="notification-dropdown desktop-only" placement="bottom-end">
+          <div class="action-icon">
+            <el-badge :value="unreadCount" :hidden="unreadCount === 0" class="notification-badge">
+              <el-icon :size="20"><Bell /></el-icon>
+            </el-badge>
+          </div>
+          <template #dropdown>
+            <el-dropdown-menu class="notification-menu">
+              <!-- 通知头部 -->
+              <div class="notification-header">
+                <div class="notification-title">
+                  <el-icon :size="18"><Bell /></el-icon>
+                  <span>通知中心</span>
+                  <el-badge :value="unreadCount" :hidden="unreadCount === 0" class="unread-badge" />
+                </div>
+                <div class="notification-actions">
+                  <el-button link size="small" @click="markAllAsRead" v-if="unreadCount > 0">
+                    全部已读
+                  </el-button>
+                </div>
+              </div>
+              
+              <!-- 通知列表 -->
+              <div class="notification-list" v-if="notifications.length > 0">
+                <div 
+                  v-for="notification in notifications" 
+                  :key="notification.id"
+                  class="notification-item"
+                  :class="{ 'unread': !notification.isRead }"
+                  @click="markAsRead(notification.id)"
+                >
+                  <div class="notification-icon" :style="{ background: notification.iconColor + '15' }">
+                    <el-icon :size="20" :style="{ color: notification.iconColor }">
+                      <component :is="notification.icon" />
+                    </el-icon>
+                  </div>
+                  <div class="notification-content">
+                    <div class="notification-text">
+                      <div class="notification-item-title">{{ notification.title }}</div>
+                      <div class="notification-item-content">{{ notification.content }}</div>
+                    </div>
+                    <div class="notification-meta">
+                      <span class="notification-time">{{ notification.time }}</span>
+                      <div class="unread-dot" v-if="!notification.isRead"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 空状态 -->
+              <div class="notification-empty" v-else>
+                <el-icon :size="48" class="empty-icon"><Bell /></el-icon>
+                <p>暂无通知</p>
+              </div>
+              
+              <!-- 底部操作 -->
+              <div class="notification-footer" v-if="notifications.length > 0">
+                <el-button link class="clear-btn" @click="clearAllNotifications">
+                  清空所有通知
+                </el-button>
+              </div>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
 
         <!-- 用户信息 -->
         <div class="user-section" v-if="useUser.userInfo">
@@ -176,25 +326,26 @@ const menuItems = [
               <span class="user-name desktop-only">{{ useUser.userInfo.username }}</span>
             </div>
             <template #dropdown>
-              <el-dropdown-menu class="modern-dropdown user-dropdown">
-                <div class="dropdown-header">
-                  <div class="user-avatar large">{{ userNickname }}</div>
-                  <div class="user-info">
-                    <div class="username">{{ useUser.userInfo.username }}</div>
-                    <div class="user-email">{{ useUser.userInfo.email || '未设置邮箱' }}</div>
+              <el-dropdown-menu class="custom-user-dropdown">
+                <div class="custom-dropdown-header">
+                  <div class="custom-avatar">{{ userNickname }}</div>
+                  <div class="custom-user-info">
+                    <div class="custom-username">{{ useUser.userInfo.username }}</div>
+                    <div class="custom-email">{{ useUser.userInfo.email || '未设置邮箱' }}</div>
                   </div>
                 </div>
-                <el-dropdown-item divided :command="ROUTES.USER">
+                <div class="custom-menu-item" @click="handleSelect(ROUTES.USER)">
                   <el-icon><User /></el-icon>
                   <span>个人主页</span>
-                </el-dropdown-item>
-                <el-dropdown-item>
+                </div>
+                <div class="custom-menu-item" @click="handleSelect(ROUTES.USER)">
                   <el-icon><Setting /></el-icon>
                   <span>设置</span>
-                </el-dropdown-item>
-                <el-dropdown-item divided @click="logout">
-                  <span class="logout-text">退出登录</span>
-                </el-dropdown-item>
+                </div>
+                <div class="custom-divider"></div>
+                <div class="custom-menu-item logout-item" @click="logout">
+                  <span>👋 退出登录</span>
+                </div>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -579,9 +730,356 @@ const menuItems = [
       font-size: 18px;
     }
   }
+  
+  // 通知下拉菜单样式
+  .notification-dropdown {
+    .action-icon {
+      position: relative;
+    }
+  }
 }
 
-// 下拉菜单样式
+// 通知菜单样式
+.notification-menu {
+  min-width: 400px !important;
+  max-width: 400px !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 16px !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden !important;
+  margin-top: 12px !important;
+  
+  .notification-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.05) 100%);
+    border-bottom: 1px solid #ECF0F1;
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .notification-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #2C3E50;
+      
+      .el-icon {
+        color: #667eea;
+      }
+      
+      .unread-badge {
+        margin-left: 4px;
+        
+        :deep(.el-badge__content) {
+          background: #E74C3C;
+          border: none;
+          font-size: 11px;
+          height: 18px;
+          line-height: 18px;
+          padding: 0 6px;
+        }
+      }
+    }
+    
+    .notification-actions {
+      :deep(.el-button) {
+        color: #667eea;
+        font-weight: 500;
+        
+        &:hover {
+          color: #764ba2;
+        }
+      }
+    }
+  }
+  
+  .notification-list {
+    max-height: 450px;
+    overflow-y: auto;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #F8F9FA;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 3px;
+    }
+    
+    .notification-item {
+      display: flex;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid #F8F9FA;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      &.unread {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.02) 100%);
+        
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 3px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+      }
+      
+      &:hover {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.03) 100%);
+      }
+      
+      .notification-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      
+      .notification-content {
+        flex: 1;
+        min-width: 0;
+        
+        .notification-text {
+          .notification-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2C3E50;
+            margin-bottom: 4px;
+          }
+          
+          .notification-item-content {
+            font-size: 13px;
+            color: #7F8C8D;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+        
+        .notification-meta {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: 8px;
+          
+          .notification-time {
+            font-size: 12px;
+            color: #BDC3C7;
+          }
+          
+          .unread-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+            animation: pulse 2s ease-in-out infinite;
+          }
+        }
+      }
+    }
+  }
+  
+  .notification-empty {
+    padding: 60px 20px;
+    text-align: center;
+    
+    .empty-icon {
+      color: #BDC3C7;
+      margin-bottom: 16px;
+    }
+    
+    p {
+      font-size: 14px;
+      color: #7F8C8D;
+      margin: 0;
+    }
+  }
+  
+  .notification-footer {
+    padding: 12px 20px;
+    text-align: center;
+    border-top: 1px solid #ECF0F1;
+    background: #F8F9FA;
+    
+    .clear-btn {
+      color: #E74C3C;
+      font-size: 13px;
+      
+      &:hover {
+        color: #C0392B;
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+// 自定义用户下拉菜单 - 完全自定义样式
+.custom-user-dropdown {
+  min-width: 280px !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 16px !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden !important;
+  margin-top: 12px !important;
+  
+  // 头部区域
+  .custom-dropdown-header {
+    padding: 24px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.08) 100%);
+    position: relative;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+    
+    // 顶部渐变装饰条
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .custom-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+      border: 3px solid white;
+    }
+    
+    .custom-user-info {
+      flex: 1;
+      
+      .custom-username {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        background: linear-gradient(135deg, #2C3E50 0%, #667eea 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      
+      .custom-email {
+        font-size: 13px;
+        color: #7F8C8D;
+        
+        &::before {
+          content: '📧 ';
+        }
+      }
+    }
+  }
+  
+  // 自定义菜单项
+  .custom-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    margin: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #2C3E50;
+    font-size: 15px;
+    font-weight: 500;
+    background: transparent;
+    
+    .el-icon {
+      font-size: 18px;
+      transition: transform 0.3s ease;
+    }
+    
+    // Hover效果 - 渐变背景
+    &:hover {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 100%);
+      color: #667eea;
+      transform: translateX(6px);
+      box-shadow: 0 2px 12px rgba(102, 126, 234, 0.12);
+      
+      .el-icon {
+        transform: scale(1.15) rotate(5deg);
+      }
+    }
+    
+    // 退出登录特殊样式
+    &.logout-item {
+      color: #E74C3C;
+      
+      &:hover {
+        background: linear-gradient(135deg, rgba(231, 76, 60, 0.12) 0%, rgba(231, 76, 60, 0.08) 100%);
+        color: #C0392B;
+        box-shadow: 0 2px 12px rgba(231, 76, 60, 0.12);
+      }
+    }
+  }
+  
+  // 分隔线
+  .custom-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, #ECF0F1 50%, transparent 100%);
+    margin: 8px 0;
+  }
+}
+
+// 导航下拉菜单样式
 :deep(.modern-dropdown) {
   background: white;
   border: none;
@@ -595,7 +1093,7 @@ const menuItems = [
     border-radius: 8px;
     color: #2C3E50;
     font-size: 14px;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -609,43 +1107,6 @@ const menuItems = [
       background: rgba(102, 126, 234, 0.1);
       color: #667eea;
       font-weight: 600;
-    }
-    
-    .el-icon {
-      font-size: 16px;
-    }
-  }
-  
-  &.user-dropdown {
-    min-width: 240px;
-    
-    .dropdown-header {
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid #ECF0F1;
-      margin-bottom: 8px;
-      
-      .user-info {
-        flex: 1;
-        
-        .username {
-          font-size: 16px;
-          font-weight: 600;
-          color: #2C3E50;
-          margin-bottom: 4px;
-        }
-        
-        .user-email {
-          font-size: 12px;
-          color: #7F8C8D;
-        }
-      }
-    }
-    
-    .logout-text {
-      color: #E74C3C;
     }
   }
 }

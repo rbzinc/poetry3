@@ -13,16 +13,31 @@ import Banner from './banner/index.vue'
 
 <style scoped lang="scss">
 .tourism-container {
+  position: relative;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
 
   .main-content {
-    width: min(1300px, 90%);
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 40px;
+  }
+}
+
+// 响应式适配
+@media (max-width: 1200px) {
+  .tourism-container {
+    .main-content {
+      padding: 20px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .tourism-container {
+    .main-content {
+      padding: 15px;
+    }
   }
 }
 </style>

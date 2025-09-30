@@ -2,6 +2,9 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import * as ROUTES from '@/constants/router.js'
+import { getPoetryPoemPage } from '@/api/modules/poePavilion.js'
+import { goPoetClassDetail } from '@/router/helpers.js'
+import Poetryitem from '@/components/poet/poetryitem/index.vue'
 
 const router = useRouter()
 
@@ -35,85 +38,75 @@ const animateNumbers = () => {
 
 onMounted(() => {
   animateNumbers()
+  fetchHotPoems() // 获取热门诗词数据
 })
 
 // 功能卡片数据
 const featureCards = ref([
   {
-    icon: '📚',
-    title: '诗词书阁',
-    description: '海量诗词典藏，探索中华文化瑰宝',
+    icon: '📜',
+    title: '经典典藏',
+    description: '丰富文学资源，领略华夏文明之美',
     gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     route: ROUTES.POET
   },
   {
-    icon: '🎮',
-    title: '游戏助学',
-    description: '趣味游戏闯关，轻松掌握诗词知识',
+    icon: '🎯',
+    title: '互动闯关',
+    description: '趣味挑战游戏，轻松掌握文学知识',
     gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
     route: ROUTES.DICTIONARY
   },
   {
     icon: '🤖',
-    title: 'AI智能对话',
-    description: '与诗人对话，体验穿越时空的交流',
+    title: '智能对话',
+    description: '与文学大师对话，感受智慧的碰撞',
     gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
     route: ROUTES.AI_CHAT
   },
   {
-    icon: '🗺️',
-    title: '诗意之旅',
-    description: '游历诗词中的名胜古迹',
+    icon: '🧭',
+    title: '文化漫游',
+    description: '探索经典背后的名胜古迹',
     gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
     route: ROUTES.TOURISM
   },
   {
-    icon: '💬',
-    title: '交流广场',
-    description: '分享心得，与同好畅谈诗词',
+    icon: '💭',
+    title: '学习社区',
+    description: '交流心得体会，与同好共同进步',
     gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
     route: ROUTES.TALKSQUARE
   },
   {
     icon: '🎨',
-    title: 'AI文生图',
-    description: '用AI将诗词转化为精美画作',
+    title: '创意画廊',
+    description: '用AI将文字转化为艺术画作',
     gradient: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
     route: ROUTES.CHAT_TO_PIC
   }
 ])
 
-// 热门推荐诗词
-const hotPoems = ref([
-  {
-    title: '静夜思',
-    author: '李白',
-    content: '床前明月光，疑是地上霜。举头望明月，低头思故乡。',
-    image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/home/Carousel1.jpg',
-    dynasty: '唐'
-  },
-  {
-    title: '春晓',
-    author: '孟浩然',
-    content: '春眠不觉晓，处处闻啼鸟。夜来风雨声，花落知多少。',
-    image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/home/Carousel2.jpg',
-    dynasty: '唐'
-  },
-  {
-    title: '登鹳雀楼',
-    author: '王之涣',
-    content: '白日依山尽，黄河入海流。欲穷千里目，更上一层楼。',
-    image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/home/Carousel3.jpg',
-    dynasty: '唐'
-  },
-  {
-    title: '望庐山瀑布',
-    author: '李白',
-    content: '日照香炉生紫烟，遥看瀑布挂前川。飞流直下三千尺，疑是银河落九天。',
-    image: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/home/Carousel4.jpg',
-    dynasty: '唐'
+// 热门推荐诗词 - 从书阁接口获取真实数据
+const hotPoems = ref([])
+const poemsLoading = ref(false)
+
+// 获取热门诗词数据
+const fetchHotPoems = async () => {
+  try {
+    poemsLoading.value = true
+    const res = await getPoetryPoemPage(1, 6) // 获取第1页，6条数据
+    
+    if (res.data && res.data.records) {
+      hotPoems.value = res.data.records
+    }
+  } catch (error) {
+    console.error('获取诗词数据失败:', error)
+    hotPoems.value = []
+  } finally {
+    poemsLoading.value = false
   }
-])
+}
 
 // 柱状图配置 - 优化配色
 const barChartOption = ref({
@@ -258,33 +251,7 @@ const pieChartOption = ref({
       itemStyle: {
         borderRadius: 8,
         borderColor: '#fff',
-        borderWidth: 2
-      },
-      label: {
-        show: false
-      },
-      emphasis: {
-        label: {
-          show: true,
-          fontSize: 16,
-          fontWeight: 'bold',
-          color: '#2C3E50'
-        },
-        itemStyle: {
-          shadowBlur: 10,
-          shadowOffsetX: 0,
-          shadowColor: 'rgba(0, 0, 0, 0.3)'
-        }
-      },
-      data: [
-        { value: 127, name: '李白' },
-        { value: 101, name: '杜甫' },
-        { value: 94, name: '白居易' },
-        { value: 46, name: '王维' },
-        { value: 127, name: '苏轼' },
-        { value: 43, name: '李清照' }
-      ],
-      itemStyle: {
+        borderWidth: 2,
         color: (params) => {
           const colorList = [
             { type: 'linear', x: 0, y: 0, x2: 1, y2: 1, colorStops: [
@@ -314,7 +281,31 @@ const pieChartOption = ref({
           ]
           return colorList[params.dataIndex % colorList.length]
         }
-      }
+      },
+      label: {
+        show: false
+      },
+      emphasis: {
+        label: {
+          show: true,
+          fontSize: 16,
+          fontWeight: 'bold',
+          color: '#2C3E50'
+        },
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.3)'
+        }
+      },
+      data: [
+        { value: 127, name: '李白' },
+        { value: 101, name: '杜甫' },
+        { value: 94, name: '白居易' },
+        { value: 46, name: '王维' },
+        { value: 127, name: '苏轼' },
+        { value: 43, name: '李清照' }
+      ]
     }
   ]
 })
@@ -337,11 +328,11 @@ const navigateTo = (route) => {
       <div class="hero-content">
         <div class="hero-text">
           <h1 class="hero-title">
-            <span class="title-line">探索中华诗词之美</span>
-            <span class="title-line">传承千年文化精髓</span>
+            <span class="title-line">品味经典文学之美</span>
+            <span class="title-line">开启智慧人文之旅</span>
           </h1>
           <p class="hero-subtitle">
-            在这里，与古人对话，与诗词为友，开启一段诗意的学习之旅
+            在墨韵书院，与大师对话，与经典同行，体验创新互动学习方式
           </p>
           
           <!-- 统计数据卡片 -->
@@ -350,14 +341,14 @@ const navigateTo = (route) => {
               <div class="stat-icon">📖</div>
               <div class="stat-info">
                 <div class="stat-number">{{ showNumber.toLocaleString() }}</div>
-                <div class="stat-label">诗词作品</div>
+                <div class="stat-label">经典篇目</div>
               </div>
             </div>
             <div class="stat-card">
               <div class="stat-icon">✍️</div>
               <div class="stat-info">
                 <div class="stat-number">{{ poetNumber.toLocaleString() }}</div>
-                <div class="stat-label">诗词作家</div>
+                <div class="stat-label">文学大师</div>
               </div>
             </div>
             <div class="stat-card">
@@ -381,8 +372,8 @@ const navigateTo = (route) => {
     <section class="features-section">
       <div class="section-container">
         <div class="section-header">
-          <h2 class="section-title">平台功能</h2>
-          <p class="section-subtitle">多元化学习方式，让诗词学习更有趣</p>
+          <h2 class="section-title">核心功能</h2>
+          <p class="section-subtitle">创新学习模式，让经典文学更有魅力</p>
         </div>
         
         <div class="features-grid">
@@ -428,28 +419,20 @@ const navigateTo = (route) => {
     <section class="hot-poems-section">
       <div class="section-container">
         <div class="section-header">
-          <h2 class="section-title">今日推荐</h2>
-          <p class="section-subtitle">精选诗词佳作，品味千古名篇</p>
+          <h2 class="section-title">精品推荐</h2>
+          <p class="section-subtitle">精选文学经典，品读千古名篇</p>
         </div>
         
-        <div class="poems-carousel">
-          <div 
-            v-for="(poem, index) in hotPoems" 
-            :key="index" 
-            class="poem-card"
-          >
-            <div class="poem-image" :style="{ backgroundImage: `url(${poem.image})` }">
-              <div class="poem-overlay"></div>
-            </div>
-            <div class="poem-content">
-              <div class="poem-header">
-                <h3 class="poem-title">{{ poem.title }}</h3>
-                <span class="poem-dynasty">{{ poem.dynasty }}</span>
-              </div>
-              <div class="poem-author">{{ poem.author }}</div>
-              <p class="poem-text">{{ poem.content }}</p>
-            </div>
-          </div>
+        <div class="poems-grid" v-loading="poemsLoading">
+          <Poetryitem
+            v-for="item in hotPoems"
+            :key="item.id"
+            v-bind="{
+              ...item,
+              id: String(item.id),
+            }"
+            @click="goPoetClassDetail(item.id)"
+          />
         </div>
       </div>
     </section>
@@ -759,90 +742,12 @@ const navigateTo = (route) => {
   padding: 100px 0;
   background: white;
   
-  .poems-carousel {
+  .poems-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
     margin-top: 60px;
-    
-    .poem-card {
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
-      
-      &:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-        
-        .poem-image {
-          transform: scale(1.1);
-        }
-      }
-      
-      .poem-image {
-        position: relative;
-        width: 100%;
-        height: 200px;
-        background-size: cover;
-        background-position: center;
-        transition: transform 0.4s ease;
-        overflow: hidden;
-        
-        .poem-overlay {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          height: 50%;
-          background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
-        }
-      }
-      
-      .poem-content {
-        padding: 24px;
-        
-        .poem-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 8px;
-          
-          .poem-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #2C3E50;
-            margin: 0;
-          }
-          
-          .poem-dynasty {
-            display: inline-block;
-            padding: 4px 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-          }
-        }
-        
-        .poem-author {
-          font-size: 14px;
-          color: #7F8C8D;
-          margin-bottom: 16px;
-        }
-        
-        .poem-text {
-          font-size: 15px;
-          color: #34495E;
-          line-height: 1.8;
-          margin: 0;
-          font-family: 'STKaiti', '楷体', serif;
-        }
-      }
-    }
+    min-height: 200px;
   }
 }
 
@@ -989,8 +894,9 @@ const navigateTo = (route) => {
     grid-template-columns: 1fr !important;
   }
   
-  .poems-carousel {
+  .poems-grid {
     grid-template-columns: 1fr !important;
+    gap: 16px;
   }
   
   .section-container {
@@ -999,6 +905,13 @@ const navigateTo = (route) => {
   
   .section-header .section-title {
     font-size: 32px;
+  }
+}
+
+// 平板端
+@media (min-width: 769px) and (max-width: 1024px) {
+  .poems-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
   }
 }
 </style>

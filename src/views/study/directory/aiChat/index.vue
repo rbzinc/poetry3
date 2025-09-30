@@ -11,7 +11,7 @@ const poetryAi = [
     title: '王维',
     url: 'https://webxiangmu.oss-cn-beijing.aliyuncs.com/lun/71190bf4-1056-489c-80a6-27dcfa62be0b.png',
     content:
-      '嘿，朋友！我是王维，山水间的行者。如果你向往宁静的田园生活，或是对禅意有所追求，不妨与我一同漫步于山水之间，共赏落日余晖。有什么心事，尽管向我诉说，或许我能以画笔为你描绘出心中的宁静。',
+      '嘿，朋友经典名句同漫步于山水之间，共赏落日余晖。有什么心事，尽管向我诉说，或许我能以画笔为你描绘出心中的宁静。',
     dynasty: '唐代',
     tags: ['山水诗', '田园诗', '禅意'],
     specialty: '诗中有画，画中有诗',
@@ -129,7 +129,7 @@ const handleMouseLeave = () => {
         @mouseleave="handleMouseLeave"
         @click="changeChat(item)"
       >
-        <!-- 卡片背面（默认显示） -->
+        <!-- 卡片正面（默认显示） -->
         <div class="card-front">
           <div class="poet-avatar-wrapper">
             <img :src="item.url" alt="" class="poet-avatar" />
@@ -145,16 +145,9 @@ const handleMouseLeave = () => {
               <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
             </div>
           </div>
-
-          <div class="card-action">
-            <el-button type="primary" size="default" round>
-              <el-icon><ChatLineSquare /></el-icon>
-              开始对话
-            </el-button>
-          </div>
         </div>
 
-        <!-- 卡片正面（悬停显示） -->
+        <!-- 卡片背面（悬停显示） -->
         <div class="card-back">
           <div class="back-content">
             <h3 class="back-title">{{ item.title }}</h3>
@@ -215,6 +208,7 @@ const handleMouseLeave = () => {
       height: 440px;
       perspective: 1000px;
       cursor: pointer;
+      transform-style: preserve-3d;
 
       .card-front,
       .card-back {
@@ -222,6 +216,7 @@ const handleMouseLeave = () => {
         width: 100%;
         height: 100%;
         backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
         border-radius: 20px;
         transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       }
@@ -230,11 +225,13 @@ const handleMouseLeave = () => {
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         padding: 40px 30px;
         background: white;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
         border: 1px solid rgba(102, 126, 234, 0.1);
         transform: rotateY(0deg);
+        z-index: 2;
 
         .poet-avatar-wrapper {
           position: relative;
@@ -266,7 +263,6 @@ const handleMouseLeave = () => {
         }
 
         .poet-info {
-          flex: 1;
           text-align: center;
           width: 100%;
 
@@ -307,25 +303,6 @@ const handleMouseLeave = () => {
             }
           }
         }
-
-        .card-action {
-          margin-top: 20px;
-
-          :deep(.el-button) {
-            padding: 12px 32px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            font-size: 15px;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-            transition: all 0.3s ease;
-
-            &:hover {
-              transform: translateY(-2px);
-              box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-            }
-          }
-        }
       }
 
       .card-back {
@@ -336,6 +313,7 @@ const handleMouseLeave = () => {
         justify-content: center;
         padding: 40px;
         box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+        z-index: 1;
 
         .back-content {
           color: white;

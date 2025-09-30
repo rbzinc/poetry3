@@ -6,6 +6,11 @@ import router from '@/router/index.js'
 import { userLuntanSelectBlogGetApi } from '@/api/modules/talkSquare.js'
 import { goUserEdit } from '@/router/helpers.js'
 import { USER_BG_URL } from '@/constants/bgUrl.js'
+import {
+  Edit, MessageBox, Setting, Location, Loading, Close,
+  TrophyBase, ChatDotSquare, Star, View, User, FolderOpened,
+  ArrowRight, Check
+} from '@element-plus/icons-vue'
 
 // 状态管理
 const state = ref({
@@ -113,382 +118,984 @@ onMounted(() => {
 </script>
 
 <template>
-  <div
-    class="user-center"
-    :style="{
-      backgroundImage: `url(${USER_BG_URL})`,
-    }"
-  >
+  <div class="modern-user-center">
+    <!-- 背景装饰 -->
+    <div class="background-decoration" :style="{ backgroundImage: `url(${USER_BG_URL})` }"></div>
+    
     <div class="container">
-      <!-- 用户信息卡片 -->
-      <el-card class="user-info-card" shadow="hover">
-        <div class="user-info-wrapper">
-          <div class="user-avatar">
-            <img :src="userStore.userInfo.touxiang" alt="用户头像" />
+      <!-- 现代化用户信息卡片 -->
+      <div class="modern-user-card">
+        <!-- 渐变装饰背景 -->
+        <div class="gradient-decoration"></div>
+        
+        <div class="user-card-content">
+          <!-- 用户头像 -->
+          <div class="user-avatar-wrapper">
+            <div class="avatar-container">
+              <img :src="userStore.userInfo.touxiang" alt="用户头像" class="user-avatar" />
+              <div class="avatar-border"></div>
+            </div>
           </div>
-          <div class="user-detail">
+          
+          <!-- 用户信息 -->
+          <div class="user-info-section">
             <div class="user-header">
               <h2 class="username">{{ userStore.userInfo.name }}</h2>
+              <div class="user-location">
+                <el-icon :size="14"><Location /></el-icon>
+                <span>IP属地：江西省</span>
+              </div>
+            </div>
+            
+            <!-- 操作按钮 -->
               <div class="action-buttons">
-                <el-button @click="goUserEdit" round>
-                  <el-icon><Edit /></el-icon>
-                  编辑资料
-                </el-button>
-                <el-button round>
-                  <el-icon><MessageBox /></el-icon>
-                  管理文章
-                </el-button>
-                <el-button round>
-                  <el-icon><Setting /></el-icon>
-                  设置
-                </el-button>
-              </div>
-            </div>
-            <div class="user-stats">
-              <div class="stat-item">
-                <span class="number">39299</span>
-                <span class="label">访问量</span>
-              </div>
-              <div class="stat-item">
-                <span class="number">{{ userLuntanSelecttiezTypesData.length }}</span>
-                <span class="label">原创</span>
-              </div>
-              <div class="stat-item">
-                <span class="number">503</span>
-                <span class="label">粉丝</span>
-              </div>
-              <div class="stat-item">
-                <span class="number">0</span>
-                <span class="label">铁粉</span>
-              </div>
-            </div>
-            <div class="user-location">
-              <i class="el-icon-location"></i>
-              <span>IP属地：江西省</span>
+              <button class="action-btn primary" @click="goUserEdit">
+                <el-icon :size="16"><Edit /></el-icon>
+                <span>编辑资料</span>
+              </button>
+              <button class="action-btn secondary">
+                <el-icon :size="16"><MessageBox /></el-icon>
+                <span>管理文章</span>
+              </button>
+              <button class="action-btn secondary">
+                <el-icon :size="16"><Setting /></el-icon>
+                <span>设置</span>
+              </button>
             </div>
           </div>
         </div>
-      </el-card>
+        
+        <!-- 统计数据卡片 -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon view">
+              <el-icon :size="24"><View /></el-icon>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">39,299</div>
+              <div class="stat-label">访问量</div>
+              </div>
+            </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon article">
+              <el-icon :size="24"><ChatDotSquare /></el-icon>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">{{ userLuntanSelecttiezTypesData.length }}</div>
+              <div class="stat-label">原创</div>
+              </div>
+              </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon fans">
+              <el-icon :size="24"><User /></el-icon>
+              </div>
+            <div class="stat-content">
+              <div class="stat-number">503</div>
+              <div class="stat-label">粉丝</div>
+              </div>
+            </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon star">
+              <el-icon :size="24"><Star /></el-icon>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">0</div>
+              <div class="stat-label">铁粉</div>
+            </div>
+            </div>
+          </div>
+        </div>
 
       <div class="content-container">
         <!-- 左侧边栏 -->
         <aside class="sidebar">
-          <el-card class="interest-card" shadow="hover">
+          <!-- 兴趣领域卡片 -->
+          <div class="modern-card interest-card">
             <div class="card-header">
+              <div class="header-title">
+                <el-icon :size="20" class="title-icon"><FolderOpened /></el-icon>
               <h3>兴趣领域</h3>
-              <el-button text type="primary" @click="state.dialogVisible = true">
-                管理 <i class="el-icon-arrow-right"></i>
-              </el-button>
+              </div>
+              <button class="manage-btn" @click="state.dialogVisible = true">
+                <span>管理</span>
+                <el-icon :size="14"><ArrowRight /></el-icon>
+              </button>
             </div>
-            <el-divider />
-            <div class="interest-list">
-              <div v-for="(item, index) in myInterest" :key="index" class="interest-item">
-                {{ item }}
+            <div class="interest-tags">
+              <div v-for="(item, index) in myInterest" :key="index" class="interest-tag">
+                <span class="tag-dot"></span>
+                <span>{{ item }}</span>
+            </div>
               </div>
             </div>
-          </el-card>
 
-          <el-card class="achievement-card" shadow="hover">
+          <!-- 个人成就卡片 -->
+          <div class="modern-card achievement-card">
+            <div class="card-header">
+              <div class="header-title">
+                <el-icon :size="20" class="title-icon"><TrophyBase /></el-icon>
             <h3>个人成就</h3>
-            <el-divider />
-            <div v-for="(item, index) in achievement" :key="index" class="achievement-item">
-              <i :class="item.icon"></i>
-              <span>{{ item.text }}</span>
+              </div>
             </div>
-          </el-card>
+            <div class="achievement-list">
+            <div v-for="(item, index) in achievement" :key="index" class="achievement-item">
+                <div class="achievement-icon">
+              <i :class="item.icon"></i>
+                </div>
+                <span class="achievement-text">{{ item.text }}</span>
+              </div>
+            </div>
+            </div>
         </aside>
 
         <!-- 主内容区 -->
         <main class="main-content">
-          <el-card class="article-card" shadow="hover">
-            <template #header>
-              <el-menu :default-active="state.activeIndex" mode="horizontal" class="nav-menu">
-                <el-menu-item index="1">我的文章</el-menu-item>
-                <el-menu-item index="2">关注列表</el-menu-item>
-                <el-menu-item index="3">粉丝列表</el-menu-item>
-                <el-menu-item index="4">收藏列表</el-menu-item>
-              </el-menu>
-            </template>
+          <div class="modern-card article-card">
+            <!-- 导航标签 -->
+            <div class="article-nav">
+              <button
+                v-for="(tab, index) in ['我的文章', '关注列表', '粉丝列表', '收藏列表']"
+                :key="index"
+                class="nav-tab"
+                :class="{ active: state.activeIndex === String(index + 1) }"
+                @click="state.activeIndex = String(index + 1)"
+              >
+                {{ tab }}
+              </button>
+            </div>
 
-            <el-scrollbar height="540px" @scroll="handleScroll" ref="scrollbarRef">
-              <div v-for="(item, index) in truncatedContent" :key="index" class="article-item">
-                <div class="article-content">
-                  <h3 class="title">{{ item.title }}</h3>
-                  <p class="content">{{ item.content }}</p>
-                  <div class="meta">
-                    <span>赞 {{ item.liked }}</span>
-                    <span>评 {{ item.conmments }}</span>
-                    <span v-if="item.poemWord" class="quote"> 引用 "{{ item.poemWord }}" </span>
+            <!-- 文章列表 -->
+            <div class="article-list" @scroll="handleScroll" ref="scrollbarRef">
+              <div v-for="(item, index) in truncatedContent" :key="index" class="modern-article-item">
+                <div class="article-main">
+                  <h3 class="article-title">{{ item.title }}</h3>
+                  <p class="article-excerpt">{{ item.content }}</p>
+                  <div class="article-meta">
+                    <span class="meta-item">
+                      <el-icon :size="14"><Star /></el-icon>
+                      {{ item.liked }}
+                    </span>
+                    <span class="meta-item">
+                      <el-icon :size="14"><ChatDotSquare /></el-icon>
+                      {{ item.conmments }}
+                    </span>
+                    <span v-if="item.poemWord" class="meta-quote">
+                      引用: "{{ item.poemWord }}"
+                    </span>
                   </div>
                 </div>
-                <div class="article-image">
-                  <el-image :src="item.images" fit="cover" loading="lazy" />
+                <div v-if="item.images" class="article-thumbnail">
+                  <img :src="item.images" alt="文章封面" />
                 </div>
               </div>
 
-              <div v-if="state.loading" class="loading-more">
-                <el-icon class="loading-icon"><Loading /></el-icon>
+              <div v-if="state.loading" class="loading-state">
+                <el-icon class="loading-icon" :size="24"><Loading /></el-icon>
                 <span>加载中...</span>
               </div>
 
-              <div v-if="!state.hasMore" class="no-more">没有更多内容了</div>
-            </el-scrollbar>
-          </el-card>
+              <div v-if="!state.hasMore && truncatedContent.length > 0" class="no-more-state">
+                <span>没有更多内容了</span>
+              </div>
+              
+              <div v-if="truncatedContent.length === 0 && !state.loading" class="empty-state">
+                <el-icon :size="64" color="#BDC3C7"><FolderOpened /></el-icon>
+                <p>还没有发布文章</p>
+              </div>
+            </div>
+          </div>
         </main>
       </div>
     </div>
 
     <!-- 兴趣设置对话框 -->
-    <el-dialog v-model="state.dialogVisible" title="选择喜欢的兴趣领域" width="600px">
-      <div class="interest-tags">
-        <div v-for="(item, index) in interest" :key="index" class="interest-tag" :class="{ active: item.active }">
-          {{ item.name }}
-          <el-icon class="remove-icon" @click="removeInterest(item)">
-            <Close />
-          </el-icon>
+    <el-dialog v-model="state.dialogVisible" width="600px" class="modern-interest-dialog">
+      <template #header>
+        <div class="dialog-gradient-header">
+          <el-icon :size="28"><FolderOpened /></el-icon>
+          <span class="header-title">选择兴趣领域</span>
+        </div>
+      </template>
+      
+      <div class="dialog-body">
+        <div class="interest-selector">
+          <button
+            v-for="(item, index) in interest"
+            :key="index"
+            class="interest-selector-item"
+            :class="{ active: item.active }"
+            @click="removeInterest(item)"
+          >
+            <span class="item-name">{{ item.name }}</span>
+            <el-icon class="remove-icon"><Close /></el-icon>
+          </button>
         </div>
       </div>
+      
       <template #footer>
-        <el-button type="primary" @click="handleDialogClose"> 确定 </el-button>
+        <div class="dialog-footer-actions">
+          <button class="footer-btn confirm-btn" @click="handleDialogClose">
+            <el-icon><Check /></el-icon>
+            <span>确定</span>
+          </button>
+        </div>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.user-center {
+// 现代化用户中心
+.modern-user-center {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #F8F9FA 0%, #ECF0F1 100%);
+  position: relative;
+  padding: 32px 0 60px;
+  
+  // 背景装饰
+  .background-decoration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 320px;
   background-size: cover;
+    background-position: center;
   background-attachment: fixed;
-  padding: 20px 0;
+    opacity: 0.15;
+    z-index: 0;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: linear-gradient(to bottom, transparent, #F8F9FA);
+    }
+  }
 
   .container {
+    position: relative;
+    z-index: 1;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
+  }
+}
 
-    .user-info-card {
-      .user-info-wrapper {
+// 现代化用户卡片
+.modern-user-card {
+  position: relative;
+  background: white;
+  border-radius: 24px;
+  padding: 32px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  
+  // 渐变装饰背景
+  .gradient-decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    opacity: 0.08;
+  }
+  
+  .user-card-content {
+    position: relative;
         display: flex;
-        gap: 20px;
+    gap: 32px;
+    margin-bottom: 32px;
+    
+    // 用户头像
+    .user-avatar-wrapper {
+      .avatar-container {
+        position: relative;
+        width: 120px;
+        height: 120px;
 
         .user-avatar {
-          img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
+          width: 100%;
+          height: 100%;
+          border-radius: 24px;
             object-fit: cover;
-            background-color: #409eff;
-          }
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
-
-        .user-detail {
-          flex: 1;
-
-          .user-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-
-            .username {
-              font-size: 24px;
-              font-weight: 500;
-              margin: 0;
-            }
-
-            .action-buttons {
-              display: flex;
-              gap: 10px;
-            }
-          }
-
-          .user-stats {
-            display: flex;
-            gap: 30px;
-            margin-bottom: 15px;
-
-            .stat-item {
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-
-              .number {
-                font-size: 20px;
-                font-weight: 500;
-                color: #333;
-              }
-
-              .label {
-                font-size: 14px;
-                color: #666;
-              }
-            }
-          }
-
-          .user-location {
-            color: #666;
-            font-size: 14px;
-
-            i {
-              margin-right: 5px;
-            }
-          }
+        
+        .avatar-border {
+          position: absolute;
+          top: -4px;
+          left: -4px;
+          right: -4px;
+          bottom: -4px;
+          border-radius: 26px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          opacity: 0.2;
+          z-index: -1;
         }
       }
     }
+    
+    // 用户信息
+    .user-info-section {
+          flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
 
-    .content-container {
-      display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: 20px;
-      margin-top: 20px;
-
-      .sidebar {
-        .interest-card,
-        .achievement-card {
-          margin-bottom: 20px;
-          transition: transform 0.3s ease;
-
-          &:hover {
-            transform: translateY(-2px);
-          }
-
-          .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-
-            h3 {
-              margin: 0;
-              font-size: 18px;
-            }
-          }
-
-          .interest-list {
-            .interest-item {
-              padding: 8px 0;
-              border-bottom: 1px solid #eee;
-
-              &:last-child {
-                border-bottom: none;
-              }
-            }
-          }
-
-          .achievement-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 0;
-
-            i {
-              margin-right: 10px;
-              font-size: 18px;
-              color: #409eff;
-            }
-          }
+          .user-header {
+            .username {
+          font-size: 32px;
+          font-weight: 700;
+          color: #2C3E50;
+          margin: 0 0 12px 0;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
         }
-      }
-
-      .main-content {
-        .article-card {
-          .nav-menu {
-            border-bottom: none;
+        
+        .user-location {
+              display: flex;
+          align-items: center;
+          gap: 6px;
+          color: #7F8C8D;
+          font-size: 14px;
+            }
           }
 
-          .article-item {
+      // 操作按钮
+      .action-buttons {
             display: flex;
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-            transition: background-color 0.3s ease;
+        gap: 12px;
+        margin-top: 20px;
 
+        .action-btn {
+              display: flex;
+              align-items: center;
+          gap: 8px;
+          padding: 12px 24px;
+          border: none;
+          border-radius: 12px;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          
+          &.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            
             &:hover {
-              background-color: #f5f7fa;
-            }
-
-            .article-content {
-              flex: 1;
-              margin-right: 20px;
-
-              .title {
-                font-size: 18px;
-                color: #333;
-                margin: 0 0 10px;
-              }
-
-              .content {
-                color: #666;
-                line-height: 1.6;
-                margin-bottom: 15px;
-              }
-
-              .meta {
-                display: flex;
-                gap: 15px;
-                color: #999;
-                font-size: 14px;
-
-                .quote {
-                  color: #409eff;
-                }
-              }
-            }
-
-            .article-image {
-              width: 120px;
-              height: 120px;
-              border-radius: 4px;
-              overflow: hidden;
-
-              .el-image {
-                width: 100%;
-                height: 100%;
-              }
+              transform: translateY(-2px);
+              box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
             }
           }
-
-          .loading-more {
-            text-align: center;
-            padding: 20px;
-            color: #999;
-
-            .loading-icon {
-              animation: rotating 2s linear infinite;
-              margin-right: 5px;
+          
+          &.secondary {
+            background: white;
+            color: #7F8C8D;
+            border: 2px solid #ECF0F1;
+            
+            &:hover {
+              border-color: #667eea;
+              color: #667eea;
+              transform: translateY(-2px);
             }
           }
         }
       }
     }
   }
+  
+  // 统计数据网格
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    
+    .stat-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.02) 100%);
+      border-radius: 16px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        border-color: #667eea;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+      }
+      
+      .stat-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        
+        &.view {
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+          color: #667eea;
+        }
+        
+        &.article {
+          background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(52, 211, 153, 0.05) 100%);
+          color: #4A90E2;
+        }
+        
+        &.fans {
+          background: linear-gradient(135deg, rgba(245, 109, 154, 0.1) 0%, rgba(254, 97, 97, 0.05) 100%);
+          color: #F56D9A;
+        }
+        
+        &.star {
+          background: linear-gradient(135deg, rgba(250, 208, 44, 0.1) 0%, rgba(255, 159, 64, 0.05) 100%);
+          color: #FAD02C;
+        }
+      }
+      
+      .stat-content {
+        flex: 1;
+        
+        .stat-number {
+          font-size: 24px;
+          font-weight: 700;
+          color: #2C3E50;
+          margin-bottom: 4px;
+        }
+        
+        .stat-label {
+          font-size: 13px;
+          color: #7F8C8D;
+            }
+          }
+        }
+      }
+    }
+
+// 内容容器
+    .content-container {
+      display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
 }
 
-.interest-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+// 现代化卡片通用样式
+.modern-card {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
 
-  .interest-tag {
-    padding: 8px 15px;
+          &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+          }
+
+          .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+    margin-bottom: 20px;
+    
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      
+      .title-icon {
+        color: #667eea;
+      }
+
+            h3 {
+              margin: 0;
+              font-size: 18px;
+        font-weight: 600;
+        color: #2C3E50;
+      }
+    }
+    
+    .manage-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      color: #667eea;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+      }
+    }
+  }
+}
+
+// 侧边栏
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  
+  // 兴趣领域卡片
+  .interest-card {
+    .interest-tags {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      
+      .interest-tag {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        background: #F8F9FA;
+        border-radius: 12px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        
+        .tag-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        &:hover {
+          border-color: #667eea;
+          transform: translateX(4px);
+        }
+      }
+    }
+  }
+  
+  // 个人成就卡片
+  .achievement-card {
+    .achievement-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+          .achievement-item {
+            display: flex;
+            align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: #F8F9FA;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        
+        .achievement-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+          border-radius: 8px;
+          
+          i {
+              font-size: 18px;
+            color: #667eea;
+          }
+        }
+        
+        .achievement-text {
+          flex: 1;
+          font-size: 14px;
+          color: #2C3E50;
+        }
+        
+        &:hover {
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.03) 100%);
+          transform: translateX(4px);
+        }
+      }
+    }
+  }
+}
+
+// 主内容区
+      .main-content {
+        .article-card {
+    // 导航标签
+    .article-nav {
+      display: flex;
+      gap: 8px;
+      padding: 16px;
+      border-bottom: 2px solid #ECF0F1;
+      margin: -24px -24px 24px -24px;
+      
+      .nav-tab {
+        padding: 10px 20px;
+        background: transparent;
+        border: none;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 500;
+        color: #7F8C8D;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          background: #F8F9FA;
+          color: #2C3E50;
+        }
+        
+        &.active {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+      }
+    }
+    
+    // 文章列表
+    .article-list {
+      max-height: 600px;
+      overflow-y: auto;
+      margin: -12px;
+      padding: 12px;
+      
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: #BDC3C7;
+        border-radius: 3px;
+        
+        &:hover {
+          background: #7F8C8D;
+        }
+      }
+      
+      .modern-article-item {
+            display: flex;
+        gap: 20px;
+            padding: 20px;
+        background: white;
+        border-radius: 16px;
+        margin-bottom: 16px;
+        border: 2px solid #ECF0F1;
+        transition: all 0.3s ease;
+        cursor: pointer;
+
+            &:hover {
+          border-color: #667eea;
+          transform: translateX(4px);
+          box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+            }
+
+        .article-main {
+              flex: 1;
+
+          .article-title {
+                font-size: 18px;
+            font-weight: 600;
+            color: #2C3E50;
+            margin: 0 0 12px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+          
+          .article-excerpt {
+            font-size: 14px;
+            color: #7F8C8D;
+                line-height: 1.6;
+            margin: 0 0 16px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+          
+          .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            
+            .meta-item {
+                display: flex;
+              align-items: center;
+              gap: 6px;
+              font-size: 13px;
+              color: #BDC3C7;
+            }
+            
+            .meta-quote {
+              flex: 1;
+              font-size: 13px;
+              color: #667eea;
+              font-style: italic;
+              display: -webkit-box;
+              -webkit-line-clamp: 1;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+            }
+          }
+        }
+        
+        .article-thumbnail {
+          width: 140px;
+          height: 140px;
+          border-radius: 12px;
+              overflow: hidden;
+          flex-shrink: 0;
+
+          img {
+                width: 100%;
+                height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+          }
+        }
+        
+        &:hover .article-thumbnail img {
+          transform: scale(1.1);
+        }
+      }
+      
+      // 加载状态
+      .loading-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding: 32px;
+        color: #7F8C8D;
+
+            .loading-icon {
+          animation: spin 1s linear infinite;
+          color: #667eea;
+        }
+      }
+      
+      // 没有更多
+      .no-more-state {
+        text-align: center;
+        padding: 24px;
+        color: #BDC3C7;
+        font-size: 14px;
+      }
+      
+      // 空状态
+      .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 60px 20px;
+        
+        p {
+          margin-top: 16px;
+          color: #BDC3C7;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+// 兴趣对话框
+.modern-interest-dialog {
+  :deep(.el-dialog) {
     border-radius: 20px;
-    background-color: #f5f7fa;
+    overflow: hidden;
+    
+    .el-dialog__header {
+      padding: 0;
+      margin: 0;
+      border: none;
+    }
+    
+    .el-dialog__body {
+      padding: 0;
+    }
+    
+    .el-dialog__footer {
+      padding: 0;
+      border: none;
+    }
+  }
+  
+  .dialog-gradient-header {
+  display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 32px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    
+    .header-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+  }
+  
+  .dialog-body {
+    padding: 32px;
+    background: #F8F9FA;
+    
+    .interest-selector {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      
+      .interest-selector-item {
     display: flex;
     align-items: center;
-    gap: 5px;
+        justify-content: space-between;
+        padding: 14px 18px;
+        background: white;
+        border: 2px solid transparent;
+        border-radius: 12px;
+        font-size: 14px;
+        color: #2C3E50;
     cursor: pointer;
     transition: all 0.3s ease;
+        
+        &:hover {
+          border-color: #667eea;
+          transform: translateY(-2px);
+        }
 
     &.active {
-      background-color: #409eff;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+          
+          .remove-icon {
       color: white;
+          }
+        }
+        
+        .item-name {
+          font-weight: 500;
     }
 
     .remove-icon {
-      font-size: 14px;
+          color: #BDC3C7;
+          transition: color 0.3s ease;
+          
+          &:hover {
+            color: #F56C6C;
+          }
+        }
+      }
+    }
+  }
+  
+  .dialog-footer-actions {
+    display: flex;
+    justify-content: center;
+    padding: 24px 32px;
+    background: white;
+    
+    .footer-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 40px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &.confirm-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
 
       &:hover {
-        color: #f56c6c;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
       }
+    }
+  }
+}
+
+// 旋转动画
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// 响应式设计
+@media (max-width: 992px) {
+  .content-container {
+    grid-template-columns: 1fr;
+    
+    .sidebar {
+      order: 2;
+    }
+    
+    .main-content {
+      order: 1;
+    }
+  }
+  
+  .modern-user-card {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .modern-user-card {
+    padding: 20px;
+    
+    .user-card-content {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      
+      .user-info-section {
+        .action-buttons {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+      }
+    }
+    
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .modern-article-item {
+    flex-direction: column;
+    
+    .article-thumbnail {
+      width: 100%;
+      height: 200px;
     }
   }
 }

@@ -384,7 +384,7 @@ onMounted(getInitialData)
   .sentence-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 20px;
+    gap: 24px;
     min-height: 300px;
     
     .sentence-card {
@@ -397,11 +397,11 @@ onMounted(getInitialData)
       overflow: hidden;
       
       &:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 16px 50px rgba(102, 126, 234, 0.25);
         
         .quote-mark {
-          opacity: 0.3;
+          opacity: 0.15;
         }
         
         .card-actions {
@@ -500,9 +500,10 @@ onMounted(getInitialData)
           transition: all 0.3s ease;
           
           &:hover {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
             color: #667eea;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
           }
         }
       }

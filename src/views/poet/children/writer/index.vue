@@ -312,7 +312,7 @@ onMounted(getRandom)
   // 诗人网格布局
   .writer-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 24px;
     min-height: 300px;
     

@@ -368,11 +368,15 @@ const clearSearch = () => {
     }
   }
   
-  // 现代化内容列表
+  // 现代化内容列表 - 网格布局
   .modern-content-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
     min-height: 300px;
     
     .modern-empty-state {
+      grid-column: 1 / -1;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -420,6 +424,19 @@ const clearSearch = () => {
     
     .modern-filter-box {
       padding: 16px;
+    }
+    
+    .modern-content-list {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .modern-content-container {
+    .modern-content-list {
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     }
   }
 }

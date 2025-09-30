@@ -8,7 +8,7 @@ import { useSceneryStore } from '@/stores/modules/scenery.js'
 const router = useRouter()
 const activeProvince = ref('all')
 const currentPage = ref(1) // 新增：当前页
-const pageSize = 4 // 每页4条
+const pageSize = 6 // 每页4条
 const provinces = ref([
   { value: 'all', label: '全部' },
   { value: 'beijing', label: '北京' },
@@ -55,131 +55,333 @@ const goToProvince = (province) => {
 
 <template>
   <div class="domestic-container">
-    <div class="province-nav">
-      <el-tabs v-model="activeProvince" @tab-click="handleProvinceChange">
-        <el-tab-pane v-for="province in provinces" :key="province.value" :label="province.label" :name="province.value">
-        </el-tab-pane>
-      </el-tabs>
-    </div>
-
-    <h2 class="section-title">热门省份</h2>
-    <div class="quick-access">
-      <div
-        v-for="province in provinces.filter((p) => p.value !== 'all')"
-        :key="province.value"
-        class="province-card"
-        @click="goToProvince(province)"
-        :style="{ backgroundImage: `url(${getProvinceImage(province.value)})` }"
-      >
-        <div class="card-content">
-          <h3>{{ province.label }}</h3>
-          <div class="card-overlay"></div>
+    <!-- 页面标题区 -->
+    <div class="page-header">
+      <div class="header-content">
+        <el-icon class="header-icon"><Location /></el-icon>
+        <div>
+          <h1>诗意之旅</h1>
+          <p class="subtitle">探索诗词中的山水胜景，品味千年文化</p>
         </div>
       </div>
     </div>
 
-    <h2 class="section-title">推荐景点</h2>
-    <div class="scenery-list">
-      <SceneryCard v-for="scenery in paginatedSceneryList" :key="scenery.id" :scenery="scenery" />
+    <!-- 省份导航 -->
+    <div class="province-nav">
+      <div class="nav-title">
+        <el-icon><Guide /></el-icon>
+        <span>选择省份</span>
+      </div>
+      <div class="province-tabs">
+        <div
+          v-for="province in provinces"
+          :key="province.value"
+          class="province-tab"
+          :class="{ active: activeProvince === province.value }"
+          @click="activeProvince = province.value; handleProvinceChange()"
+        >
+          <span>{{ province.label }}</span>
+        </div>
+      </div>
     </div>
 
-    <div class="pagination">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="sceneryList.length"
-        :page-size="pageSize"
-        v-model:current-page="currentPage"
-      />
+    <!-- 热门省份 -->
+    <div class="section">
+      <div class="section-header">
+        <el-icon class="section-icon"><Sunny /></el-icon>
+        <h2 class="section-title">热门省份</h2>
+        <p class="section-desc">点击探索各省诗词名胜</p>
+      </div>
+      
+      <div class="province-grid">
+        <div
+          v-for="province in provinces.filter((p) => p.value !== 'all')"
+          :key="province.value"
+          class="province-card"
+          @click="goToProvince(province)"
+        >
+          <div class="card-image" :style="{ backgroundImage: `url(${getProvinceImage(province.value)})` }">
+            <div class="card-overlay"></div>
+          </div>
+          <div class="card-content">
+            <h3>{{ province.label }}</h3>
+            <div class="arrow-icon">
+              <el-icon><Right /></el-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 推荐景点 -->
+    <div class="section">
+      <div class="section-header">
+        <el-icon class="section-icon"><Picture /></el-icon>
+        <h2 class="section-title">推荐景点</h2>
+        <p class="section-desc">{{ activeProvince === 'all' ? '全部精选景点' : provinces.find(p => p.value === activeProvince)?.label + '热门景点' }}</p>
+      </div>
+      
+      <div class="scenery-grid">
+        <SceneryCard v-for="scenery in paginatedSceneryList" :key="scenery.id" :scenery="scenery" />
+      </div>
+
+      <!-- 分页 -->
+      <div class="pagination" v-if="sceneryList.length > pageSize">
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="sceneryList.length"
+          :page-size="pageSize"
+          v-model:current-page="currentPage"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
 .domestic-container {
-  padding: 20px;
-
-  .section-title {
-    font-size: 24px;
-    margin: 30px 0 20px;
-    padding-left: 10px;
-    border-left: 4px solid #409eff;
-    color: #333;
-  }
-
-  .province-nav {
-    margin-bottom: 20px;
-  }
-
-  .quick-access {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 16px;
+  // 页面标题区
+  .page-header {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
     margin-bottom: 30px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 
-    .province-card {
-      height: 120px;
-      border-radius: 8px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 20px;
 
-      .card-content {
-        position: relative;
-        height: 100%;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 2;
+      .header-icon {
+        font-size: 56px;
+        color: #667eea;
+        filter: drop-shadow(0 2px 8px rgba(102, 126, 234, 0.3));
       }
 
-      .card-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6));
-        z-index: 1;
+      h1 {
+        margin: 0 0 8px 0;
+        font-size: 36px;
+        font-weight: 700;
+        color: #333;
       }
 
-      h3 {
-        color: white;
-        font-size: 18px;
-        text-align: center;
+      .subtitle {
         margin: 0;
-        font-weight: 600;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        z-index: 3;
-      }
-
-      &:hover {
-        transform: translateY(-5px) scale(1.02);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-
-        .card-overlay {
-          background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
-        }
+        font-size: 15px;
+        color: #999;
       }
     }
   }
 
-  .scenery-list {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(300px, 1fr));
-    gap: 20px;
+  // 省份导航
+  .province-nav {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
     margin-bottom: 30px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+
+    .nav-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+
+      .el-icon {
+        font-size: 22px;
+        color: #667eea;
+      }
+    }
+
+    .province-tabs {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+
+      .province-tab {
+        padding: 10px 24px;
+        background: #f5f5f5;
+        border-radius: 12px;
+        font-size: 15px;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+
+        &:hover {
+          background: rgba(102, 126, 234, 0.1);
+          color: #667eea;
+        }
+
+     
+      }
+    }
   }
 
-  .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+  // 区块样式
+  .section {
+    margin-bottom: 40px;
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+
+      .section-icon {
+        font-size: 28px;
+      }
+
+      .section-title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .section-desc {
+        margin: 0 0 0 auto;
+        font-size: 14px;
+        color: #999;
+      }
+    }
+
+    // 省份网格
+    .province-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+
+      .province-card {
+        position: relative;
+        height: 180px;
+        border-radius: 16px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 4px;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: 3;
+        }
+
+        .card-image {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-size: cover;
+          background-position: center;
+          transition: transform 0.4s ease;
+
+          .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            transition: all 0.4s ease;
+          }
+        }
+
+        .card-content {
+          position: relative;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          z-index: 2;
+          padding: 20px;
+
+          h3 {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.4s ease;
+          }
+
+          .arrow-icon {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.4s ease;
+
+            .el-icon {
+              font-size: 20px;
+              color: white;
+            }
+          }
+        }
+
+        &:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 12px 32px rgba(102, 126, 234, 0.25);
+
+          &::before {
+            opacity: 1;
+          }
+
+          .card-image {
+            transform: scale(1.1);
+
+          }
+
+          .card-content {
+            h3 {
+              transform: translateY(-10px);
+            }
+
+            .arrow-icon {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+        }
+      }
+    }
+
+    // 景点网格
+    .scenery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    // 分页
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 32px;
+    }
   }
 }
+
+
 </style>
