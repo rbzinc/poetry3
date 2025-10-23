@@ -7,8 +7,10 @@ const props = defineProps({
   name: String,
   content: String,
   dynasty: String,
-  id: [String, Number]
+  id: [String, Number],
+  item: Object
 })
+console.log(props.item)
 
 const isCollected = ref(false)
 const isHovering = ref(false)
@@ -52,8 +54,16 @@ const getDynastyColor = () => {
     <div class="card-content">
       <!-- 头像区域 -->
       <div class="writer-avatar">
-        <div class="avatar-circle" :style="{ background: `linear-gradient(135deg, ${getDynastyColor()} 0%, ${getDynastyColor()}cc 100%)` }">
-          <el-icon class="avatar-icon" :size="32"><User /></el-icon>
+        <div 
+          class="avatar-circle" 
+          :style="{ 
+            backgroundImage: item?.headImageUrl ? `url(${item.headImageUrl})` : 'none',
+            background: item?.headImageUrl ? `linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.2) 100%), url(${item.headImageUrl})` : `linear-gradient(135deg, ${getDynastyColor()} 0%, ${getDynastyColor()}cc 100%)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }"
+        >
+          <el-icon v-if="!item?.headImageUrl" class="avatar-icon" :size="32"><User /></el-icon>
         </div>
         <div 
           class="dynasty-badge"
@@ -197,6 +207,7 @@ const getDynastyColor = () => {
         margin: 0;
         display: -webkit-box;
         -webkit-line-clamp: 3;
+        line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;

@@ -55,6 +55,14 @@ export const userRoutes = [
     path: ROUTES.USER_EDIT,
     component: () => import('@/views/user/editUserInfo/index.vue'),
   },
+  {
+    path: ROUTES.USER_ARTICLES,
+    component: () => import('@/views/user/manageArticles/index.vue'),
+  },
+  {
+    path: ROUTES.USER_SETTINGS,
+    component: () => import('@/views/user/settings/index.vue'),
+  },
 ]
 
 export const dictionaryRoutes = [

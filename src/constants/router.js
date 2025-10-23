@@ -11,6 +11,8 @@ export const NOT_FOUND = '/404'
 // 用户相关路由
 export const USER = '/user'
 export const USER_EDIT = '/user/edit-info'
+export const USER_ARTICLES = '/user/articles'
+export const USER_SETTINGS = '/user/settings'
 
 // 学习模块路由
 export const STUDY = '/study'

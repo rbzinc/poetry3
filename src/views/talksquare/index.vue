@@ -179,7 +179,6 @@ onMounted(fetchForumData)
                       {{ item.poemWord }}
                     </span>
                   </div>
-                  
                   <div v-if="item.images" class="article-thumbnail">
                     <el-image :src="item.images" fit="cover" loading="lazy">
                       <template #error>

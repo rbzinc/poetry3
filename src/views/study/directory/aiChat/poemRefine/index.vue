@@ -63,10 +63,10 @@ const handleTypeChange = (type) => {
 const controller = new AbortController()
 const handleDropdownClick = () => {
   handleSend(inputMessage.value)
-   inputMessage.value = ''
+  inputMessage.value = ''
 }
 const GetSSE = () => {
-  fetchEventSource('http://120.27.234.36:8080/ai/submita', {
+  fetchEventSource('http://localhost:8080/ai/submita', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -108,20 +108,15 @@ onMounted(() => {
 <template>
   <div class="poem-refine-container">
     <ChatContainer
-    :messages="messages"
+      :messages="messages"
       :loading="loading"
       :user-avatar="userInfo.userInfo.touxiang"
       :placeholder="placeholder"
       v-model="inputMessage"
       @send="handleSend"
     >
-    <template #send-button>
-        <el-dropdown 
-          split-button 
-          type="primary" 
-          size="default"
-          @click="handleDropdownClick"
-        >
+      <template #send-button>
+        <el-dropdown split-button type="primary" size="default" @click="handleDropdownClick">
           发送
           <template #dropdown>
             <el-dropdown-menu>

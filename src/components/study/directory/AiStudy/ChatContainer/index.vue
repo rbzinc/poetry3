@@ -21,7 +21,7 @@ const props = defineProps({
   // AI头像
   aiAvatar: {
     type: String,
-    default: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
+    default: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/avatar/Gemini_Generated_Image_5bepit5bepit5bep.png',
   },
   // 输入框占位符
   placeholder: {

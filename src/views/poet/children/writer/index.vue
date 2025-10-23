@@ -133,6 +133,7 @@ onMounted(getRandom)
         <Writeritem
           v-for="item in randomList"
           :key="item?.id"
+          :item="item"
           :name="item.name"
           :content="item.simpleIntro"
           :dynasty="item.dynasty"

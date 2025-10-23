@@ -430,6 +430,7 @@ const navigateTo = (route) => {
             v-bind="{
               ...item,
               id: String(item.id),
+              islike: item.islike === true || item.islike === 'true',
             }"
             @click="goPoetClassDetail(item.id)"
           />

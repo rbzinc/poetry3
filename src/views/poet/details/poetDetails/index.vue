@@ -209,267 +209,207 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="poem-details-page" v-loading.fullscreen.lock="isLoading && !dialogFormVisible">
-    <!-- 返回按钮 -->
-    <div class="back-button" @click="goBack">
-      <el-icon><ArrowLeft /></el-icon>
-      <span>返回典藏</span>
-    </div>
+  <div class="poem-sanctuary" v-loading.fullscreen.lock="isLoading && !dialogFormVisible">
+    <!-- 优雅的返回按钮 -->
+    <button class="elegant-back-btn" @click="goBack">
+      <el-icon class="back-icon"><ArrowLeft /></el-icon>
+      <span class="back-text">返回书阁</span>
+    </button>
 
-    <div class="page-container">
-      <!-- Hero区域 - 诗词展示核心 -->
-      <section class="poem-hero">
-        <!-- 背景装饰 -->
-        <div class="hero-background">
-          <div class="bg-gradient" :style="{ background: getDynastyTheme.gradient }"></div>
-          <div class="bg-circles">
-            <div class="circle circle-1" :style="{ background: getDynastyTheme.gradient }"></div>
-            <div class="circle circle-2" :style="{ background: getDynastyTheme.gradient }"></div>
-          </div>
-          <div class="chinese-pattern"></div>
+    <div class="sanctuary-container">
+      <!-- 诗词主展示区域 - 中国风卡片 -->
+      <article class="poem-showcase">
+        <!-- 朝代装饰条 -->
+        <div class="dynasty-ribbon" :style="{ background: getDynastyTheme.gradient }">
+          <span class="ribbon-icon">{{ getDynastyTheme.icon }}</span>
+          <span class="ribbon-text">{{ dynasty }}</span>
         </div>
 
-        <!-- 主要内容 -->
-        <div class="hero-content">
-          <!-- 标题区域 -->
-          <div class="poem-header">
-            <div class="header-decoration">
-              <span class="decoration-dot" :style="{ background: getDynastyTheme.color }"></span>
-              <span class="decoration-line" :style="{ background: getDynastyTheme.gradient }"></span>
-              <span class="decoration-dot" :style="{ background: getDynastyTheme.color }"></span>
-            </div>
-            
-            <h1 class="poem-title">{{ poemtitle }}</h1>
-            
-            <div class="poem-meta">
-              <div 
-                class="meta-badge dynasty"
-                :style="{ 
-                  background: getDynastyTheme.gradient,
-                  boxShadow: `0 4px 20px ${getDynastyTheme.color}40`
-                }"
-              >
-                <span class="badge-icon">{{ getDynastyTheme.icon }}</span>
-                <span class="badge-text">{{ dynasty }}</span>
-              </div>
-              <div class="meta-divider">·</div>
-              <div class="meta-author">
-                <span class="author-label">作者</span>
-                <span class="author-name">{{ writer }}</span>
-              </div>
+        <!-- 诗词头部 -->
+        <header class="showcase-header">
+          <div class="vertical-decoration left">
+            <div class="seal-mark" :style="{ borderColor: getDynastyTheme.color }">诗</div>
+          </div>
+          
+          <div class="header-content">
+            <h1 class="poem-title-main">{{ poemtitle }}</h1>
+            <div class="author-info">
+              <span class="dynasty-tag" :style="{ background: getDynastyTheme.lightBg, color: getDynastyTheme.color }">
+                {{ dynasty }}
+              </span>
+              <span class="author-divider">·</span>
+              <span class="author-name">{{ writer }}</span>
             </div>
           </div>
 
-          <!-- 诗词内容主体 -->
-          <div class="poem-content-area">
-            <div class="content-decoration-left">
-              <span class="quote-mark">"</span>
-            </div>
-            
-            <div 
-              class="poem-body" 
-              :class="{ 'collapsed': !isContentOpen && needContentExpand }"
-            >
-              <div class="poem-text" v-html="content"></div>
-              <div class="fade-overlay" v-if="!isContentOpen && needContentExpand"></div>
-            </div>
-            
-            <div class="content-decoration-right">
-              <span class="quote-mark">"</span>
-            </div>
-
-            <button 
-              v-if="needContentExpand" 
-              class="expand-btn content-expand"
-              :style="{ color: getDynastyTheme.color }"
-              @click="togglePoemContent"
-            >
-              <span>{{ isContentOpen ? '收起' : '展开全文' }}</span>
-              <el-icon class="expand-icon" :class="{ 'rotated': isContentOpen }">
-                <ArrowDown />
-              </el-icon>
-            </button>
+          <div class="vertical-decoration right">
+            <div class="seal-mark" :style="{ borderColor: getDynastyTheme.color }">词</div>
           </div>
+        </header>
 
-          <!-- 操作按钮 -->
-          <div class="action-section">
-            <audio ref="audioPlayer" :src="audioUrl" class="hidden" preload="none"></audio>
-            
+        <!-- 诗词正文 - 竖排风格 -->
+        <section class="poem-main-content">
+          <div class="content-wrapper" :class="{ 'collapsed': !isContentOpen && needContentExpand }">
+            <div class="poem-verses" v-html="content"></div>
+            <div class="content-fade-mask" v-if="!isContentOpen && needContentExpand"></div>
+          </div>
+          
+          <button 
+            v-if="needContentExpand" 
+            class="expand-toggle"
+            :style="{ color: getDynastyTheme.color }"
+            @click="togglePoemContent"
+          >
+            <span>{{ isContentOpen ? '收起' : '展开全文' }}</span>
+            <el-icon :class="{ 'rotated': isContentOpen }"><ArrowDown /></el-icon>
+          </button>
+        </section>
+
+        <!-- 交互按钮组 -->
+        <footer class="showcase-actions">
+          <audio ref="audioPlayer" :src="audioUrl" class="hidden" preload="none"></audio>
+          
+          <div class="action-buttons">
             <button 
-              class="action-btn primary"
-              :style="{ background: getDynastyTheme.gradient }"
+              class="poem-action-btn primary-action"
+              :style="{ 
+                background: getDynastyTheme.gradient,
+                boxShadow: `0 8px 24px ${getDynastyTheme.color}40`
+              }"
               @click="handlePlayClick" 
               :disabled="isLoading"
             >
-              <el-icon class="btn-icon" :size="22">
-                <component :is="playIcon" />
-              </el-icon>
-              <span class="btn-text">{{ playText }}</span>
-              <div class="btn-glow"></div>
+              <el-icon :size="20"><component :is="playIcon" /></el-icon>
+              <span>{{ playText }}</span>
+              <div class="ripple-effect"></div>
             </button>
 
             <button
-              class="action-btn secondary"
-              :style="{ 
-                borderColor: getDynastyTheme.color,
-                color: getDynastyTheme.color
-              }"
+              class="poem-action-btn secondary-action"
+              :style="{ borderColor: getDynastyTheme.color, color: getDynastyTheme.color }"
               @click="showImageDialog"
               :disabled="isLoading && !dialogFormVisible"
             >
-              <el-icon class="btn-icon" :size="22"><MagicStick /></el-icon>
-              <span class="btn-text">AI意境图</span>
+              <el-icon :size="20"><MagicStick /></el-icon>
+              <span>意境图</span>
             </button>
 
             <button
-              class="action-btn secondary"
-              :style="{ 
-                borderColor: getDynastyTheme.color,
-                color: getDynastyTheme.color
-              }"
+              class="poem-action-btn secondary-action"
+              :style="{ borderColor: getDynastyTheme.color, color: getDynastyTheme.color }"
             >
-              <el-icon class="btn-icon" :size="22"><Star /></el-icon>
-              <span class="btn-text">收藏</span>
+              <el-icon :size="20"><Star /></el-icon>
+              <span>收藏</span>
             </button>
           </div>
-        </div>
-      </section>
+        </footer>
+      </article>
 
-      <!-- 内容区域网格 -->
-      <div class="content-grid">
-        <!-- 译文卡片 -->
+      <!-- 附加内容区域 - 两栏布局 -->
+      <div class="supplementary-content">
+        <!-- 译文区块 -->
         <section 
-          class="content-card" 
+          class="content-block translation-block" 
           v-if="translation && translation !== '暂无译文'"
         >
-          <div class="card-header">
-            <div 
-              class="card-icon"
-              :style="{ background: getDynastyTheme.lightBg, color: getDynastyTheme.color }"
-            >
-              <el-icon :size="24"><Document /></el-icon>
+          <div class="block-header">
+            <div class="header-badge" :style="{ background: getDynastyTheme.gradient }">
+              <el-icon :size="20"><Document /></el-icon>
             </div>
-            <h2 class="card-title">译文</h2>
-            <div class="card-decoration" :style="{ background: getDynastyTheme.gradient }"></div>
+            <h3 class="block-title">译文</h3>
+            <div class="title-underline" :style="{ background: getDynastyTheme.gradient }"></div>
           </div>
           
-          <div 
-            class="card-body"
-            :class="{ 'collapsed': !isTranslationOpen && needTranslationExpand }"
-          >
-            <p class="card-text">{{ translation }}</p>
-            <div class="fade-overlay" v-if="!isTranslationOpen && needTranslationExpand"></div>
+          <div class="block-content" :class="{ 'collapsed': !isTranslationOpen && needTranslationExpand }">
+            <p class="content-text">{{ translation }}</p>
+            <div class="read-more-fade" v-if="!isTranslationOpen && needTranslationExpand"></div>
           </div>
           
           <button 
             v-if="needTranslationExpand"
-            class="expand-btn"
+            class="read-more-btn"
             :style="{ color: getDynastyTheme.color }"
             @click="toggleTranslation"
           >
-            <span>{{ isTranslationOpen ? '收起内容' : '展开阅读' }}</span>
-            <el-icon class="expand-icon" :class="{ 'rotated': isTranslationOpen }">
-              <ArrowDown />
-            </el-icon>
+            {{ isTranslationOpen ? '收起' : '展开阅读' }}
+            <el-icon :class="{ 'rotated': isTranslationOpen }"><ArrowDown /></el-icon>
           </button>
-
-          <div class="card-footer">
-            <span class="dot" :style="{ background: getDynastyTheme.color }"></span>
-            <span class="dot" :style="{ background: getDynastyTheme.color }"></span>
-            <span class="dot" :style="{ background: getDynastyTheme.color }"></span>
-          </div>
         </section>
 
-        <!-- 赏析卡片 -->
+        <!-- 赏析区块 -->
         <section 
-          class="content-card" 
+          class="content-block appreciation-block" 
           v-if="shangxi && shangxi !== '暂无赏析'"
         >
-          <div class="card-header">
-            <div 
-              class="card-icon"
-              :style="{ background: getDynastyTheme.lightBg, color: getDynastyTheme.color }"
-            >
-              <el-icon :size="24"><Reading /></el-icon>
+          <div class="block-header">
+            <div class="header-badge" :style="{ background: getDynastyTheme.gradient }">
+              <el-icon :size="20"><Reading /></el-icon>
             </div>
-            <h2 class="card-title">赏析</h2>
-            <div class="card-decoration" :style="{ background: getDynastyTheme.gradient }"></div>
+            <h3 class="block-title">赏析</h3>
+            <div class="title-underline" :style="{ background: getDynastyTheme.gradient }"></div>
           </div>
           
-          <div 
-            class="card-body"
-            :class="{ 'collapsed': !isopen && needExpand }"
-          >
-            <div class="card-text" v-html="shangxi"></div>
-            <div class="fade-overlay" v-if="!isopen && needExpand"></div>
+          <div class="block-content" :class="{ 'collapsed': !isopen && needExpand }">
+            <div class="content-text" v-html="shangxi"></div>
+            <div class="read-more-fade" v-if="!isopen && needExpand"></div>
           </div>
           
           <button 
             v-if="needExpand"
-            class="expand-btn"
+            class="read-more-btn"
             :style="{ color: getDynastyTheme.color }"
             @click="toggleContent"
           >
-            <span>{{ isopen ? '收起内容' : '展开阅读' }}</span>
-            <el-icon class="expand-icon" :class="{ 'rotated': isopen }">
-              <ArrowDown />
-            </el-icon>
+            {{ isopen ? '收起' : '展开阅读' }}
+            <el-icon :class="{ 'rotated': isopen }"><ArrowDown /></el-icon>
           </button>
-
-          <div class="card-footer">
-            <span class="dot" :style="{ background: getDynastyTheme.color }"></span>
-            <span class="dot" :style="{ background: getDynastyTheme.color }"></span>
-            <span class="dot" :style="{ background: getDynastyTheme.color }"></span>
-          </div>
         </section>
 
-        <!-- 评论鉴赏卡片 -->
+        <!-- 评论鉴赏区块 -->
         <section 
-          class="content-card" 
+          class="content-block review-block" 
           v-if="remarks && remarks !== '暂无评论'"
         >
-          <div class="card-header">
-            <div 
-              class="card-icon"
-              :style="{ background: getDynastyTheme.lightBg, color: getDynastyTheme.color }"
-            >
-              <el-icon :size="24"><ChatDotRound /></el-icon>
+          <div class="block-header">
+            <div class="header-badge" :style="{ background: getDynastyTheme.gradient }">
+              <el-icon :size="20"><ChatDotRound /></el-icon>
             </div>
-            <h2 class="card-title">评论鉴赏</h2>
-            <div class="card-decoration" :style="{ background: getDynastyTheme.gradient }"></div>
+            <h3 class="block-title">评论鉴赏</h3>
+            <div class="title-underline" :style="{ background: getDynastyTheme.gradient }"></div>
           </div>
           
-          <div class="card-body">
-            <p class="card-text">{{ remarks }}</p>
-          </div>
-
-          <div class="card-footer">
-            <span class="dot" :style="{ background: getDynastyTheme.color }"></span>
-            <span class="dot" :style="{ background: getDynastyTheme.color }"></span>
-            <span class="dot" :style="{ background: getDynastyTheme.color }"></span>
+          <div class="block-content">
+            <p class="content-text">{{ remarks }}</p>
           </div>
         </section>
       </div>
     </div>
 
-    <!-- AI图片对话框 -->
+    <!-- AI意境图对话框 -->
     <el-dialog
       v-model="dialogFormVisible"
-      title="AI意境图"
       width="90%"
-      :style="{ maxWidth: '900px' }"
+      :style="{ maxWidth: '1000px' }"
       destroy-on-close
-      class="modern-image-dialog"
+      class="ai-image-modal"
     >
-      <div class="image-container" v-loading="isLoading && dialogFormVisible">
-        <img v-if="imageUrl" :src="imageUrl" alt="AI生成的意境图" class="ai-image" />
-        <div v-else class="loading-placeholder">
-          <el-icon class="loading-icon" :size="64"><Picture /></el-icon>
-          <p class="loading-text">正在生成意境图，请稍候...</p>
+      <template #header>
+        <div class="modal-header">
+          <el-icon :size="24" class="modal-icon"><MagicStick /></el-icon>
+          <span class="modal-title">AI诗词意境图</span>
+        </div>
+      </template>
+      
+      <div class="modal-image-wrapper" v-loading="isLoading && dialogFormVisible">
+        <img v-if="imageUrl" :src="imageUrl" alt="AI生成的诗词意境图" class="modal-image" />
+        <div v-else class="image-loading-state">
+          <el-icon class="loading-icon" :size="72"><Picture /></el-icon>
+          <p class="loading-message">AI正在为您创作意境图...</p>
         </div>
       </div>
+      
       <template #footer>
-        <div class="dialog-footer">
+        <div class="modal-footer">
           <el-button @click="dialogFormVisible = false" size="large">关闭</el-button>
           <el-button 
             type="primary" 
@@ -477,7 +417,8 @@ onBeforeUnmount(() => {
             :loading="isLoading && dialogFormVisible"
             size="large"
           >
-            重新生成
+            <el-icon><MagicStick /></el-icon>
+            <span>重新生成</span>
           </el-button>
         </div>
       </template>
@@ -486,433 +427,380 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="scss" scoped>
-.poem-details-page {
+.poem-sanctuary {
   position: relative;
   min-height: 100vh;
-  background: #F8F9FA;
-  padding-bottom: 60px;
+  background: linear-gradient(to bottom, #fafbfc 0%, #f5f7fa 100%);
+  padding: 40px 20px 80px;
   
-  // 返回按钮
-  .back-button {
+  // 优雅的返回按钮
+  .elegant-back-btn {
     position: fixed;
-    top: 100px;
-    left: 40px;
+    top: 90px;
+    left: 30px;
     z-index: 100;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
+    gap: 10px;
+    padding: 14px 26px;
     background: white;
-    border-radius: 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 30px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 15px;
-    font-weight: 500;
-    color: #2C3E50;
+    font-weight: 600;
+    color: #5a6c7d;
+    
+    .back-icon {
+      transition: transform 0.4s ease;
+    }
     
     &:hover {
-      transform: translateX(-4px);
-      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15);
+      transform: translateX(-6px) scale(1.02);
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+      border-color: #667eea;
       color: #667eea;
-    }
-    
-    .el-icon {
-      transition: transform 0.3s ease;
-    }
-    
-    &:hover .el-icon {
-      transform: translateX(-2px);
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+      
+      .back-icon {
+        transform: translateX(-4px);
+      }
     }
   }
   
-  .page-container {
-    max-width: 1200px;
+  .sanctuary-container {
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 40px 20px;
   }
   
-  // Hero区域
-  .poem-hero {
+  // 诗词主展示区域
+  .poem-showcase {
     position: relative;
     background: white;
-    border-radius: 32px;
-    overflow: hidden;
-    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.08);
-    margin-bottom: 48px;
+    border-radius: 28px;
+    overflow: visible;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.06);
+    margin-bottom: 40px;
+    padding: 48px 56px 40px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
     
-    .hero-background {
+    // 朝代装饰条
+    .dynasty-ribbon {
       position: absolute;
-      width: 100%;
-      height: 100%;
       top: 0;
-      left: 0;
-      pointer-events: none;
+      right: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      border-radius: 0 0 16px 16px;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.25);
+      transition: all 0.3s ease;
       
-      .bg-gradient {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 200px;
-        opacity: 0.08;
+      .ribbon-icon {
+        font-size: 18px;
       }
       
-      .bg-circles {
-        position: absolute;
-        width: 100%;
-        height: 100%;
+      &:hover {
+        transform: translateY(2px);
+      }
+    }
+    
+    // 诗词头部
+    .showcase-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 2px solid #f5f7fa;
+      
+      .vertical-decoration {
+        display: flex;
+        align-items: center;
         
-        .circle {
-          position: absolute;
-          border-radius: 50%;
-          opacity: 0.05;
-          
-          &.circle-1 {
-            width: 400px;
-            height: 400px;
-            top: -200px;
-            right: -100px;
-          }
-          
-          &.circle-2 {
-            width: 300px;
-            height: 300px;
-            bottom: -150px;
-            left: -80px;
-          }
+        .seal-mark {
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 3px solid;
+          border-radius: 8px;
+          font-size: 20px;
+          font-weight: 800;
+          font-family: 'STKaiti', '楷体', serif;
+          transform: rotate(10deg);
+          opacity: 0.4;
         }
       }
       
-      .chinese-pattern {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        opacity: 0.02;
-        background-image: 
-          repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(102, 126, 234, 0.1) 50px, rgba(102, 126, 234, 0.1) 51px),
-          repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(102, 126, 234, 0.1) 50px, rgba(102, 126, 234, 0.1) 51px);
-      }
-    }
-    
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      padding: 80px 60px;
-      
-      .poem-header {
+      .header-content {
+        flex: 1;
         text-align: center;
-        margin-bottom: 60px;
         
-        .header-decoration {
+        .poem-title-main {
+          font-size: 48px;
+          font-weight: 900;
+          color: #2c3e50;
+          margin: 0 0 20px 0;
+          font-family: 'STKaiti', '楷体', serif;
+          letter-spacing: 6px;
+          line-height: 1.4;
+        }
+        
+        .author-info {
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 12px;
-          margin-bottom: 24px;
           
-          .decoration-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-          }
-          
-          .decoration-line {
-            width: 60px;
-            height: 3px;
-            border-radius: 2px;
-          }
-        }
-        
-        .poem-title {
-          font-size: 56px;
-          font-weight: 800;
-          color: #2C3E50;
-          margin: 0 0 32px 0;
-          font-family: 'STKaiti', '楷体', serif;
-          letter-spacing: 4px;
-          line-height: 1.3;
-        }
-        
-        .poem-meta {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 20px;
-          
-          .meta-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 28px;
-            border-radius: 30px;
-            color: white;
+          .dynasty-tag {
+            padding: 6px 18px;
+            border-radius: 16px;
+            font-size: 14px;
             font-weight: 600;
-            font-size: 16px;
-            
-            .badge-icon {
-              font-size: 20px;
-            }
           }
           
-          .meta-divider {
-            font-size: 24px;
-            color: #BDC3C7;
+          .author-divider {
+            color: #bdc3c7;
+            font-size: 18px;
           }
           
-          .meta-author {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            
-            .author-label {
-              font-size: 14px;
-              color: #7F8C8D;
-            }
-            
-            .author-name {
-              font-size: 18px;
-              font-weight: 600;
-              color: #2C3E50;
-            }
+          .author-name {
+            font-size: 17px;
+            font-weight: 600;
+            color: #5a6c7d;
           }
         }
       }
+    }
+    
+    // 诗词正文
+    .poem-main-content {
+      margin-bottom: 40px;
       
-      .poem-content-area {
+      .content-wrapper {
         position: relative;
-        max-width: 800px;
-        margin: 0 auto 50px;
+        padding: 36px 48px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(255, 255, 255, 0.9) 100%);
+        border-radius: 20px;
+        border: 2px solid rgba(102, 126, 234, 0.08);
+        transition: all 0.4s ease;
         
-        .content-decoration-left,
-        .content-decoration-right {
-          position: absolute;
-          top: -20px;
+        &.collapsed {
+          max-height: 350px;
+          overflow: hidden;
+        }
+        
+        .poem-verses {
+          font-size: 26px;
+          line-height: 2.6;
+          color: #2c3e50;
+          text-align: center;
+          font-family: 'STKaiti', '楷体', serif;
+          white-space: pre-wrap;
           
-          .quote-mark {
-            font-size: 120px;
-            font-family: Georgia, serif;
-            color: rgba(102, 126, 234, 0.06);
-            font-weight: bold;
+          :deep(p) {
+            margin: 0;
+          }
+          
+          :deep(br) {
+            display: block;
+            content: '';
+            margin-top: 16px;
           }
         }
         
-        .content-decoration-left {
-          left: -80px;
+        .content-fade-mask {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 120px;
+          background: linear-gradient(to bottom, transparent 0%, white 85%);
+          pointer-events: none;
+          border-radius: 0 0 20px 20px;
         }
+      }
+      
+      .expand-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: auto;
+        margin: 20px auto 0;
+        padding: 10px 24px;
+        background: transparent;
+        border: none;
+        border-radius: 16px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
         
-        .content-decoration-right {
-          right: -80px;
+        .el-icon {
+          transition: transform 0.3s ease;
           
-          .quote-mark {
+          &.rotated {
             transform: rotate(180deg);
           }
         }
         
-        .poem-body {
-          position: relative;
-          padding: 40px;
-          background: linear-gradient(135deg, rgba(102, 126, 234, 0.02) 0%, rgba(255, 255, 255, 0.95) 100%);
-          border-radius: 24px;
-          transition: max-height 0.4s ease;
-          
-          &.collapsed {
-            max-height: 300px;
-            overflow: hidden;
-          }
-          
-          .poem-text {
-            font-size: 24px;
-            line-height: 2.5;
-            color: #2C3E50;
-            text-align: center;
-            font-family: 'STKaiti', '楷体', serif;
-            white-space: pre-wrap;
-            
-            :deep(p) {
-              margin: 0;
-            }
-            
-            :deep(br) {
-              display: block;
-              content: '';
-              margin-top: 20px;
-            }
-          }
-          
-          .fade-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(to bottom, transparent 0%, white 80%);
-            pointer-events: none;
-          }
-        }
-        
-        .content-expand {
-          margin-top: 20px;
+        &:hover {
+          background: rgba(102, 126, 234, 0.06);
         }
       }
-      
-      .action-section {
+    }
+    
+    // 交互按钮组
+    .showcase-actions {
+      .action-buttons {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 16px;
+        gap: 14px;
         flex-wrap: wrap;
         
-        .action-btn {
+        .poem-action-btn {
           position: relative;
           display: flex;
           align-items: center;
-          gap: 10px;
-          padding: 16px 32px;
-          border: none;
-          border-radius: 16px;
-          font-size: 16px;
+          gap: 8px;
+          padding: 14px 28px;
+          border-radius: 20px;
+          font-size: 15px;
           font-weight: 600;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           overflow: hidden;
           
-          .btn-icon {
-            z-index: 1;
-          }
-          
-          .btn-text {
-            z-index: 1;
-          }
-          
-          .btn-glow {
+          .ripple-effect {
             position: absolute;
             top: 50%;
             left: 50%;
             width: 0;
             height: 0;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.4);
             transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
+            transition: width 0.5s ease, height 0.5s ease;
           }
           
-          &.primary {
+          &.primary-action {
             color: white;
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+            border: none;
             
-            &:hover {
-              transform: translateY(-4px);
-              box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5);
+            &:hover:not(:disabled) {
+              transform: translateY(-3px) scale(1.02);
               
-              .btn-glow {
-                width: 300px;
-                height: 300px;
+              .ripple-effect {
+                width: 250px;
+                height: 250px;
               }
             }
           }
           
-          &.secondary {
+          &.secondary-action {
             background: white;
             border: 2px solid;
             
-            &:hover {
-              transform: translateY(-4px);
-              box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
-              background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(255, 255, 255, 0.95) 100%);
+            &:hover:not(:disabled) {
+              transform: translateY(-3px);
+              background: rgba(102, 126, 234, 0.04);
+              box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
             }
           }
           
           &:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
           }
         }
       }
     }
   }
   
-  // 内容网格
-  .content-grid {
+  // 附加内容区域
+  .supplementary-content {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 28px;
     
-    .content-card {
-      position: relative;
+    .content-block {
       background: white;
       border-radius: 24px;
-      padding: 40px;
-      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.08);
+      padding: 36px 40px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.04);
       transition: all 0.4s ease;
-      overflow: hidden;
       
       &:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 12px 50px rgba(0, 0, 0, 0.12);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
       }
       
-      .card-header {
+      .block-header {
         display: flex;
         align-items: center;
-        gap: 16px;
-        margin-bottom: 28px;
-        padding-bottom: 20px;
-        border-bottom: 2px solid #F0F2F5;
+        gap: 14px;
+        margin-bottom: 24px;
+        padding-bottom: 18px;
         position: relative;
         
-        .card-icon {
-          width: 50px;
-          height: 50px;
-          border-radius: 14px;
+        .header-badge {
+          width: 44px;
+          height: 44px;
           display: flex;
           align-items: center;
           justify-content: center;
-          flex-shrink: 0;
+          border-radius: 12px;
+          color: white;
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
         
-        .card-title {
+        .block-title {
           flex: 1;
-          font-size: 26px;
+          font-size: 22px;
           font-weight: 700;
-          color: #2C3E50;
+          color: #2c3e50;
           margin: 0;
         }
         
-        .card-decoration {
+        .title-underline {
           position: absolute;
-          top: 0;
+          bottom: 0;
           left: 0;
-          width: 100%;
+          width: 60px;
           height: 3px;
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 0.6s ease;
+          border-radius: 2px;
         }
       }
       
-      &:hover .card-decoration {
-        transform: scaleX(1);
-      }
-      
-      .card-body {
+      .block-content {
         position: relative;
         transition: max-height 0.4s ease;
         
         &.collapsed {
-          max-height: 300px;
+          max-height: 320px;
           overflow: hidden;
         }
         
-        .card-text {
-          font-size: 17px;
-          line-height: 2.2;
-          color: #34495e;
+        .content-text {
+          font-size: 16px;
+          line-height: 2.1;
+          color: #495057;
           margin: 0;
           
           :deep(p) {
-            margin: 0 0 20px 0;
+            margin: 0 0 18px 0;
             text-indent: 2em;
             
             &:last-child {
@@ -926,125 +814,114 @@ onBeforeUnmount(() => {
           }
         }
         
-        .fade-overlay {
+        .read-more-fade {
           position: absolute;
           bottom: 0;
           left: 0;
           width: 100%;
           height: 100px;
-          background: linear-gradient(to bottom, transparent 0%, white 70%);
+          background: linear-gradient(to bottom, transparent 0%, white 75%);
           pointer-events: none;
         }
       }
       
-      .card-footer {
+      .read-more-btn {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        margin-top: 28px;
-        padding-top: 24px;
-        border-top: 1px solid #F0F2F5;
+        gap: 6px;
+        width: 100%;
+        margin-top: 20px;
+        padding: 12px;
+        background: #f8f9fa;
+        border: none;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
         
-        .dot {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          opacity: 0.3;
-          transition: all 0.3s ease;
+        .el-icon {
+          transition: transform 0.3s ease;
+          
+          &.rotated {
+            transform: rotate(180deg);
+          }
+        }
+        
+        &:hover {
+          background: rgba(102, 126, 234, 0.08);
+          transform: translateY(-2px);
         }
       }
-      
-      &:hover .card-footer .dot {
-        opacity: 0.6;
-        animation: pulse-dot 1.5s ease-in-out infinite;
-        
-        &:nth-child(1) { animation-delay: 0s; }
-        &:nth-child(2) { animation-delay: 0.2s; }
-        &:nth-child(3) { animation-delay: 0.4s; }
-      }
     }
   }
   
-  // 展开按钮
-  .expand-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    margin-top: 24px;
-    padding: 14px 24px;
-    background: #F8F9FA;
-    border: none;
-    border-radius: 14px;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    
-    .expand-icon {
-      transition: transform 0.3s ease;
-      
-      &.rotated {
-        transform: rotate(180deg);
-      }
-    }
-    
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
-    }
-  }
-  
-  // 隐藏的音频元素
+  // 隐藏音频
   .hidden {
     display: none;
   }
 }
 
-// AI图片对话框
-.modern-image-dialog {
+// AI意境图对话框
+.ai-image-modal {
   :deep(.el-dialog__header) {
-    padding: 24px 24px 16px;
-    border-bottom: 2px solid #F0F2F5;
+    padding: 24px 28px 20px;
+    border-bottom: 2px solid #f0f2f5;
   }
   
   :deep(.el-dialog__body) {
     padding: 0;
   }
   
-  .image-container {
-    min-height: 400px;
+  .modal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    .modal-icon {
+      color: #667eea;
+    }
+    
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+  }
+  
+  .modal-image-wrapper {
+    min-height: 450px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #F8F9FA;
+    background: #fafbfc;
     
-    .ai-image {
+    .modal-image {
       width: 100%;
       height: auto;
       display: block;
     }
     
-    .loading-placeholder {
+    .image-loading-state {
       text-align: center;
-      padding: 60px 20px;
+      padding: 80px 30px;
       
       .loading-icon {
-        color: #BDC3C7;
-        margin-bottom: 20px;
+        color: #d0d7de;
+        margin-bottom: 24px;
+        animation: float 2.5s ease-in-out infinite;
       }
       
-      .loading-text {
+      .loading-message {
         font-size: 16px;
-        color: #7F8C8D;
+        color: #7f8c8d;
         margin: 0;
       }
     }
   }
   
-  .dialog-footer {
+  .modal-footer {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
@@ -1052,129 +929,143 @@ onBeforeUnmount(() => {
 }
 
 // 动画
-@keyframes pulse-dot {
+@keyframes float {
   0%, 100% {
-    transform: scale(1);
-    opacity: 0.3;
+    transform: translateY(0);
   }
   50% {
-    transform: scale(1.4);
-    opacity: 0.8;
+    transform: translateY(-12px);
   }
 }
 
 // 响应式
 @media screen and (max-width: 1024px) {
-  .poem-details-page {
-    .poem-hero .hero-content {
-      padding: 60px 40px;
+  .poem-sanctuary {
+    .poem-showcase {
+      padding: 40px 36px 32px;
       
-      .poem-content-area {
-        .content-decoration-left,
-        .content-decoration-right {
+      .showcase-header {
+        .vertical-decoration {
           display: none;
         }
+        
+        .header-content .poem-title-main {
+          font-size: 40px;
+        }
+      }
+      
+      .poem-main-content .content-wrapper .poem-verses {
+        font-size: 22px;
       }
     }
   }
 }
 
 @media screen and (max-width: 768px) {
-  .poem-details-page {
-    .back-button {
-      top: 80px;
-      left: 20px;
-      padding: 10px 16px;
+  .poem-sanctuary {
+    padding: 24px 16px 60px;
+    
+    .elegant-back-btn {
+      top: 70px;
+      left: 16px;
+      padding: 10px 18px;
       
-      span {
+      .back-text {
         display: none;
       }
     }
     
-    .page-container {
-      padding: 20px 12px;
-    }
-    
-    .poem-hero {
+    .poem-showcase {
+      padding: 32px 24px 28px;
       border-radius: 20px;
-      margin-bottom: 32px;
       
-      .hero-content {
-        padding: 40px 24px;
+      .dynasty-ribbon {
+        right: 20px;
+        font-size: 13px;
+        padding: 8px 16px;
+      }
+      
+      .showcase-header {
+        gap: 0;
+        margin-bottom: 32px;
         
-        .poem-header {
-          margin-bottom: 40px;
-          
-          .poem-title {
-            font-size: 36px;
+        .header-content {
+          .poem-title-main {
+            font-size: 32px;
+            letter-spacing: 3px;
           }
           
-          .poem-meta {
-            flex-direction: column;
-            gap: 12px;
+          .author-info {
+            flex-wrap: wrap;
             
-            .meta-divider {
-              display: none;
-            }
-            
-            .meta-badge {
-              padding: 10px 24px;
-              font-size: 14px;
-            }
-          }
-        }
-        
-        .poem-content-area {
-          margin-bottom: 36px;
-          
-          .poem-body {
-            padding: 28px 20px;
-            
-            .poem-text {
-              font-size: 20px;
-              line-height: 2.2;
-            }
-          }
-        }
-        
-        .action-section {
-          gap: 12px;
-          
-          .action-btn {
-            flex: 1;
-            min-width: 0;
-            padding: 14px 20px;
-            font-size: 14px;
-            
-            .btn-text {
+            .author-divider {
               display: none;
             }
           }
         }
       }
+      
+      .poem-main-content {
+        .content-wrapper {
+          padding: 24px 20px;
+          
+          .poem-verses {
+            font-size: 20px;
+            line-height: 2.3;
+          }
+        }
+      }
+      
+      .showcase-actions .action-buttons {
+        gap: 10px;
+        
+        .poem-action-btn {
+          flex: 1;
+          min-width: 0;
+          padding: 12px 20px;
+          font-size: 14px;
+          
+          span {
+            display: none;
+          }
+        }
+      }
     }
     
-    .content-grid {
-      gap: 24px;
+    .supplementary-content {
+      gap: 20px;
       
-      .content-card {
-        padding: 28px 20px;
+      .content-block {
+        padding: 28px 24px;
+        border-radius: 20px;
         
-        .card-header {
-          .card-icon {
-            width: 44px;
-            height: 44px;
+        .block-header {
+          .header-badge {
+            width: 38px;
+            height: 38px;
           }
           
-          .card-title {
-            font-size: 22px;
+          .block-title {
+            font-size: 19px;
           }
         }
         
-        .card-body .card-text {
+        .block-content .content-text {
           font-size: 15px;
           line-height: 2;
         }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .poem-sanctuary {
+    .supplementary-content {
+      grid-template-columns: repeat(2, 1fr);
+      
+      .review-block {
+        grid-column: 1 / -1;
       }
     }
   }

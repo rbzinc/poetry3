@@ -42,7 +42,7 @@ const handleSend = async (message) => {
 }
 
 const startSSEConnection = () => {
-  fetchEventSource('http://120.27.234.36:8080/ai/submita', {
+  fetchEventSource('http://localhost:8080/ai/submita', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -373,7 +373,8 @@ onBeforeUnmount(() => {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {

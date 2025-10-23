@@ -1,11 +1,12 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
-import { ElCard, ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { useUserInfoStore } from '@/stores/modules/user.js'
 import router from '@/router/index.js'
 import { userLuntanSelectBlogGetApi } from '@/api/modules/talkSquare.js'
 import { goUserEdit } from '@/router/helpers.js'
 import { USER_BG_URL } from '@/constants/bgUrl.js'
+import * as ROUTES from '@/constants/router.js'
 import {
   Edit, MessageBox, Setting, Location, Loading, Close,
   TrophyBase, ChatDotSquare, Star, View, User, FolderOpened,
@@ -104,6 +105,22 @@ const handleDialogClose = () => {
   ElMessage.success('自定义兴趣领域成功')
 }
 
+// 管理文章
+const goManageArticles = () => {
+  router.push(ROUTES.USER_ARTICLES)
+}
+
+// 设置
+const goSettings = () => {
+  router.push(ROUTES.USER_SETTINGS)
+}
+
+// 查看文章详情
+const goArticleDetail = (id) => {
+  console.log(id)
+  router.push({ path: ROUTES.FORUM_DETAIL, query: { id } })
+}
+
 // 内容截断处理
 const truncatedContent = computed(() => {
   return userLuntanSelecttiezTypesData.value.map((item) => ({
@@ -132,7 +149,13 @@ onMounted(() => {
           <!-- 用户头像 -->
           <div class="user-avatar-wrapper">
             <div class="avatar-container">
-              <img :src="userStore.userInfo.touxiang" alt="用户头像" class="user-avatar" />
+              <div 
+                class="user-avatar" 
+                :class="{ 'has-image': userStore.userInfo.touxiang }"
+                :style="userStore.userInfo.touxiang ? { backgroundImage: `url(${userStore.userInfo.touxiang})` } : {}"
+              >
+                <span v-if="!userStore.userInfo.touxiang" class="avatar-text">{{ userStore.userInfo.name?.slice(0, 2).toUpperCase() || 'U' }}</span>
+              </div>
               <div class="avatar-border"></div>
             </div>
           </div>
@@ -153,11 +176,11 @@ onMounted(() => {
                 <el-icon :size="16"><Edit /></el-icon>
                 <span>编辑资料</span>
               </button>
-              <button class="action-btn secondary">
+              <button class="action-btn secondary" @click="goManageArticles">
                 <el-icon :size="16"><MessageBox /></el-icon>
                 <span>管理文章</span>
               </button>
-              <button class="action-btn secondary">
+              <button class="action-btn secondary" @click="goSettings">
                 <el-icon :size="16"><Setting /></el-icon>
                 <span>设置</span>
               </button>
@@ -269,7 +292,12 @@ onMounted(() => {
 
             <!-- 文章列表 -->
             <div class="article-list" @scroll="handleScroll" ref="scrollbarRef">
-              <div v-for="(item, index) in truncatedContent" :key="index" class="modern-article-item">
+              <div 
+                v-for="(item, index) in truncatedContent" 
+                :key="index" 
+                class="modern-article-item"
+                @click="goArticleDetail(item.id)"
+              >
                 <div class="article-main">
                   <h3 class="article-title">{{ item.title }}</h3>
                   <p class="article-excerpt">{{ item.content }}</p>
@@ -426,8 +454,27 @@ onMounted(() => {
           width: 100%;
           height: 100%;
           border-radius: 24px;
-            object-fit: cover;
           box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 42px;
+          font-weight: 700;
+          
+          &.has-image {
+            .avatar-text {
+              display: none;
+            }
+          }
+          
+          .avatar-text {
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+          }
         }
         
         .avatar-border {
@@ -591,7 +638,9 @@ onMounted(() => {
     .content-container {
       display: grid;
   grid-template-columns: 320px 1fr;
+  grid-template-rows: 1fr; // 让行高度一致
   gap: 24px;
+  align-items: stretch; // 拉伸子元素填充整个网格区域
 }
 
 // 现代化卡片通用样式
@@ -735,7 +784,16 @@ onMounted(() => {
 
 // 主内容区
       .main-content {
+        // 让文章卡片自动填充剩余高度
+        display: flex;
+        flex-direction: column;
+        
         .article-card {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          min-height: 0; // 重要：允许flex item收缩
+          
     // 导航标签
     .article-nav {
       display: flex;
@@ -743,6 +801,7 @@ onMounted(() => {
       padding: 16px;
       border-bottom: 2px solid #ECF0F1;
       margin: -24px -24px 24px -24px;
+      flex-shrink: 0; // 防止标签被压缩
       
       .nav-tab {
         padding: 10px 20px;
@@ -770,10 +829,11 @@ onMounted(() => {
     
     // 文章列表
     .article-list {
-      max-height: 600px;
+      flex: 1;
       overflow-y: auto;
       margin: -12px;
       padding: 12px;
+      min-height: 0; // 重要：允许flex item收缩
       
       &::-webkit-scrollbar {
         width: 6px;
@@ -819,6 +879,7 @@ onMounted(() => {
             margin: 0 0 12px 0;
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
           }
@@ -830,6 +891,7 @@ onMounted(() => {
             margin: 0 0 16px 0;
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
           }
@@ -854,6 +916,7 @@ onMounted(() => {
               font-style: italic;
               display: -webkit-box;
               -webkit-line-clamp: 1;
+              line-clamp: 1;
               -webkit-box-orient: vertical;
               overflow: hidden;
             }

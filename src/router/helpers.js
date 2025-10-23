@@ -128,3 +128,17 @@ export const goForumEdit = () => {
 export const goUserEdit = () => {
   router.push(ROUTES.USER_EDIT)
 }
+
+/**
+ * 跳转到管理文章页面
+ */
+export const goManageArticles = () => {
+  router.push(ROUTES.USER_ARTICLES)
+}
+
+/**
+ * 跳转到用户设置页面
+ */
+export const goSettings = () => {
+  router.push(ROUTES.USER_SETTINGS)
+}

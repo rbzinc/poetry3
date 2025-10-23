@@ -1,5 +1,6 @@
 <script setup>
 import { defineProps, defineEmits } from 'vue'
+import { User, Avatar } from '@element-plus/icons-vue'
 
 const emit = defineEmits(['image-click'])
 
@@ -40,7 +41,13 @@ const handleImageClick = (imageUrl) => {
   <div class="message-wrapper" :class="{ 'my-message-wrapper': message.self, 'ai-message-wrapper': !message.self }">
     <!-- AI头像 -->
     <div v-if="!message.self" class="avatar-container">
-      <img :src="aiAvatar" alt="AI头像" class="avatar" />
+      <div 
+        class="avatar" 
+        :class="{ 'default-avatar': !aiAvatar }"
+        :style="aiAvatar ? { backgroundImage: `url(${aiAvatar})` } : {}"
+      >
+        <el-icon v-if="!aiAvatar" :size="24"><Avatar /></el-icon>
+      </div>
     </div>
 
     <!-- 消息内容 -->
@@ -73,7 +80,13 @@ const handleImageClick = (imageUrl) => {
 
     <!-- 用户头像 -->
     <div v-if="message.self" class="avatar-container">
-      <img :src="userAvatar" alt="用户头像" class="avatar" />
+      <div 
+        class="avatar" 
+        :class="{ 'default-avatar': !userAvatar }"
+        :style="userAvatar ? { backgroundImage: `url(${userAvatar})` } : {}"
+      >
+        <el-icon v-if="!userAvatar" :size="24"><User /></el-icon>
+      </div>
     </div>
   </div>
 </template>
@@ -101,9 +114,19 @@ const handleImageClick = (imageUrl) => {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      object-fit: cover;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       border: 2px solid #fff;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      
+      &.default-avatar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
     }
   }
 

@@ -9,7 +9,7 @@ const poetryAi = [
   {
     id: 1,
     title: '王维',
-    url: 'https://webxiangmu.oss-cn-beijing.aliyuncs.com/lun/71190bf4-1056-489c-80a6-27dcfa62be0b.png',
+    url: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/avatar/%E7%94%9F%E6%88%90%E7%8E%8B%E7%BB%B4%E5%A4%B4%E5%83%8F.png',
     content:
       '嘿，朋友经典名句同漫步于山水之间，共赏落日余晖。有什么心事，尽管向我诉说，或许我能以画笔为你描绘出心中的宁静。',
     dynasty: '唐代',
@@ -19,7 +19,7 @@ const poetryAi = [
   {
     id: 2,
     title: '周敦颐',
-    url: 'https://webxiangmu.oss-cn-beijing.aliyuncs.com/lun/ebc095b4-dddb-4a27-bc6f-5aa103196680.png',
+    url: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/avatar/%E7%94%9F%E6%88%90%E7%8E%8B%E7%BB%B4%E5%A4%B4%E5%83%8F%20%281%29.png',
     content:
       '你好啊，我是周敦颐，哲学的探索者。如果你对宇宙的奥秘和人生的哲理有所好奇，我们可以一起探讨"太极"和"无极"的奥秘。让我们在茶香中沉思，寻找生命的真谛。',
     dynasty: '宋代',
@@ -29,7 +29,7 @@ const poetryAi = [
   {
     id: 3,
     title: '李清照',
-    url: 'https://webxiangmu.oss-cn-beijing.aliyuncs.com/lun/db4dd8bd-6e12-4863-a806-91bb7479e2cf.png',
+    url: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/avatar/%E7%94%9F%E6%88%90%E7%8E%8B%E7%BB%B4%E5%A4%B4%E5%83%8F%20%282%29.png',
     content:
       '亲爱的朋友，我是李清照，婉约词派的代表。如果你心中有柔情似水的情感，或是对往昔的美好有所怀念，不妨与我分享。我们可以一起品茗，吟诗，感受那份细腻的情感流动。',
     dynasty: '宋代',
@@ -39,7 +39,7 @@ const poetryAi = [
   {
     id: 4,
     title: '李白',
-    url: 'https://webxiangmu.oss-cn-beijing.aliyuncs.com/lun/a22e7f70-d620-4f7b-b614-be3473542e4c.png',
+    url: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/avatar/%E7%94%9F%E6%88%90%E7%8E%8B%E7%BB%B4%E5%A4%B4%E5%83%8F%20%283%29.png',
     content:
       '嘿，朋友！我是李白，人称"诗仙"。今日风和日丽，正是把酒言欢的好时光。有什么烦心事，尽管向我倾诉，或许我能以诗解忧。若你心中有疑问，也不妨直言，我虽不才，却也愿意与你畅谈天地。今朝有酒今朝醉，人生得意须尽欢，莫使金樽空对月。来，让我们不醉不归！',
     dynasty: '唐代',
@@ -49,7 +49,7 @@ const poetryAi = [
   {
     id: 5,
     title: '杜甫',
-    url: 'https://webxiangmu.oss-cn-beijing.aliyuncs.com/lun/aba47cbc-524e-4fab-9f16-b98f6fa0d84d.png',
+    url: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/avatar/%E7%94%9F%E6%88%90%E7%8E%8B%E7%BB%B4%E5%A4%B4%E5%83%8F%20%284%29.png',
     content:
       '嘿，伙计！我是杜甫，人称"诗圣"。如果你对世间的苦难和人民的疾苦有所感触，我们可以一起探讨如何用诗歌来表达对这个世界的关怀。来，让我们以诗会友，共同感受那份深沉的情感。',
     dynasty: '唐代',
@@ -59,7 +59,7 @@ const poetryAi = [
   {
     id: 6,
     title: '白居易',
-    url: 'https://webxiangmu.oss-cn-beijing.aliyuncs.com/lun/54bb546c-77a6-4881-bdef-4d1d507d52c4.png',
+    url: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/avatar/%E7%94%9F%E6%88%90%E7%8E%8B%E7%BB%B4%E5%A4%B4%E5%83%8F%20%285%29.png',
     content:
       '你好，我是白居易，平易近人的诗人。如果你喜欢简单直接的交流，或是对日常生活有所感悟，我们可以一起聊聊。无论是市井小民的生活，还是朝堂之上的风云，我都愿意与你分享我的看法。',
     dynasty: '唐代',
@@ -69,7 +69,7 @@ const poetryAi = [
   {
     id: 7,
     title: '苏轼',
-    url: 'https://webxiangmu.oss-cn-beijing.aliyuncs.com/lun/52a6ca49-ba2f-4efd-a420-f6a71d3e29d3.png',
+    url: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/avatar/%E7%94%9F%E6%88%90%E7%8E%8B%E7%BB%B4%E5%A4%B4%E5%83%8F%20%286%29.png',
     content:
       '哈哈，我是苏轼，人称"东坡居士"。如果你对美食、书法、绘画或是诗词有所热爱，我们可以一起探讨。无论是烹饪一道佳肴，还是挥毫泼墨，我都愿意与你共享这份乐趣。',
     dynasty: '宋代',
@@ -79,7 +79,7 @@ const poetryAi = [
   {
     id: 8,
     title: '陶渊明',
-    url: 'https://webxiangmu.oss-cn-beijing.aliyuncs.com/lun/f9b50245-4a89-4d3e-bbf9-2c39d965a3ca.png',
+    url: 'https://ancient-poem-img.oss-cn-beijing.aliyuncs.com/avatar/%E7%94%9F%E6%88%90%E7%8E%8B%E7%BB%B4%E5%A4%B4%E5%83%8F%20%287%29.png',
     content:
       '朋友，我是陶渊明，归隐田园的诗人。如果你厌倦了都市的喧嚣，向往那份宁静与自由，我们可以一起耕种，品酒，享受那份简单的快乐。来，让我们在菊花下畅谈，忘却尘世的烦恼。',
     dynasty: '东晋',
@@ -135,12 +135,12 @@ const handleMouseLeave = () => {
             <img :src="item.url" alt="" class="poet-avatar" />
             <div class="avatar-glow"></div>
           </div>
-          
+
           <div class="poet-info">
             <h3 class="poet-name">{{ item.title }}</h3>
             <div class="poet-dynasty">{{ item.dynasty }}</div>
             <div class="poet-specialty">{{ item.specialty }}</div>
-            
+
             <div class="poet-tags">
               <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
             </div>

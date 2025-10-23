@@ -1,7 +1,7 @@
 <script setup>
 import { User, Search, Bell, Setting, ChatDotRound, Star, Message, WarningFilled } from '@element-plus/icons-vue'
 import { useUserInfoStore } from '@/stores/index.js'
-import { ref, watch, onMounted, computed } from 'vue'
+import { ref, watch, onMounted, computed, markRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import * as ROUTES from '@/constants/router.js'
 import { ElMessage } from 'element-plus'
@@ -19,7 +19,7 @@ const notifications = ref([
   {
     id: 1,
     type: 'like',
-    icon: Star,
+    icon: markRaw(Star),
     iconColor: '#FFC107',
     title: '新的点赞',
     content: '用户"诗词爱好者"赞了你的帖子《春江花月夜赏析》',
@@ -29,7 +29,7 @@ const notifications = ref([
   {
     id: 2,
     type: 'comment',
-    icon: ChatDotRound,
+    icon: markRaw(ChatDotRound),
     iconColor: '#667eea',
     title: '新的评论',
     content: '用户"李白粉丝"评论了你的帖子：写得真好，受益匪浅！',
@@ -39,7 +39,7 @@ const notifications = ref([
   {
     id: 3,
     type: 'system',
-    icon: Bell,
+    icon: markRaw(Bell),
     iconColor: '#E74C3C',
     title: '系统通知',
     content: '你的学习积分已达到1000分，获得"诗词学者"称号！',
@@ -49,7 +49,7 @@ const notifications = ref([
   {
     id: 4,
     type: 'message',
-    icon: Message,
+    icon: markRaw(Message),
     iconColor: '#3498DB',
     title: '私信提醒',
     content: '用户"杜甫研究"向你发送了一条私信',
@@ -59,7 +59,7 @@ const notifications = ref([
   {
     id: 5,
     type: 'system',
-    icon: WarningFilled,
+    icon: markRaw(WarningFilled),
     iconColor: '#F39C12',
     title: '学习提醒',
     content: '你已经3天没有完成每日诗词学习任务，继续加油！',
@@ -69,7 +69,7 @@ const notifications = ref([
   {
     id: 6,
     type: 'like',
-    icon: Star,
+    icon: markRaw(Star),
     iconColor: '#FFC107',
     title: '收藏提醒',
     content: '你收藏的诗词《将进酒》有新的赏析内容更新',
@@ -322,13 +322,25 @@ const menuItems = [
         <div class="user-section" v-if="useUser.userInfo">
           <el-dropdown trigger="hover" @command="handleSelect">
             <div class="user-avatar-wrapper">
-              <div class="user-avatar">{{ userNickname }}</div>
+              <div 
+                class="user-avatar" 
+                :class="{ 'has-image': useUser.userInfo.touxiang }"
+                :style="useUser.userInfo.touxiang ? { backgroundImage: `url(${useUser.userInfo.touxiang})` } : {}"
+              >
+                <span v-if="!useUser.userInfo.touxiang">{{ userNickname }}</span>
+              </div>
               <span class="user-name desktop-only">{{ useUser.userInfo.username }}</span>
             </div>
             <template #dropdown>
               <el-dropdown-menu class="custom-user-dropdown">
                 <div class="custom-dropdown-header">
-                  <div class="custom-avatar">{{ userNickname }}</div>
+                  <div 
+                    class="custom-avatar" 
+                    :class="{ 'has-image': useUser.userInfo.touxiang }"
+                    :style="useUser.userInfo.touxiang ? { backgroundImage: `url(${useUser.userInfo.touxiang})` } : {}"
+                  >
+                    <span v-if="!useUser.userInfo.touxiang">{{ userNickname }}</span>
+                  </div>
                   <div class="custom-user-info">
                     <div class="custom-username">{{ useUser.userInfo.username }}</div>
                     <div class="custom-email">{{ useUser.userInfo.email || '未设置邮箱' }}</div>
@@ -692,6 +704,17 @@ const menuItems = [
         justify-content: center;
         font-size: 14px;
         font-weight: 600;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        
+        &.has-image {
+          background-blend-mode: normal;
+          
+          span {
+            display: none;
+          }
+        }
         
         &.large {
           width: 50px;
@@ -883,6 +906,7 @@ const menuItems = [
             line-height: 1.5;
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1001,6 +1025,17 @@ const menuItems = [
       font-weight: 700;
       box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
       border: 3px solid white;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      
+      &.has-image {
+        background-blend-mode: normal;
+        
+        span {
+          display: none;
+        }
+      }
     }
     
     .custom-user-info {
